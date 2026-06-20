@@ -1,2 +1,2 @@
 # asesoriascnv.cl
-Sitio web de Asesorías CNV
+Sitio web de Consultora CNV
