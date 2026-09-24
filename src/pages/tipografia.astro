@@ -1,0 +1,84 @@
+---
+// Página interna de comparación tipográfica (fase 1). No se indexa; se eliminará al elegir.
+import '@fontsource-variable/fraunces/opsz.css';
+import '@fontsource-variable/fraunces/opsz-italic.css';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+
+const opciones = [
+  { id: 'source', nombre: 'Opción A · Source Serif 4', familia: "'Source Serif 4 Variable', Georgia, serif", nota: 'Sobria e institucional; muy cercana a la serifa del brochure.' },
+  { id: 'fraunces', nombre: 'Opción B · Fraunces', familia: "'Fraunces Variable', Georgia, serif", nota: 'Más expresiva y editorial; carácter contemporáneo.' },
+];
+---
+<Base title="Comparación tipográfica" noindex>
+  <section class="on-dark intro">
+    <div class="container section-head">
+      <p class="eyebrow">Fase 1 · Decisión</p>
+      <h1>Tipografía de titulares</h1>
+      <p class="lead">El texto de lectura se mantiene en Inter. Compare cómo se ven los titulares con cada alternativa, en tema claro y oscuro (botón de la luna, arriba a la derecha).</p>
+    </div>
+  </section>
+
+  {opciones.map((o) => (
+    <section class="section specimen" style={`--font-display:${o.familia}`}>
+      <div class="container">
+        <p class="eyebrow">{o.nombre}</p>
+        <p class="muted nota">{o.nota}</p>
+
+        <h2 class="big">Mejores decisiones <em>de intervención.</em></h2>
+        <h2>Nacimos desde adentro del sistema.</h2>
+        <h3>Diagnóstico e identificación de brechas</h3>
+        <p class="lead">Dónde intervenir, con quiénes y por qué. El análisis baja a la unidad territorial que corresponde, no al promedio comunal.</p>
+
+        <div class="cards">
+          <article class="card">
+            <span class="code">01.1</span>
+            <h3>Diagnóstico socioterritorial de problemas, brechas y oportunidades</h3>
+            <p>Jerarquiza los problemas del área de influencia con evidencia y deja instalada la línea base.</p>
+          </article>
+          <article class="card">
+            <span class="code">03.4</span>
+            <h3>Sistemas de seguimiento y monitoreo con indicadores multidimensionales</h3>
+            <p>Tableros hechos para decidir, no para llenar un reporte.</p>
+          </article>
+          <article class="card on-dark">
+            <span class="code">Qué cambia</span>
+            <h3>Resultados</h3>
+            <p><s>Número de beneficiarios</s></p>
+            <p><strong>Contribución medida contra un escenario de comparación declarado.</strong></p>
+          </article>
+        </div>
+        <div class="row">
+          <a href="#" class="btn">Conversemos <Icon name="arrow-right" /></a>
+          <a href="#" class="btn btn-ghost">Ver servicios</a>
+          <a href="#" class="link">Ver perfil <Icon name="arrow-right" /></a>
+        </div>
+      </div>
+    </section>
+  ))}
+</Base>
+
+<style>
+  .intro { padding-block: calc(var(--header-h) + 4rem) 3rem; }
+  .specimen { display: grid; gap: 1rem; border-bottom: 1px solid var(--border); }
+  .specimen .container { display: grid; gap: 1.2rem; }
+  .nota { margin-top: -0.6rem; }
+  .big { font-size: clamp(2.6rem, 1.6rem + 4.4vw, 5rem); line-height: 1.04; letter-spacing: -0.025em; }
+  .big em { font-style: italic; font-weight: 500; color: var(--accent); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 1rem; }
+  .card {
+    display: grid;
+    gap: 0.6rem;
+    align-content: start;
+    padding: 1.6rem;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+  .card p { color: var(--text-muted); font-size: 0.95rem; }
+  .card.on-dark { background: var(--navy); }
+  .card.on-dark p strong { color: var(--text); }
+  .code { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+  .row { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-top: 0.5rem; }
+</style>

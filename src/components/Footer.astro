@@ -1,0 +1,107 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo-cnv.png';
+import Icon from './Icon.astro';
+import { SITE, NAV, CTA } from '../data/site';
+
+const year = new Date().getFullYear();
+const sectores = NAV.find((n) => n.children)?.children ?? [];
+---
+<footer class="site-footer on-dark">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <Image src={logo} alt={SITE.nombre} height={48} />
+      <p>{SITE.lema}.</p>
+      <a href={CTA.href} class="btn">{CTA.label} <Icon name="arrow-right" /></a>
+    </div>
+
+    <nav aria-label="Pie de página">
+      <h2 class="footer-title">Explorar</h2>
+      <ul role="list">
+        <li><a href="/servicios/">Servicios</a></li>
+        <li><a href="/como-trabajamos/">Cómo trabajamos</a></li>
+        <li><a href="/nosotros/">Nosotros</a></li>
+        <li><a href="/contacto/">Contacto</a></li>
+      </ul>
+    </nav>
+
+    <nav aria-label="Sectores">
+      <h2 class="footer-title">Sectores</h2>
+      <ul role="list">
+        {sectores.map((s) => <li><a href={s.href}>{s.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div>
+      <h2 class="footer-title">Contacto</h2>
+      <ul role="list" class="footer-contact">
+        <li><Icon name="mail" size={18} /><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+        <li><Icon name="map-pin" size={18} /><span>{SITE.ciudad}</span></li>
+        <li><Icon name="linkedin" size={18} /><a href={SITE.linkedin} target="_blank" rel="noopener">LinkedIn</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <p>© {year} {SITE.nombre}</p>
+    <a href="/privacidad/">Política de privacidad</a>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    padding-block: clamp(3.5rem, 6vw, 5rem) 1.5rem;
+    border-top: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .site-footer::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity: 0.6;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1.3fr;
+    gap: 2.5rem;
+  }
+  .footer-brand { display: grid; gap: 1rem; justify-items: start; align-content: start; }
+  .footer-brand img { height: 48px; width: auto; }
+  .footer-brand p { color: var(--text-muted); font-family: var(--font-display); font-style: italic; font-size: 1.1rem; }
+  .footer-title {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  ul { list-style: none; padding: 0; display: grid; gap: 0.6rem; }
+  a { color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  a:hover { color: var(--text); text-decoration: underline; text-underline-offset: 4px; }
+  .footer-brand .btn { color: var(--accent-contrast); text-decoration: none; }
+  .footer-contact li { display: flex; align-items: center; gap: 0.6rem; color: var(--text-muted); }
+  .footer-contact :global(svg) { color: var(--accent); flex-shrink: 0; }
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  @media (max-width: 900px) {
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .footer-brand { grid-column: 1 / -1; }
+  }
+  @media (max-width: 520px) {
+    .footer-grid { grid-template-columns: 1fr; }
+  }
+</style>

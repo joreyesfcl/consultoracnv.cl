@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import { SITE } from '../data/site';
+
+const org = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: SITE.nombre,
+  alternateName: 'CNV',
+  url: SITE.url,
+  logo: `${SITE.url}/logo.png`,
+  image: `${SITE.url}/og-image.png`,
+  slogan: SITE.lema,
+  description: SITE.descripcion,
+  email: SITE.email,
+  areaServed: { '@type': 'Country', name: 'Chile' },
+  address: { '@type': 'PostalAddress', addressLocality: 'Santiago', addressCountry: 'CL' },
+  sameAs: [SITE.linkedin],
+};
+---
+<Base jsonLd={org}>
+  <Hero />
+  <section class="section">
+    <div class="container section-head">
+      <p class="eyebrow">Fase 1 · Vista previa</p>
+      <h2>Base del nuevo sitio</h2>
+      <p class="lead">
+        Esta vista muestra la estructura base: encabezado, hero, tipografías, colores y pie de página.
+        Las secciones de Inicio se construyen en la fase 2. Compare las tipografías de titulares en
+        <a class="link" href="/tipografia/">/tipografia/</a>.
+      </p>
+    </div>
+  </section>
+</Base>

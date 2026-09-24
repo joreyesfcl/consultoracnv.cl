@@ -1,0 +1,266 @@
+/* ==========================================================================
+   Consultora CNV — Estilos globales
+   Paleta de marca (no modificar): navy #071C38 · cobalto #165DFF · cian #3FD7FF
+   snow #F8FBFF · ice #EAF6FF · soft-blue #B9CEE8 · slate #536A86 · texto #0C1B2A
+   ========================================================================== */
+
+:root {
+  /* Marca */
+  --navy: #071C38;
+  --cobalt: #165DFF;
+  --cyan: #3FD7FF;
+  --snow: #F8FBFF;
+  --ice: #EAF6FF;
+  --soft-blue: #B9CEE8;
+  --slate: #536A86;
+  --ink: #0C1B2A;
+  --white: #ffffff;
+
+  /* Tonos derivados de la marca (solo para superficies del tema oscuro) */
+  --navy-2: #0B2748;
+  --navy-3: #10335C;
+
+  /* Tokens semánticos — tema claro */
+  --bg: var(--snow);
+  --surface: var(--white);
+  --surface-2: var(--ice);
+  --text: var(--ink);
+  --text-muted: var(--slate);
+  --accent: var(--cobalt);
+  --accent-contrast: var(--white);
+  --accent-soft: rgba(22, 93, 255, 0.08);
+  --border: rgba(22, 93, 255, 0.14);
+  --border-strong: rgba(22, 93, 255, 0.3);
+  --shadow: 0 1px 2px rgba(7, 28, 56, 0.06), 0 8px 28px rgba(7, 28, 56, 0.08);
+  --shadow-lg: 0 2px 4px rgba(7, 28, 56, 0.06), 0 20px 48px rgba(7, 28, 56, 0.14);
+
+  /* Tipografía */
+  --font-display: 'Source Serif 4 Variable', 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.9rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.075rem);
+  --step-1: clamp(1.2rem, 1.1rem + 0.45vw, 1.4rem);
+  --step-2: clamp(1.45rem, 1.25rem + 0.9vw, 1.9rem);
+  --step-3: clamp(1.8rem, 1.45rem + 1.6vw, 2.6rem);
+  --step-4: clamp(2.3rem, 1.7rem + 2.8vw, 3.9rem);
+
+  /* Espaciado y forma */
+  --container: 1200px;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --section: clamp(4rem, 8vw, 7.5rem);
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
+  --header-h: 72px;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  color-scheme: light;
+}
+
+/* Tema oscuro (activado manualmente con el selector) */
+:root[data-theme='dark'] {
+  --bg: var(--navy);
+  --surface: var(--navy-2);
+  --surface-2: var(--navy-3);
+  --text: var(--snow);
+  --text-muted: var(--soft-blue);
+  --accent: var(--cyan);
+  --accent-contrast: var(--navy);
+  --accent-soft: rgba(63, 215, 255, 0.1);
+  --border: rgba(185, 206, 232, 0.14);
+  --border-strong: rgba(63, 215, 255, 0.35);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 28px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.3), 0 20px 48px rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
+}
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 1rem);
+}
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.3s var(--ease), color 0.3s var(--ease);
+}
+main { flex: 1; }
+img, svg, video { display: block; max-width: 100%; }
+img { height: auto; }
+input, button, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: inherit; }
+p, h1, h2, h3, h4 { overflow-wrap: break-word; }
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+/* ---------- Tipografía ---------- */
+h1, h2, h3, .display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+h1 { font-size: var(--step-4); }
+h2 { font-size: var(--step-3); }
+h3 { font-size: var(--step-1); line-height: 1.25; }
+h4 { font-size: var(--step-0); font-weight: 600; line-height: 1.35; }
+p { text-wrap: pretty; }
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+}
+.lead {
+  font-size: var(--step-1);
+  line-height: 1.6;
+  color: var(--text-muted);
+  max-width: 62ch;
+}
+.muted { color: var(--text-muted); }
+
+/* ---------- Layout ---------- */
+.container {
+  width: min(100% - 2 * var(--gutter), var(--container));
+  margin-inline: auto;
+}
+.section { padding-block: var(--section); }
+.section-head { display: grid; gap: 1rem; max-width: 760px; margin-bottom: clamp(2rem, 4vw, 3.5rem); }
+
+/* Sección oscura con la imagen de marca */
+.on-dark {
+  --bg: var(--navy);
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-2: rgba(255, 255, 255, 0.07);
+  --text: var(--snow);
+  --text-muted: var(--soft-blue);
+  --accent: var(--cyan);
+  --accent-contrast: var(--navy);
+  --accent-soft: rgba(63, 215, 255, 0.1);
+  --border: rgba(185, 206, 232, 0.16);
+  --border-strong: rgba(63, 215, 255, 0.4);
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ---------- Botones ---------- */
+.btn {
+  --btn-bg: var(--accent);
+  --btn-fg: var(--accent-contrast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 48px;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  line-height: 1.2;
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), background-color 0.25s var(--ease), border-color 0.25s var(--ease), color 0.25s var(--ease);
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px -8px color-mix(in srgb, var(--btn-bg) 70%, transparent); }
+.btn:active { transform: translateY(0); }
+.btn svg { width: 18px; height: 18px; transition: transform 0.25s var(--ease); }
+.btn:hover svg { transform: translateX(3px); }
+.btn-ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--text);
+  border-color: var(--border-strong);
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); box-shadow: none; }
+
+/* ---------- Enlaces de texto ---------- */
+.link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.link svg { width: 16px; height: 16px; transition: transform 0.25s var(--ease); }
+.link:hover svg { transform: translateX(3px); }
+.link:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+/* ---------- Accesibilidad ---------- */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  z-index: 1000;
+  padding: 0.7rem 1.2rem;
+  border-radius: var(--radius-sm);
+  background: var(--cobalt);
+  color: var(--white);
+  font-weight: 600;
+  text-decoration: none;
+}
+.skip-link:focus { top: 1rem; }
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0);
+  white-space: nowrap; border: 0;
+}
+
+/* ---------- Revelado al hacer scroll (progresivo) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+  }
+}
+@keyframes reveal {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

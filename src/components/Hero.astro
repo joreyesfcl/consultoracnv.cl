@@ -1,0 +1,176 @@
+---
+import { Picture } from 'astro:assets';
+import fondo from '../assets/main.png';
+import Icon from './Icon.astro';
+
+// Nodos aproximados sobre el trazado de Chile en main.png (coordenadas de la imagen 1254×820)
+const nodos = [
+  [1122, 96], [1138, 160], [1128, 222], [1112, 288], [1098, 352],
+  [1084, 418], [1070, 482], [1056, 540], [1046, 596], [1072, 640], [1112, 668],
+];
+const lineas = [
+  'M760 660 C 880 610, 980 640, 1056 540',
+  'M820 720 C 930 700, 1010 690, 1072 640',
+  'M1254 380 C 1190 390, 1130 400, 1098 352',
+  'M1254 560 C 1180 560, 1110 580, 1056 540',
+];
+---
+<section class="hero on-dark" data-hero aria-labelledby="hero-title">
+  <Picture
+    src={fondo}
+    alt=""
+    formats={['avif', 'webp']}
+    widths={[640, 960, 1254]}
+    sizes="100vw"
+    loading="eager"
+    fetchpriority="high"
+    class="hero-bg"
+  />
+  <svg class="hero-net" viewBox="0 0 1254 820" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+    <defs>
+      <radialGradient id="glow">
+        <stop offset="0%" stop-color="#3FD7FF" stop-opacity="0.9" />
+        <stop offset="100%" stop-color="#3FD7FF" stop-opacity="0" />
+      </radialGradient>
+    </defs>
+    {lineas.map((d, i) => <path d={d} class="net-line" style={`--d:${i * 1.3}s`} />)}
+    {nodos.map(([x, y], i) => (
+      <g style={`--d:${(i * 0.37) % 3}s`}>
+        <circle cx={x} cy={y} r="14" fill="url(#glow)" class="net-halo" />
+        <circle cx={x} cy={y} r="2.6" class="net-dot" />
+      </g>
+    ))}
+  </svg>
+  <div class="hero-shade" aria-hidden="true"></div>
+
+  <div class="container hero-content">
+    <p class="eyebrow">Inteligencia aplicada a la intervención</p>
+    <h1 id="hero-title">Mejores decisiones <em>de&nbsp;intervención.</em></h1>
+    <p class="lead">
+      Acompañamos a instituciones públicas, empresas y organizaciones a decidir dónde, cómo y con qué recursos intervenir,
+      con evidencia, rigor técnico y comprensión del territorio.
+    </p>
+    <div class="hero-ctas">
+      <a href="/contacto/" class="btn">Conversemos <Icon name="arrow-right" /></a>
+      <a href="/servicios/" class="btn btn-ghost">Ver servicios</a>
+    </div>
+  </div>
+
+  <div class="hero-strip">
+    <div class="container strip-inner">
+      <p class="strip-figure"><strong>+40</strong> <span>años de experiencia combinada en el sector público</span></p>
+      <p class="strip-text">
+        Trayectoria de nuestros socios en el Ministerio de Desarrollo Social y Familia, el Sistema Nacional de Inversiones,
+        el Sistema de Monitoreo y Evaluación, CEPAL y GIZ.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .hero-bg, .hero-bg :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: right center;
+    z-index: -3;
+  }
+  .hero-net {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    pointer-events: none;
+  }
+  .net-dot { fill: #EAF6FF; }
+  .net-halo { opacity: 0.25; transform-box: fill-box; transform-origin: center; }
+  .net-line {
+    fill: none;
+    stroke: #3FD7FF;
+    stroke-width: 1.2;
+    stroke-opacity: 0.55;
+    stroke-dasharray: 6 220;
+    stroke-linecap: round;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .net-halo { animation: pulse 3.2s var(--ease) infinite var(--d); }
+    .net-line { animation: flow 7s linear infinite var(--d); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.15; transform: scale(0.7); }
+    50% { opacity: 0.7; transform: scale(1.5); }
+  }
+  @keyframes flow { to { stroke-dashoffset: -452; } }
+
+  .hero-shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(90deg, rgba(7, 28, 56, 0.92) 0%, rgba(7, 28, 56, 0.7) 38%, rgba(7, 28, 56, 0) 68%),
+      linear-gradient(0deg, rgba(7, 28, 56, 0.85) 0%, rgba(7, 28, 56, 0) 30%);
+  }
+
+  .hero-content {
+    align-self: center;
+    display: grid;
+    justify-items: start;
+    gap: 1.5rem;
+    padding-block: calc(var(--header-h) + 3rem) 3rem;
+  }
+  .hero-content > * { max-width: 640px; }
+  h1 { font-size: clamp(2.6rem, 1.6rem + 4.4vw, 5rem); line-height: 1.04; letter-spacing: -0.025em; }
+  h1 em { font-style: italic; font-weight: 500; color: var(--cyan); }
+  .lead { color: rgba(234, 246, 255, 0.82); }
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 0.5rem; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-content > * { animation: rise 0.9s var(--ease) both; }
+    .hero-content > :nth-child(2) { animation-delay: 0.08s; }
+    .hero-content > :nth-child(3) { animation-delay: 0.16s; }
+    .hero-content > :nth-child(4) { animation-delay: 0.24s; }
+  }
+  @keyframes rise { from { opacity: 0; transform: translateY(24px); } }
+
+  .hero-strip {
+    border-top: 1px solid rgba(185, 206, 232, 0.14);
+    background: rgba(7, 28, 56, 0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .strip-inner {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 1rem 3rem;
+    padding-block: 1.4rem;
+  }
+  .strip-figure { display: flex; align-items: baseline; gap: 0.8rem; }
+  .strip-figure strong {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 1.8rem + 1.5vw, 3rem);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--cyan);
+  }
+  .strip-figure span { max-width: 18ch; font-size: 0.95rem; line-height: 1.35; color: var(--snow); }
+  .strip-text { font-size: 0.92rem; color: var(--soft-blue); max-width: 70ch; }
+
+  @media (max-width: 760px) {
+    .hero-shade {
+      background: linear-gradient(180deg, rgba(7, 28, 56, 0.55) 0%, rgba(7, 28, 56, 0.82) 45%, rgba(7, 28, 56, 0.95) 100%);
+    }
+    .strip-inner { grid-template-columns: 1fr; }
+  }
+</style>
