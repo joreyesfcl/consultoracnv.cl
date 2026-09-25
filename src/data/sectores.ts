@@ -3,6 +3,8 @@
 export const SECTORES = [
   {
     slug: 'publico',
+    servicios: ['01.1', '02.3', '03.1', '03.6', '03.7', '05.1'],
+    escenarios: ['Institución pública', 'Gobierno regional', 'Gobierno regional + empresa'],
     nombre: 'Sector público',
     icono: 'landmark',
     bajada: 'Gobiernos regionales, municipios y servicios que deben formular, evaluar y justificar su inversión ante el sistema público.',
@@ -15,6 +17,8 @@ export const SECTORES = [
   },
   {
     slug: 'empresas',
+    servicios: ['01.1', '01.3', '03.4', '03.5', '04.5', '04.7'],
+    escenarios: ['Empresa con operación territorial', 'Gobierno regional + empresa'],
     nombre: 'Empresas',
     icono: 'building',
     bajada: 'Empresas con operación territorial que invierten en su entorno y deben demostrar lo que logran ante directorios, reguladores y comunidades.',
@@ -26,6 +30,8 @@ export const SECTORES = [
   },
   {
     slug: 'tercer-sector',
+    servicios: ['02.1', '03.1', '03.2', '03.3', '03.4', '05.1'],
+    escenarios: ['Fundación u ONG'],
     nombre: 'Tercer sector',
     icono: 'hand-heart',
     bajada: 'Fundaciones, corporaciones y ONG que ejecutan programas con distintas fuentes y deben rendir cuentas ante quienes los financian.',

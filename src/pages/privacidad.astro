@@ -1,0 +1,46 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { SITE } from '../data/site';
+const actualizada = '25 de septiembre de 2026';
+---
+<Base title="Política de privacidad" description="Cómo Consultora CNV trata los datos personales que recibe a través de este sitio.">
+  <PageHero eyebrow="Legal" title="Política de privacidad" lead={`Última actualización: ${actualizada}.`} crumbs={[{ label: 'Privacidad' }]} />
+  <section class="section">
+    <div class="container prose">
+      <h2>Responsable</h2>
+      <p>{SITE.nombre}, con domicilio en {SITE.ciudad}, es responsable del tratamiento de los datos personales recibidos a través de este sitio. Contacto: <strong>{SITE.email}</strong>.</p>
+
+      <h2>Qué datos recogemos</h2>
+      <p>Solo los que usted entrega voluntariamente en el formulario de contacto: nombre, cargo, organización, correo electrónico, tipo de organización y el contenido de su mensaje. El autodiagnóstico funciona en su navegador y no envía información.</p>
+
+      <h2>Para qué los usamos</h2>
+      <p>Para responder su mensaje y, si usted lo solicita, preparar una propuesta de trabajo. No los usamos para otros fines, no los vendemos ni los cedemos a terceros con fines comerciales.</p>
+
+      <h2>Base de licitud</h2>
+      <p>Su consentimiento, que otorga al marcar la casilla correspondiente antes de enviar el formulario, conforme a la Ley N° 19.628 sobre protección de la vida privada y a la Ley N° 21.719, que la modifica.</p>
+
+      <h2>Encargados de tratamiento</h2>
+      <p>El formulario se procesa mediante Formspree, servicio que recibe el mensaje y nos lo reenvía por correo. El agendamiento de reuniones se realiza en Google Calendar. Ambos proveedores tratan los datos por cuenta nuestra y bajo sus propias políticas de seguridad.</p>
+
+      <h2>Conservación</h2>
+      <p>Conservamos los mensajes mientras sea necesario para atender su solicitud y, como máximo, por dos años desde el último contacto, salvo que exista una relación contractual que justifique un plazo mayor.</p>
+
+      <h2>Sus derechos</h2>
+      <p>Puede solicitar en cualquier momento el acceso, rectificación, supresión, oposición o portabilidad de sus datos, o retirar su consentimiento, escribiendo a <strong>{SITE.email}</strong>. Responderemos en los plazos que establece la ley.</p>
+
+      <h2>Analítica</h2>
+      <p>Este sitio usa una medición de visitas agregada y sin cookies (Cloudflare Web Analytics), que no identifica a las personas.</p>
+
+      <h2>Cambios</h2>
+      <p>Si modificamos esta política, publicaremos la nueva versión en esta página con su fecha de actualización.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .prose { max-width: 760px; display: grid; gap: 0.9rem; }
+  .prose h2 { font-size: var(--step-1); margin-top: 1.2rem; }
+  .prose p { color: var(--text-muted); }
+  .prose strong { color: var(--text); user-select: all; }
+</style>

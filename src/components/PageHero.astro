@@ -1,0 +1,73 @@
+---
+// Cabecera de las páginas internas: fondo de marca, migas de pan y título.
+import { Picture } from 'astro:assets';
+import fondo from '../assets/main.png';
+import Icon from './Icon.astro';
+
+interface Crumb { label: string; href?: string }
+interface Props { eyebrow?: string; title: string; lead?: string; crumbs?: Crumb[] }
+const { eyebrow, title, lead, crumbs = [] } = Astro.props;
+---
+<section class="page-hero on-dark" data-hero>
+  <Picture src={fondo} alt="" formats={['avif', 'webp']} widths={[640, 1254]} sizes="100vw" class="bg" loading="eager" />
+  <div class="shade" aria-hidden="true"></div>
+  <div class="container inner">
+    {crumbs.length > 0 && (
+      <nav aria-label="Ruta de navegación" class="crumbs">
+        <ol role="list">
+          <li><a href="/">Inicio</a></li>
+          {crumbs.map((c) => (
+            <li>
+              <Icon name="arrow-right" size={14} />
+              {c.href ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    )}
+    {eyebrow && <p class="eyebrow rise">{eyebrow}</p>}
+    <h1 class="rise">{title}</h1>
+    {lead && <p class="lead rise">{lead}</p>}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-block: calc(var(--header-h) + clamp(3rem, 7vw, 5.5rem)) clamp(3rem, 6vw, 4.5rem);
+  }
+  .bg, .bg :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: right 30%;
+    z-index: -2;
+  }
+  .shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, rgba(7, 28, 56, 0.95) 0%, rgba(7, 28, 56, 0.8) 50%, rgba(7, 28, 56, 0.35) 100%);
+  }
+  .inner { display: grid; gap: 1.2rem; justify-items: start; }
+  .inner > * { max-width: 760px; }
+  h1 { font-size: var(--step-4); }
+  .lead { color: rgba(234, 246, 255, 0.82); }
+  .crumbs ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; list-style: none; padding: 0; font-size: 0.85rem; color: var(--soft-blue); }
+  .crumbs li { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .crumbs a { color: var(--soft-blue); text-decoration: none; }
+  .crumbs a:hover { color: var(--white); text-decoration: underline; text-underline-offset: 3px; }
+  .crumbs [aria-current] { color: var(--white); }
+  :global(.motion) .rise { animation: ph-rise 0.8s var(--ease) both; }
+  :global(.motion) h1.rise { animation-delay: 0.08s; }
+  :global(.motion) .lead.rise { animation-delay: 0.16s; }
+  @keyframes ph-rise { from { opacity: 0; transform: translateY(20px); } }
+  @media (max-width: 760px) {
+    .shade { background: linear-gradient(180deg, rgba(7, 28, 56, 0.8), rgba(7, 28, 56, 0.95)); }
+  }
+</style>

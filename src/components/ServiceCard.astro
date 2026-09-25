@@ -1,0 +1,31 @@
+---
+import type { Servicio } from '../data/servicios';
+interface Props { servicio: Servicio; pilar?: string; href?: string }
+const { servicio, pilar, href } = Astro.props;
+const Tag = href ? 'a' : 'article';
+---
+<Tag class="svc spotlight" href={href} data-pilar={pilar} data-search={`${servicio.codigo} ${servicio.nombre} ${servicio.descripcion}`.toLowerCase()}>
+  <span class="code">{servicio.codigo}</span>
+  <h3>{servicio.nombre}</h3>
+  <p>{servicio.descripcion}</p>
+</Tag>
+
+<style>
+  .svc {
+    display: grid;
+    align-content: start;
+    gap: 0.55rem;
+    height: 100%;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+    transition: border-color 0.3s, transform 0.3s var(--ease);
+  }
+  a.svc:hover { transform: translateY(-3px); }
+  .code { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; color: var(--accent); font-variant-numeric: tabular-nums; }
+  h3 { font-size: 1.15rem; }
+  p { color: var(--text-muted); font-size: 0.94rem; }
+</style>

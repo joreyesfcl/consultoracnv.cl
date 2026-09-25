@@ -1,0 +1,28 @@
+---
+// Banda de cierre breve para páginas internas.
+import Icon from './Icon.astro';
+interface Props { title?: string; text?: string }
+const {
+  title = '¿Conversamos sobre su caso?',
+  text = 'Cuéntenos el desafío en sus propios términos. La traducción a servicios la hacemos nosotros.',
+} = Astro.props;
+---
+<section class="band on-dark">
+  <div class="container inner reveal">
+    <div>
+      <h2>{title}</h2>
+      <p class="muted">{text}</p>
+    </div>
+    <a href="/contacto/" class="btn magnetic">Conversemos <Icon name="arrow-right" /></a>
+  </div>
+</section>
+
+<style>
+  .band {
+    padding-block: clamp(3.5rem, 7vw, 5rem);
+    background-image: radial-gradient(60% 120% at 90% 0%, rgba(22, 93, 255, 0.4), transparent 70%);
+  }
+  .inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .inner > div { display: grid; gap: 0.6rem; max-width: 640px; }
+  h2 { font-size: var(--step-3); }
+</style>

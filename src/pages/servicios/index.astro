@@ -1,0 +1,103 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import PillarDiagram from '../../components/PillarDiagram.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/Icon.astro';
+import { PILARES } from '../../data/servicios';
+import { SITE } from '../../data/site';
+
+const total = PILARES.reduce((n, p) => n + p.servicios.length, 0);
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Servicios de Consultora CNV',
+  itemListElement: PILARES.map((p, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    url: `${SITE.url}/servicios/${p.slug}/`,
+    name: p.nombre,
+  })),
+};
+---
+<Base title="Servicios" description={`${total} servicios en 5 pilares: diagnóstico, diseño, gestión y evaluación, estrategia de desarrollo integral y fortalecimiento de capacidades.`} jsonLd={schema}>
+  <PageHero
+    eyebrow="Servicios"
+    title="Del diagnóstico a los resultados."
+    lead={`${total} servicios organizados en cinco pilares. Se contratan por separado o encadenados en una asesoría integral, para instituciones públicas, empresas y fundaciones.`}
+    crumbs={[{ label: 'Servicios' }]}
+  />
+
+  <PillarDiagram
+    eyebrow="El modelo"
+    title="Cómo se relacionan los pilares."
+    lead="Los pilares 01 a 03 siguen el ciclo de una decisión. El 04 es una capa que cambia lo que cada uno entrega, y el 05 los atraviesa a todos."
+  />
+
+  <section class="section" aria-labelledby="catalogo">
+    <div class="container">
+      <SectionHead id="catalogo" eyebrow="Catálogo" title="Todos los servicios." />
+      <div class="filters reveal" data-filter>
+        <div class="chips" role="group" aria-label="Filtrar por pilar">
+          <button type="button" aria-pressed="true" data-f="todos">Todos</button>
+          {PILARES.map((p) => <button type="button" aria-pressed="false" data-f={p.numero}>{p.numero} · {p.nombre}</button>)}
+        </div>
+        <label class="search">
+          <Icon name="search" size={18} />
+          <span class="sr-only">Buscar un servicio</span>
+          <input type="search" id="buscar-servicio" placeholder="Buscar: evaluación, financiamiento, indicadores…" data-q />
+        </label>
+      </div>
+      <p class="count muted" aria-live="polite" data-count-label>{total} servicios</p>
+      <ul class="grid" role="list" data-list>
+        {PILARES.flatMap((p) =>
+          p.servicios.map((s) => (
+            <li data-item data-pilar={p.numero}>
+              <ServiceCard servicio={s} href={`/servicios/${p.slug}/#s-${s.codigo.replace('.', '-')}`} />
+            </li>
+          ))
+        )}
+      </ul>
+      <p class="empty muted" data-empty hidden>No encontramos servicios con esa búsqueda. Pruebe con otra palabra o escríbanos.</p>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .filters { display: grid; gap: 1rem; margin-bottom: 1rem; }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .chips button {
+    padding: 0.5rem 0.95rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--text);
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .chips button:hover { border-color: var(--accent); }
+  .chips button[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
+  .search {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    max-width: 520px;
+    padding: 0 1rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text-muted);
+  }
+  .search:focus-within { border-color: var(--accent); }
+  .search input { flex: 1; min-width: 0; padding: 0.8rem 0; border: 0; background: none; outline: none; color: var(--text); }
+  .count { font-size: 0.9rem; margin-bottom: 1.2rem; }
+  .grid { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+  .grid li[hidden] { display: none; }
+  :global(.motion) .grid li:not([hidden]) { animation: pop 0.4s var(--ease); }
+  @keyframes pop { from { opacity: 0; transform: scale(0.97); } }
+</style>

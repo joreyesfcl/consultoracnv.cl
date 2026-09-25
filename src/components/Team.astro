@@ -4,19 +4,21 @@ import SectionHead from './SectionHead.astro';
 import Icon from './Icon.astro';
 import { EQUIPO } from '../data/equipo';
 
+interface Props { head?: boolean }
+const { head = true } = Astro.props;
 const fotos = import.meta.glob<{ default: ImageMetadata }>('../assets/socios/*.{jpeg,jpg,png}', { eager: true });
 const foto = (slug: string) => Object.entries(fotos).find(([k]) => k.includes(`/${slug}.`))![1].default;
 ---
-<section class="section team" aria-labelledby="team-title">
+<section class="section team" aria-labelledby={head ? 'team-title' : undefined} aria-label={head ? undefined : 'Equipo'}>
   <div class="container">
-    <div class="intro">
+    {head && <div class="intro">
       <SectionHead
         id="team-title"
         eyebrow="Quiénes somos"
         title="Nacimos desde adentro del sistema."
         lead="CNV fue fundada por economistas e ingenieros que trabajaron dentro del Sistema Nacional de Inversiones y del Sistema de Monitoreo y Evaluación. Conocemos las reglas porque contribuimos a aplicarlas."
       />
-    </div>
+    </div>}
     <ul class="grid stagger" role="list">
       {EQUIPO.map((p) => (
         <li class="person tilt spotlight">

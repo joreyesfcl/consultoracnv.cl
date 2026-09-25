@@ -1,0 +1,93 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import Scenarios from '../../components/Scenarios.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/Icon.astro';
+import { SECTORES } from '../../data/sectores';
+import { PILARES } from '../../data/servicios';
+
+export function getStaticPaths() {
+  return SECTORES.map((s) => ({ params: { slug: s.slug } }));
+}
+const s = SECTORES.find((x) => x.slug === Astro.params.slug)!;
+const otros = SECTORES.filter((x) => x.slug !== s.slug);
+const servicios = s.servicios.map((c) => {
+  const p = PILARES.find((p) => p.servicios.some((x) => x.codigo === c))!;
+  return { p, sv: p.servicios.find((x) => x.codigo === c)! };
+});
+---
+<Base title={s.nombre} description={s.bajada}>
+  <PageHero eyebrow="Sectores" title={s.nombre} lead={s.bajada} crumbs={[{ label: 'Sectores' }, { label: s.nombre }]} />
+
+  <section class="section" aria-labelledby="perfiles">
+    <div class="container">
+      <SectionHead id="perfiles" eyebrow="A quién acompañamos" title="Organizaciones con las que trabajamos." />
+      <ul class="perfiles stagger" role="list">
+        {s.perfiles.map((p) => (
+          <li class="spotlight">
+            <h3>{p.titulo}</h3>
+            <p>{p.texto}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section alt" aria-labelledby="frecuentes">
+    <div class="container">
+      <SectionHead id="frecuentes" eyebrow="Servicios más solicitados" title="Por dónde suele empezar el trabajo." lead="Una selección de los 27 servicios. Todos están disponibles para este sector." />
+      <ul class="svcs stagger" role="list">
+        {servicios.map(({ p, sv }) => (
+          <li><ServiceCard servicio={sv} href={`/servicios/${p.slug}/#s-${sv.codigo.replace('.', '-')}`} /></li>
+        ))}
+      </ul>
+      <a href="/servicios/" class="link more">Ver los 27 servicios <Icon name="arrow-right" /></a>
+    </div>
+  </section>
+
+  <Scenarios tipos={s.escenarios} title={s.escenarios.length > 1 ? 'Situaciones tipo en este sector.' : 'Una situación tipo.'} />
+
+  <section class="section" aria-label="Otros sectores">
+    <div class="container others">
+      {otros.map((o) => (
+        <a href={`/sectores/${o.slug}/`} class="other spotlight">
+          <Icon name={o.icono as any} size={24} />
+          <span><small>Otro sector</small>{o.nombre}</span>
+          <Icon name="arrow-right" class="go" />
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .perfiles { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+  .perfiles li { display: grid; gap: 0.5rem; align-content: start; padding: 1.6rem; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--border); }
+  .perfiles p { color: var(--text-muted); }
+  .alt { background: var(--surface-2); }
+  .svcs { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+  .more { margin-top: 1.5rem; }
+  .others { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .other {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.4rem 1.5rem;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+  }
+  .other > :global(svg:first-child) { color: var(--accent); }
+  .other span { display: grid; font-family: var(--font-display); font-size: 1.3rem; font-weight: 600; }
+  .other small { font-family: var(--font-body); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+  .other :global(.go) { margin-left: auto; transition: transform 0.3s var(--ease); }
+  .other:hover :global(.go) { transform: translateX(4px); }
+  @media (max-width: 640px) { .others { grid-template-columns: 1fr; } }
+</style>

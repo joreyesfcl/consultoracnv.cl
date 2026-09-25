@@ -25,15 +25,21 @@ const segmentos = ['01', '02', '03'].map((n, i) => {
 });
 const [l5x, l5y] = polar(196, 0);
 const [l4x, l4y] = polar(112, 0);
+interface Props { eyebrow?: string; title?: string; lead?: string; linkPanels?: boolean }
+const {
+  eyebrow = 'Nuestro modelo',
+  title = 'Cinco pilares, veintisiete servicios.',
+  lead = 'Se contratan por separado o encadenados en una asesoría integral. Seleccione un pilar para ver qué incluye.',
+} = Astro.props;
 const inicial = '01';
 ---
 <section class="section pillars on-dark" aria-labelledby="pd-title">
   <div class="container">
     <SectionHead
       id="pd-title"
-      eyebrow="Nuestro modelo"
-      title="Cinco pilares, veintisiete servicios."
-      lead="Se contratan por separado o encadenados en una asesoría integral. Seleccione un pilar para ver qué incluye."
+      eyebrow={eyebrow}
+      title={title}
+      lead={lead}
     />
 
     <div class="pd" data-pillars data-active={inicial}>

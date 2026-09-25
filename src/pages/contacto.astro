@@ -1,0 +1,239 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+import { SITE } from '../data/site';
+import { PILARES } from '../data/servicios';
+
+const tipos = [
+  'Gobierno regional', 'Municipio o corporación municipal', 'Servicio público', 'Asociación de municipios',
+  'Asociación de Gobiernos Regionales', 'Empresa', 'Área de sostenibilidad o RSE', 'Fundación corporativa',
+  'Fundación, corporación u ONG', 'Organismo multilateral', 'Otro',
+];
+
+const preguntas = [
+  {
+    id: 'org', titulo: '¿Qué tipo de organización es?',
+    opciones: [
+      { v: 'publico', t: 'Institución pública' },
+      { v: 'empresa', t: 'Empresa' },
+      { v: 'tercer', t: 'Fundación u ONG' },
+    ],
+  },
+  {
+    id: 'etapa', titulo: '¿En qué punto está?',
+    opciones: [
+      { v: '01', t: 'Necesitamos entender qué pasa en el territorio' },
+      { v: '02', t: 'Sabemos qué hacer, falta diseñarlo o formularlo' },
+      { v: '03', t: 'Ya ejecutamos y debemos evaluar o demostrar resultados' },
+      { v: '04', t: 'Necesitamos financiamiento o estructurar la cartera' },
+    ],
+  },
+  {
+    id: 'modo', titulo: '¿Qué tipo de apoyo busca?',
+    opciones: [
+      { v: 'Por producto', t: 'Un producto concreto y acotado' },
+      { v: 'Asesoría integral', t: 'Acompañamiento de principio a fin' },
+      { v: 'Contraparte técnica', t: 'Supervisar un estudio encargado a terceros' },
+      { v: 'Apoyo a equipos', t: 'Que mi equipo aprenda haciendo' },
+    ],
+  },
+  {
+    id: 'plazo', titulo: '¿Hay una fecha o exigencia externa?',
+    opciones: [
+      { v: 'postulación o revisión próxima', t: 'Sí, una postulación o revisión' },
+      { v: 'rendición ante directorio o financiador', t: 'Sí, una rendición de cuentas' },
+      { v: 'sin plazo externo', t: 'No, es planificación' },
+    ],
+  },
+];
+const pilares = Object.fromEntries(PILARES.map((p) => [p.numero, { nombre: p.nombre, slug: p.slug }]));
+---
+<Base title="Contacto" description="Cuéntenos cuál es su desafío. Escríbanos, agende una reunión o use el autodiagnóstico para identificar por dónde empezar.">
+  <PageHero
+    eyebrow="Conversemos"
+    title="Cuéntenos cuál es su desafío más complejo."
+    lead="Buena parte de nuestros encargos empieza con una conversación en la que el desafío se cuenta en los términos de quien lo tiene. La traducción a servicios la hacemos nosotros."
+    crumbs={[{ label: 'Contacto' }]}
+  />
+
+  <section class="section">
+    <div class="container grid">
+      <div class="side reveal">
+        <h2 class="h">Otras formas de contacto</h2>
+        <ul role="list" class="info">
+          <li><Icon name="mail" /><span><small>Correo</small><span class="sel">{SITE.email}</span></span></li>
+          <li><Icon name="map-pin" /><span><small>Ciudad</small>{SITE.ciudad}</span></li>
+          <li><Icon name="linkedin" /><span><small>LinkedIn</small><a href={SITE.linkedin} target="_blank" rel="noopener">Consultora CNV</a></span></li>
+        </ul>
+        <a href={SITE.agenda} target="_blank" rel="noopener" class="btn agenda"><Icon name="calendar" /> Agendar una reunión</a>
+        <p class="muted small">Se abre el calendario de Google en una pestaña nueva para elegir día y hora.</p>
+
+        <div class="diag-cta">
+          <p class="lbl">¿No sabe por dónde empezar?</p>
+          <a href="#autodiagnostico" class="link">Haga el autodiagnóstico <Icon name="arrow-right" /></a>
+        </div>
+      </div>
+
+      <div class="form-card reveal" id="formulario">
+        <h2 class="h">Escríbanos</h2>
+        <form data-contact action={SITE.formspree} method="POST" novalidate>
+          <div class="row">
+            <label for="nombre">Nombre<input id="nombre" name="nombre" autocomplete="name" required /></label>
+            <label for="cargo">Cargo<input id="cargo" name="cargo" autocomplete="organization-title" /></label>
+          </div>
+          <div class="row">
+            <label for="organizacion">Organización<input id="organizacion" name="organizacion" autocomplete="organization" /></label>
+            <label for="email">Correo electrónico<input id="email" name="email" type="email" autocomplete="email" required /></label>
+          </div>
+          <label for="tipo">Tipo de organización
+            <select id="tipo" name="tipo">
+              <option value="">Seleccione…</option>
+              {tipos.map((t) => <option>{t}</option>)}
+            </select>
+          </label>
+          <label for="mensaje">¿Cuál es su desafío?
+            <textarea id="mensaje" name="mensaje" rows="6" required placeholder="Describa brevemente la situación, su organización y los plazos, si los hay."></textarea>
+          </label>
+          <label class="hp" aria-hidden="true">No completar<input name="_gotcha" tabindex="-1" autocomplete="off" /></label>
+          <label class="check" for="consentimiento">
+            <input type="checkbox" id="consentimiento" name="consentimiento" required />
+            <span>Acepto que Consultora CNV use estos datos solo para responder mi mensaje, según la <a href="/privacidad/">política de privacidad</a>.</span>
+          </label>
+          <button type="submit" class="btn">Enviar mensaje <Icon name="arrow-right" /></button>
+          <p class="status" role="status" aria-live="polite" data-status></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="section diag-sec on-dark" id="autodiagnostico" aria-labelledby="diag-t">
+    <div class="container">
+      <header class="section-head reveal">
+        <p class="eyebrow">Autodiagnóstico</p>
+        <h2 id="diag-t">Cuatro preguntas para saber por dónde empezar.</h2>
+        <p class="lead">No es un formulario: nada se envía. Al final puede copiar el resultado a su mensaje.</p>
+      </header>
+      <div class="diag" data-diag data-pilares={JSON.stringify(pilares)}>
+        <div class="qs">
+          {preguntas.map((q, qi) => (
+            <fieldset class="q reveal">
+              <legend><span class="qn">{qi + 1}</span>{q.titulo}</legend>
+              <div class="opts">
+                {q.opciones.map((o, oi) => (
+                  <label for={`${q.id}-${oi}`} class="opt">
+                    <input type="radio" id={`${q.id}-${oi}`} name={q.id} value={o.v} />
+                    <span>{o.t}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          ))}
+        </div>
+        <aside class="result" aria-live="polite" data-result>
+          <p class="lbl">Resultado</p>
+          <p class="r-empty" data-r-empty>Responda las preguntas para ver una recomendación.</p>
+          <div class="r-body" data-r-body hidden>
+            <p class="r-pilar"><small data-r-num></small><span data-r-name></span></p>
+            <p class="r-text" data-r-text></p>
+            <div class="r-actions">
+              <a href="#" class="link" data-r-link>Ver el pilar <Icon name="arrow-right" /></a>
+              <button type="button" class="btn" data-r-use>Usar en mi mensaje</button>
+            </div>
+          </div>
+          <div class="meter" aria-hidden="true"><span data-r-meter></span></div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .grid { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: start; }
+  .h { font-size: var(--step-2); margin-bottom: 1.2rem; }
+  .side { display: grid; gap: 1rem; justify-items: start; }
+  .info { list-style: none; padding: 0; display: grid; gap: 1rem; margin-bottom: 0.5rem; }
+  .info li { display: flex; gap: 0.9rem; align-items: flex-start; }
+  .info li > :global(svg) { color: var(--accent); margin-top: 0.2rem; flex-shrink: 0; }
+  .info span { display: grid; }
+  .info small { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+  .sel { user-select: all; font-weight: 600; }
+  .small { font-size: 0.85rem; margin-top: -0.4rem; }
+  .diag-cta { margin-top: 1.5rem; padding: 1.2rem 1.4rem; border-radius: var(--radius); background: var(--surface-2); display: grid; gap: 0.3rem; width: 100%; }
+  .lbl { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+
+  .form-card { padding: clamp(1.5rem, 4vw, 2.5rem); border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); scroll-margin-top: calc(var(--header-h) + 1rem); }
+  form { display: grid; gap: 1.1rem; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  form > label, .row label { display: grid; gap: 0.4rem; font-size: 0.88rem; font-weight: 600; }
+  input:not([type='checkbox']):not([type='radio']), select, textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-strong);
+    background: var(--bg);
+    color: var(--text);
+    font-weight: 400;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  textarea { resize: vertical; }
+  [aria-invalid='true'] { border-color: #d9534f !important; }
+  .check input[aria-invalid='true'] { outline: 2px solid #d9534f; outline-offset: 2px; }
+  .hp { position: absolute; left: -9999px; }
+  .check { display: flex !important; grid-template-columns: none; gap: 0.7rem; align-items: flex-start; font-weight: 400 !important; color: var(--text-muted); }
+  .check input { margin-top: 0.25rem; width: 18px; height: 18px; accent-color: var(--cobalt); flex-shrink: 0; }
+  form .btn { justify-self: start; }
+  .status { font-size: 0.95rem; }
+  .status.ok { color: var(--accent); font-weight: 600; }
+  .status.err { color: #d9534f; }
+
+  .diag-sec { background-image: radial-gradient(60% 80% at 10% 20%, rgba(22, 93, 255, 0.3), transparent 70%); scroll-margin-top: var(--header-h); }
+  .diag { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.9fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: start; }
+  .qs { display: grid; gap: 1rem; }
+  .q { border: 1px solid var(--border); border-radius: var(--radius); padding: 1.3rem 1.4rem 1.4rem; background: var(--surface); margin: 0; }
+  legend { display: flex; align-items: center; gap: 0.7rem; padding: 0 0.4rem; font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; }
+  .qn { width: 1.8rem; height: 1.8rem; display: grid; place-items: center; border-radius: 999px; background: var(--accent); color: var(--accent-contrast); font-family: var(--font-body); font-size: 0.85rem; }
+  .opts { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+  .opt { position: relative; }
+  .opt input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .opt span {
+    display: block;
+    padding: 0.55rem 0.95rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    font-size: 0.9rem;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.2s var(--ease);
+  }
+  .opt:hover span { border-color: var(--accent); }
+  .opt input:checked + span { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); }
+  .opt input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .opt input:active + span { transform: scale(0.97); }
+  .result {
+    position: sticky;
+    top: calc(var(--header-h) + 1.5rem);
+    display: grid;
+    gap: 0.9rem;
+    padding: 1.6rem;
+    border-radius: var(--radius-lg);
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+  }
+  .r-empty { color: var(--text-muted); }
+  .r-body { display: grid; gap: 0.9rem; }
+  .r-body:not([hidden]) { animation: rin 0.5s var(--ease); }
+  @keyframes rin { from { opacity: 0; transform: translateY(8px); } }
+  .r-pilar { display: grid; font-family: var(--font-display); font-size: var(--step-2); line-height: 1.2; }
+  .r-pilar small { font-family: var(--font-body); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; color: var(--accent); }
+  .r-text { color: var(--text-muted); }
+  .r-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+  .meter { height: 4px; border-radius: 4px; background: var(--border); overflow: hidden; }
+  .meter span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--cobalt), var(--cyan)); transition: width 0.5s var(--ease); }
+
+  @media (max-width: 900px) {
+    .grid, .diag { grid-template-columns: 1fr; }
+    .result { position: static; }
+  }
+  @media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
+</style>

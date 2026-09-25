@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+<Base title="Página no encontrada" noindex>
+  <section class="nf on-dark" data-hero>
+    <div class="container inner">
+      <p class="code">404</p>
+      <h1>Esta página no está en el mapa.</h1>
+      <p class="lead">Puede que la dirección haya cambiado con el nuevo sitio.</p>
+      <div class="actions">
+        <a href="/" class="btn">Ir al inicio <Icon name="arrow-right" /></a>
+        <a href="/servicios/" class="btn btn-ghost">Ver servicios</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf { min-height: 80vh; display: grid; align-items: center; padding-block: calc(var(--header-h) + 3rem) 4rem; background-image: radial-gradient(60% 70% at 80% 30%, rgba(22, 93, 255, 0.4), transparent 70%); }
+  .inner { display: grid; gap: 1.2rem; justify-items: start; }
+  .code { font-family: var(--font-display); font-size: clamp(5rem, 16vw, 11rem); line-height: 0.9; font-weight: 600; color: var(--cyan); opacity: 0.9; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+</style>

@@ -1,0 +1,146 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/Icon.astro';
+import { PILARES } from '../../data/servicios';
+import { NECESIDADES } from '../../data/inicio';
+import { SITE } from '../../data/site';
+
+export function getStaticPaths() {
+  return PILARES.map((p) => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+const i = PILARES.findIndex((p) => p.slug === slug);
+const p = PILARES[i];
+const prev = PILARES[i - 1];
+const next = PILARES[i + 1];
+const necesidades = NECESIDADES.filter((n) => n.pilar === p.slug);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: p.nombre,
+  description: p.bajada,
+  provider: { '@type': 'ProfessionalService', name: SITE.nombre, url: SITE.url },
+  areaServed: { '@type': 'Country', name: 'Chile' },
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: p.nombre,
+    itemListElement: p.servicios.map((s) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: s.nombre, description: s.descripcion } })),
+  },
+};
+---
+<Base title={`${p.nombre}`} description={`Pilar ${p.numero}: ${p.bajada}`} jsonLd={schema}>
+  <PageHero
+    eyebrow={`Pilar ${p.numero} · ${p.servicios.length} servicios`}
+    title={p.nombre}
+    lead={p.bajada}
+    crumbs={[{ label: 'Servicios', href: '/servicios/' }, { label: p.nombre }]}
+  >
+    {p.transversal && <p class="badge">{p.transversal}</p>}
+  </PageHero>
+
+  <section class="section">
+    <div class="container layout">
+      <aside class="aside reveal">
+        <p class="eyebrow">La pregunta que responde</p>
+        <p class="q">{p.pregunta}</p>
+        {necesidades.length > 0 && (
+          <div class="needs">
+            <p class="lbl">Suele empezar así</p>
+            {necesidades.map((n) => <p class="need">«{n.texto}»</p>)}
+          </div>
+        )}
+        <a href="/contacto/" class="btn">Conversemos <Icon name="arrow-right" /></a>
+      </aside>
+
+      <ol class="list stagger" role="list">
+        {p.servicios.map((s) => (
+          <li id={`s-${s.codigo.replace('.', '-')}`} class="item spotlight">
+            <span class="code">{s.codigo}</span>
+            <div>
+              <h2>{s.nombre}</h2>
+              <p>{s.descripcion}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <nav class="pager container" aria-label="Otros pilares">
+    {prev ? (
+      <a href={`/servicios/${prev.slug}/`} class="pg prev">
+        <Icon name="arrow-left" />
+        <span><small>Pilar {prev.numero}</small>{prev.nombre}</span>
+      </a>
+    ) : <span></span>}
+    {next ? (
+      <a href={`/servicios/${next.slug}/`} class="pg next">
+        <span><small>Pilar {next.numero}</small>{next.nombre}</span>
+        <Icon name="arrow-right" />
+      </a>
+    ) : <a href="/servicios/" class="pg next"><span><small>Volver</small>Todos los servicios</span><Icon name="arrow-right" /></a>}
+  </nav>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid rgba(63, 215, 255, 0.5);
+    color: var(--cyan);
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+  .layout { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.5fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: start; }
+  .aside { position: sticky; top: calc(var(--header-h) + 1.5rem); display: grid; gap: 1.2rem; justify-items: start; }
+  .q { font-family: var(--font-display); font-size: var(--step-2); line-height: 1.3; }
+  .needs { display: grid; gap: 0.5rem; padding: 1.2rem; border-radius: var(--radius); background: var(--surface-2); width: 100%; }
+  .lbl { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+  .need { font-family: var(--font-display); font-style: italic; }
+  .list { list-style: none; padding: 0; display: grid; gap: 0.8rem; }
+  .item {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+  }
+  .item:target { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .code { font-family: var(--font-display); font-size: 1.35rem; font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .item h2 { font-size: var(--step-1); margin-bottom: 0.35rem; }
+  .item p { color: var(--text-muted); }
+  .pager { display: flex; justify-content: space-between; gap: 1rem; padding-block: 0 var(--section); flex-wrap: wrap; }
+  .pg {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1rem 1.3rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    max-width: 100%;
+    transition: border-color 0.2s, transform 0.3s var(--ease);
+  }
+  .pg:hover { border-color: var(--accent); }
+  .prev:hover { transform: translateX(-4px); }
+  .next:hover { transform: translateX(4px); }
+  .pg span { display: grid; font-weight: 600; }
+  .pg small { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+  .next { margin-left: auto; text-align: right; }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .aside { position: static; }
+  }
+</style>

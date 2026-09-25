@@ -1,0 +1,98 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Icon from '../components/Icon.astro';
+import { MODALIDADES, PROCESO } from '../data/nosotros';
+---
+<Base title="Cómo trabajamos" description="Seis modalidades de trabajo que se ajustan al encargo y a lo que su equipo puede asumir, y un proceso que empieza con una conversación.">
+  <PageHero
+    eyebrow="Cómo trabajamos"
+    title="La modalidad se ajusta al encargo."
+    lead="Y a lo que su equipo puede asumir. Desde un producto acotado hasta el acompañamiento del ciclo completo, siempre con transferencia de capacidades."
+    crumbs={[{ label: 'Cómo trabajamos' }]}
+  />
+
+  <section class="section" aria-labelledby="proceso">
+    <div class="container">
+      <SectionHead id="proceso" eyebrow="El proceso" title="Cuatro pasos, desde la primera conversación." />
+      <ol class="steps stagger" role="list">
+        {PROCESO.map((p, i) => (
+          <li class="step">
+            <span class="n">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{p.titulo}</h3>
+            <p>{p.texto}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section alt" aria-labelledby="modalidades">
+    <div class="container">
+      <SectionHead id="modalidades" eyebrow="Modalidades" title="Seis formas de trabajar juntos." lead="Se pueden combinar. Muchas asesorías integrales incluyen apoyo a equipos y presentación de resultados." />
+      <ul class="mods stagger" role="list">
+        {MODALIDADES.map((m) => (
+          <li class="mod spotlight tilt">
+            <span class="ico"><Icon name={m.icono as any} size={22} /></span>
+            <h3>{m.titulo}</h3>
+            <p>{m.texto}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .steps {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    counter-reset: s;
+    position: relative;
+  }
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 1.6rem;
+    left: 2rem;
+    right: 2rem;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    opacity: 0.5;
+  }
+  .step { position: relative; display: grid; gap: 0.6rem; align-content: start; padding-right: 1rem; }
+  .n {
+    width: 3.2rem;
+    height: 3.2rem;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    background: var(--bg);
+    border: 1px solid var(--accent);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .step p { color: var(--text-muted); }
+  .alt { background: var(--surface-2); }
+  .mods { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .mod { display: grid; gap: 0.7rem; align-content: start; padding: 1.7rem; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--border); }
+  .ico { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 12px; background: var(--accent-soft); color: var(--accent); }
+  .mod p { color: var(--text-muted); }
+  @media (max-width: 900px) {
+    .steps { grid-template-columns: 1fr 1fr; row-gap: 2rem; }
+    .steps::before { display: none; }
+    .mods { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .steps, .mods { grid-template-columns: 1fr; }
+  }
+</style>

@@ -1,0 +1,92 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/Icon.astro';
+import { EQUIPO } from '../../data/equipo';
+import { SITE } from '../../data/site';
+
+export function getStaticPaths() {
+  return EQUIPO.map((p) => ({ params: { slug: p.slug } }));
+}
+const i = EQUIPO.findIndex((x) => x.slug === Astro.params.slug);
+const p = EQUIPO[i];
+const next = EQUIPO[(i + 1) % EQUIPO.length];
+const fotos = import.meta.glob<{ default: ImageMetadata }>('../../assets/socios/*.{jpeg,jpg,png}', { eager: true });
+const foto = Object.entries(fotos).find(([k]) => k.includes(`/${p.slug}.`))![1].default;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: p.nombre,
+  jobTitle: `${p.cargo}, ${SITE.nombre}`,
+  email: p.email,
+  url: `${SITE.url}/nosotros/${p.slug}/`,
+  sameAs: [p.linkedin],
+  worksFor: { '@type': 'ProfessionalService', name: SITE.nombre, url: SITE.url },
+  knowsAbout: p.especialidades,
+};
+---
+<Base title={p.nombre} description={`${p.nombre}, ${p.cargo.toLowerCase()} de ${SITE.nombre}. ${p.hito}`} jsonLd={schema}>
+  <PageHero eyebrow={p.cargo} title={p.nombre} lead={p.hito} crumbs={[{ label: 'Nosotros', href: '/nosotros/' }, { label: p.nombre }]} />
+
+  <section class="section">
+    <div class="container profile">
+      <aside class="card reveal">
+        <div class="photo">
+          <Image src={foto} alt={p.nombre} widths={[400, 640]} sizes="(max-width: 900px) 80vw, 360px" style={`object-position:${p.fotoPosicion}`} loading="eager" />
+        </div>
+        <div class="card-body">
+          <p class="lbl">Formación</p>
+          <ul role="list" class="form">
+            {p.formacionDetalle.map((f) => <li>{f}</li>)}
+          </ul>
+          <p class="lbl">Especialidades</p>
+          <ul role="list" class="tags">
+            {p.especialidades.map((e) => <li>{e}</li>)}
+          </ul>
+          <div class="contact">
+            <p class="email"><Icon name="mail" size={18} /><span>{p.email}</span></p>
+            <a href={p.linkedin} target="_blank" rel="noopener" class="link"><Icon name="linkedin" size={18} /> LinkedIn</a>
+          </div>
+        </div>
+      </aside>
+
+      <div class="bio">
+        <p class="exp reveal"><strong>{p.experiencia}</strong> de experiencia</p>
+        {p.bio.map((t) => <p class="reveal">{t}</p>)}
+        <div class="nav">
+          <a href="/nosotros/" class="link"><Icon name="arrow-left" /> Volver al equipo</a>
+          <a href={`/nosotros/${next.slug}/`} class="link">{next.nombre} <Icon name="arrow-right" /></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .profile { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: start; }
+  .card { position: sticky; top: calc(var(--header-h) + 1.5rem); border-radius: var(--radius-lg); overflow: hidden; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); }
+  .photo { aspect-ratio: 4 / 4.2; background: var(--navy); overflow: hidden; }
+  .photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .card-body { display: grid; gap: 0.7rem; padding: 1.5rem; }
+  .lbl { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-top: 0.4rem; }
+  .form { list-style: none; padding: 0; display: grid; gap: 0.35rem; font-size: 0.92rem; }
+  .tags { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .tags li { padding: 0.25rem 0.65rem; border-radius: 999px; border: 1px solid var(--border); font-size: 0.8rem; color: var(--text-muted); }
+  .contact { display: grid; gap: 0.5rem; padding-top: 1rem; margin-top: 0.4rem; border-top: 1px solid var(--border); }
+  .email { display: flex; align-items: center; gap: 0.5rem; font-size: 0.92rem; user-select: all; }
+  .email :global(svg) { color: var(--accent); flex-shrink: 0; }
+  .bio { display: grid; gap: 1.3rem; }
+  .bio > p:not(.exp) { font-size: 1.08rem; line-height: 1.75; max-width: 64ch; }
+  .exp { font-family: var(--font-display); font-size: var(--step-2); color: var(--text-muted); }
+  .exp strong { color: var(--accent); }
+  .nav { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+  @media (max-width: 900px) {
+    .profile { grid-template-columns: 1fr; }
+    .card { position: static; max-width: 420px; }
+  }
+</style>

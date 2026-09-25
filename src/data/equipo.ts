@@ -3,6 +3,8 @@
 export const EQUIPO = [
   {
     slug: 'francisca-moreno',
+    formacionDetalle: ["Economista, Universidad de Chile", "Magíster en Estadística, Pontificia Universidad Católica de Chile", "Magíster en Gestión y Políticas Públicas, Universidad de Chile"],
+    bio: ["Francisca cuenta con más de 14 años de experiencia en políticas públicas, evaluación y monitoreo de programas sociales. Su trayectoria ha estado marcada por el uso de evidencia, registros administrativos y modelamiento estadístico para fortalecer decisiones de política pública y procesos de modernización institucional.", "Fue jefa de la División de Políticas Sociales en la Subsecretaría de Evaluación Social del Ministerio de Desarrollo Social y Familia, donde lideró equipos multidisciplinarios y procesos clave en diseño, focalización, monitoreo y evaluación de programas sociales. Entre sus principales hitos están la implementación del Subsidio Único Familiar Automático, la modernización del Registro Social de Hogares y el fortalecimiento del Sistema de Monitoreo y Evaluación de Programas Públicos.", "Su experiencia se complementa con el desarrollo de instrumentos de análisis territorial, integración de datos administrativos y generación de evidencia para la toma de decisiones."],
     nombre: 'Francisca Moreno Montealegre',
     cargo: 'Socia',
     hito: 'Fue jefa de la División de Políticas Sociales de la Subsecretaría de Evaluación Social.',
@@ -15,6 +17,8 @@ export const EQUIPO = [
   },
   {
     slug: 'tamara-van-hemelryck',
+    formacionDetalle: ["Economista, Universidad de Chile", "Magíster en Políticas Públicas, Universidad de Chile", "Diplomada en Estadística, Pontificia Universidad Católica de Chile"],
+    bio: ["Tamara cuenta con más de 14 años de experiencia en el sector público y 10 en políticas públicas, con una trayectoria enfocada en el uso de evidencia y análisis aplicado para fortalecer la toma de decisiones en programas sociales y sistemas de protección social.", "Ha desarrollado su carrera en el Ministerio de Desarrollo Social y Familia, contribuyendo en la elaboración de diagnósticos y en el diseño, monitoreo y evaluación de programas. Su experiencia integra registros administrativos, análisis cuantitativo y enfoques territoriales, de derechos humanos y de género para mejorar la pertinencia y consistencia de los programas.", "Ha participado en el fortalecimiento de la evaluación social de inversiones, colaborando en la mejora de marcos normativos, lineamientos metodológicos y procesos evaluativos, y ha dirigido equipos multidisciplinarios en procesos estratégicos de políticas sociales.", "Su experiencia se complementa con trabajo en CEPAL y en la Sociedad Alemana de Cooperación Internacional (GIZ), donde ha desarrollado estudios y asistencia técnica en protección social y sistemas de información en América Latina."],
     nombre: 'Tamara Van Hemelryck Kimelman',
     cargo: 'Socia',
     hito: 'Ha trabajado en el Ministerio de Desarrollo Social y Familia, CEPAL y GIZ en diseño y evaluación de políticas sociales.',
@@ -27,6 +31,8 @@ export const EQUIPO = [
   },
   {
     slug: 'jose-reyes',
+    formacionDetalle: ["Ingeniero Civil Matemático, Universidad de Chile", "Magíster en Ciencias de la Ingeniería, mención Transporte, Universidad de Chile", "Diploma en Preparación y Evaluación Social de Proyectos, Universidad de Chile – MDSF"],
+    bio: ["José cuenta con más de 12 años de experiencia en el sector público, con una trayectoria que integra modelamiento cuantitativo, planificación estratégica de infraestructura y diseño de política de inversión pública. Su recorrido abarca desde la coordinación técnica de estudios y planes maestros en el sector transporte hasta la dirección de la División de Evaluación Social de Inversiones, a cargo del Sistema Nacional de Inversiones. Presidió la RedSNIP, red de sistemas nacionales de inversión pública de América Latina y el Caribe, durante 2022 y 2023.", "Ha contribuido al diseño de marcos metodológicos, instrumentos normativos y políticas de gestión desde ambos lados del sistema: como formulador sectorial y como evaluador central. Esa doble mirada le permite identificar dónde se generan las fricciones entre quienes diseñan los proyectos y quienes los evalúan, y proponer soluciones que fortalezcan la calidad de las decisiones de inversión.", "Toda organización que asigna recursos limitados a iniciativas de inversión, sea un gobierno regional, una empresa, una fundación o un organismo internacional, requiere marcos de análisis rigurosos para decidir con evidencia y generar el mayor valor posible con cada recurso."],
     nombre: 'José Reyes Figueroa',
     cargo: 'Socio',
     hito: 'Dirigió la División de Evaluación Social de Inversiones y presidió la RedSNIP en 2022 y 2023.',

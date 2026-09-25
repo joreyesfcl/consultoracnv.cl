@@ -2,26 +2,31 @@
 import SectionHead from './SectionHead.astro';
 import Icon from './Icon.astro';
 import { ESCENARIOS } from '../data/escenarios';
+
+interface Props { tipos?: readonly string[]; title?: string; eyebrow?: string }
+const { tipos, title = 'Situaciones tipo.', eyebrow = 'Cómo se ve en la práctica' } = Astro.props;
+const items = tipos ? ESCENARIOS.filter((e) => tipos.includes(e.tipo)) : ESCENARIOS;
+const uid = `sc-${Math.random().toString(36).slice(2, 7)}`;
 ---
-<section class="section scenarios" aria-labelledby="sc-title">
+<section class="section scenarios" aria-labelledby={uid}>
   <div class="container">
     <div class="head">
       <SectionHead
-        id="sc-title"
-        eyebrow="Cómo se ve en la práctica"
-        title="Situaciones tipo."
+        id={uid}
+        eyebrow={eyebrow}
+        title={title}
         lead="Construidas a partir de patrones frecuentes en Chile. No corresponden a un cliente en particular."
       />
-      <div class="controls reveal">
+      {items.length > 1 && <div class="controls reveal">
         <button type="button" class="ctrl" data-prev aria-label="Escenario anterior"><Icon name="arrow-left" /></button>
         <button type="button" class="ctrl" data-next aria-label="Escenario siguiente"><Icon name="arrow-right" /></button>
-      </div>
+      </div>}
     </div>
   </div>
 
   <div class="track" data-carousel role="region" aria-roledescription="carrusel" aria-label="Situaciones tipo" tabindex="0">
-    {ESCENARIOS.map((e, i) => (
-      <article class="card" aria-roledescription="diapositiva" aria-label={`${i + 1} de ${ESCENARIOS.length}`}>
+    {items.map((e, i) => (
+      <article class="card" aria-roledescription="diapositiva" aria-label={`${i + 1} de ${items.length}`}>
         <header>
           <p class="tipo">{e.tipo}</p>
           <h3>{e.titulo}</h3>
@@ -42,7 +47,7 @@ import { ESCENARIOS } from '../data/escenarios';
     ))}
   </div>
   <div class="container dots" data-dots aria-hidden="true">
-    {ESCENARIOS.map(() => <span></span>)}
+    {items.length > 1 && items.map(() => <span></span>)}
   </div>
 </section>
 
