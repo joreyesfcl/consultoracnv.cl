@@ -47,6 +47,14 @@ const faq = {
 };
 ---
 <Base jsonLd={[org, faq]}>
+  <!-- Redirige las anclas del sitio anterior (p. ej. /#servicios) a sus nuevas páginas -->
+  <script is:inline>
+    (function () {
+      var m = { servicios: '/servicios/', 'porque-cnv': '/nosotros/', nosotros: '/nosotros/', conversemos: '/contacto/' };
+      var h = location.hash.slice(1);
+      if (m[h]) location.replace(m[h]);
+    })();
+  </script>
   <Hero />
   <Needs />
   <BeforeAfter />

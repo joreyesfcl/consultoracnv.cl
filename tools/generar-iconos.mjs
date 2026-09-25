@@ -4,7 +4,7 @@
 import sharp from 'sharp';
 
 const NAVY = '#071C38';
-const ORIGEN = 'logo.png';
+const ORIGEN = 'src/assets/logo-original.png';
 
 // Logo completo, recortado a su contenido real
 const logo = await sharp(ORIGEN).extract({ left: 21, top: 23, width: 136, height: 76 }).png().toBuffer();

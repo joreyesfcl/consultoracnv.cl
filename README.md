@@ -27,7 +27,9 @@ npm run build      # genera el sitio final en dist/
 | Páginas | `src/pages/` (cada archivo `.astro` es una URL) |
 | Imágenes | `src/assets/` (se optimizan solas) · `public/` (se copian tal cual) |
 
-Los íconos del navegador se regeneran desde `logo.png` con `node tools/generar-iconos.mjs`.
+Los íconos del navegador se regeneran desde `src/assets/logo-original.png` con `node tools/generar-iconos.mjs`.
+
+`/llms.txt` (resumen para asistentes de IA) se genera solo a partir de `src/data/`; no se edita a mano.
 
 ## Publicación
 
