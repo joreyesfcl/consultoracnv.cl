@@ -1,0 +1,106 @@
+---
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+import { CAMBIOS } from '../data/inicio';
+---
+<section class="section ba" aria-labelledby="ba-title" data-ba>
+  <div class="container">
+    <SectionHead
+      id="ba-title"
+      eyebrow="Qué cambia en la práctica"
+      title="Del punto de partida habitual a lo que queda instalado."
+      lead="Cuatro cambios concretos que resultan de nuestro trabajo."
+    />
+
+    <div class="switch reveal" role="group" aria-label="Ver estado">
+      <button type="button" data-ba-set="antes" aria-pressed="false">Punto de partida</button>
+      <button type="button" data-ba-set="despues" aria-pressed="true">Cómo queda</button>
+      <span class="switch-thumb" aria-hidden="true"></span>
+    </div>
+
+    <ol class="rows stagger" role="list">
+      {CAMBIOS.map((c) => (
+        <li class="row">
+          <h3 class="ambito">{c.ambito}</h3>
+          <p class="antes"><span class="tag">Punto de partida</span>{c.antes}</p>
+          <span class="arrow" aria-hidden="true"><Icon name="arrow-right" size={22} /></span>
+          <p class="despues"><span class="tag">Cómo queda</span>{c.despues}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .ba { background: var(--bg); }
+  .switch {
+    position: relative;
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 4px;
+    margin-bottom: 2rem;
+    border-radius: 999px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+  }
+  .switch button {
+    position: relative;
+    z-index: 1;
+    padding: 0.6rem 1.2rem;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: color 0.3s var(--ease);
+  }
+  .switch button[aria-pressed='true'] { color: var(--accent-contrast); }
+  .switch-thumb {
+    position: absolute;
+    inset: 4px auto 4px 4px;
+    width: calc(50% - 4px);
+    border-radius: 999px;
+    background: var(--accent);
+    transform: translateX(100%);
+    transition: transform 0.45s var(--ease);
+  }
+  [data-state='antes'] .switch-thumb { transform: translateX(0); }
+
+  .rows { list-style: none; padding: 0; display: grid; gap: 0.75rem; }
+  .row {
+    display: grid;
+    grid-template-columns: 11rem 1fr auto 1fr;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.4rem 1.6rem;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .ambito { font-size: var(--step-1); }
+  .tag {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .antes { color: var(--text-muted); transition: opacity 0.45s var(--ease), transform 0.45s var(--ease); }
+  .despues { font-weight: 600; transition: opacity 0.45s var(--ease), transform 0.45s var(--ease); }
+  .despues .tag { color: var(--accent); }
+  .arrow { color: var(--accent); display: grid; place-items: center; transition: transform 0.45s var(--ease); }
+
+  /* Con JS, el selector enfatiza una columna */
+  [data-state='despues'] .antes { opacity: 0.45; text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--text-muted) 60%, transparent); }
+  [data-state='antes'] .despues { opacity: 0.3; transform: translateX(8px); }
+  [data-state='antes'] .arrow { transform: translateX(-6px); opacity: 0.4; }
+
+  @media (max-width: 820px) {
+    .row { grid-template-columns: 1fr; gap: 0.6rem; }
+    .arrow { justify-self: start; transform: rotate(90deg); }
+    [data-state='antes'] .arrow { transform: rotate(90deg) translateX(-6px); }
+  }
+</style>

@@ -10,7 +10,7 @@ const nodos = [
 ];
 // Titular dividido en palabras para la entrada escalonada
 const titular = ['Mejores', 'decisiones'];
-const acento = ['de', 'intervención.'];
+const acento = ['para', 'el', 'territorio.'];
 const lineas = [
   'M760 660 C 880 610, 980 640, 1056 540',
   'M820 720 C 930 700, 1010 690, 1072 640',
@@ -50,15 +50,14 @@ const lineas = [
 
   <div class="container hero-content">
     <p class="eyebrow">Inteligencia aplicada a la intervención</p>
-    <h1 id="hero-title" aria-label="Mejores decisiones de intervención.">
+    <h1 id="hero-title" aria-label="Mejores decisiones para el territorio.">
       <span class="words" aria-hidden="true">
         {titular.map((w, i) => <span class="w" style={`--w:${i}`}>{w}</span>)}
         <em>{acento.map((w, i) => <span class="w" style={`--w:${i + titular.length}`}>{w}</span>)}</em>
       </span>
     </h1>
     <p class="lead">
-      Acompañamos a instituciones públicas, empresas y organizaciones a decidir dónde, cómo y con qué recursos intervenir,
-      con evidencia, rigor técnico y comprensión del territorio.
+      Acompañamos a instituciones públicas, empresas y fundaciones a decidir dónde actuar, con qué programas y con qué recursos, desde el diagnóstico hasta los resultados.
     </p>
     <div class="hero-ctas">
       <a href="/contacto/" class="btn magnetic">Conversemos <Icon name="arrow-right" /></a>

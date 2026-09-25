@@ -2,7 +2,18 @@
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
 import Marquee from '../components/Marquee.astro';
+import BeforeAfter from '../components/BeforeAfter.astro';
+import Needs from '../components/Needs.astro';
+import Challenges from '../components/Challenges.astro';
+import PillarDiagram from '../components/PillarDiagram.astro';
+import SectorTabs from '../components/SectorTabs.astro';
+import Scenarios from '../components/Scenarios.astro';
+import Team from '../components/Team.astro';
+import Faq from '../components/Faq.astro';
+import FinalCta from '../components/FinalCta.astro';
 import { SITE } from '../data/site';
+import { FAQ } from '../data/faq';
+import { EQUIPO } from '../data/equipo';
 
 const org = {
   '@context': 'https://schema.org',
@@ -18,20 +29,34 @@ const org = {
   areaServed: { '@type': 'Country', name: 'Chile' },
   address: { '@type': 'PostalAddress', addressLocality: 'Santiago', addressCountry: 'CL' },
   sameAs: [SITE.linkedin],
+  founder: EQUIPO.map((p) => ({
+    '@type': 'Person',
+    name: p.nombre,
+    jobTitle: p.cargo,
+    url: `${SITE.url}/nosotros/${p.slug}/`,
+    sameAs: p.linkedin,
+  })),
+};
+const faq = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ.map((f) => ({
+    '@type': 'Question',
+    name: f.pregunta,
+    acceptedAnswer: { '@type': 'Answer', text: f.respuesta },
+  })),
 };
 ---
-<Base jsonLd={org}>
+<Base jsonLd={[org, faq]}>
   <Hero />
   <Marquee />
-  <section class="section">
-    <div class="container section-head reveal">
-      <p class="eyebrow">Fase 1 · Vista previa</p>
-      <h2>Base del nuevo sitio</h2>
-      <p class="lead">
-        Esta vista muestra la estructura base: encabezado, hero, tipografías, colores y pie de página.
-        Las secciones de Inicio se construyen en la fase 2. Compare las tipografías de titulares en
-        <a class="link" href="/tipografia/">/tipografia/</a>.
-      </p>
-    </div>
-  </section>
+  <Needs />
+  <BeforeAfter />
+  <Challenges />
+  <PillarDiagram />
+  <SectorTabs />
+  <Scenarios />
+  <Team />
+  <Faq />
+  <FinalCta />
 </Base>

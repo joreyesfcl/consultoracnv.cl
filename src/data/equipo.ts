@@ -1,0 +1,40 @@
+// Socios de CNV. La foto se carga desde src/assets/socios/<slug>.<ext>.
+
+export const EQUIPO = [
+  {
+    slug: 'francisca-moreno',
+    nombre: 'Francisca Moreno Montealegre',
+    cargo: 'Socia',
+    hito: 'Fue jefa de la División de Políticas Sociales de la Subsecretaría de Evaluación Social.',
+    formacion: 'Economista (U. de Chile) · Magíster en Estadística (PUC) · Magíster en Gestión y Políticas Públicas (U. de Chile)',
+    experiencia: '14+ años',
+    especialidades: ['Diagnóstico socioterritorial', 'Modelamiento y análisis de datos', 'Protección social y cuidados'],
+    email: 'francisca@consultoracnv.cl',
+    linkedin: 'https://www.linkedin.com/in/fmorenom',
+    fotoPosicion: 'center 12%',
+  },
+  {
+    slug: 'tamara-van-hemelryck',
+    nombre: 'Tamara Van Hemelryck Kimelman',
+    cargo: 'Socia',
+    hito: 'Ha trabajado en el Ministerio de Desarrollo Social y Familia, CEPAL y GIZ en diseño y evaluación de políticas sociales.',
+    formacion: 'Economista (U. de Chile) · Magíster en Políticas Públicas (U. de Chile) · Diplomada en Estadística (PUC)',
+    experiencia: '14+ años',
+    especialidades: ['Protección social y registros sociales', 'Diseño, monitoreo y evaluación de programas'],
+    email: 'tamara@consultoracnv.cl',
+    linkedin: 'https://www.linkedin.com/in/tamara-van-hemelryck-35254231/',
+    fotoPosicion: 'center 8%',
+  },
+  {
+    slug: 'jose-reyes',
+    nombre: 'José Reyes Figueroa',
+    cargo: 'Socio',
+    hito: 'Dirigió la División de Evaluación Social de Inversiones y presidió la RedSNIP en 2022 y 2023.',
+    formacion: 'Ingeniero Civil Matemático · Magíster en Ciencias de la Ingeniería, mención Transporte (U. de Chile) · Diploma en Evaluación Social de Proyectos',
+    experiencia: '12+ años',
+    especialidades: ['Formulación y evaluación social de proyectos', 'Modelamiento', 'Diseño de política de inversión'],
+    email: 'jose@consultoracnv.cl',
+    linkedin: 'https://www.linkedin.com/in/jose-reyes-figueroa',
+    fotoPosicion: 'center top',
+  },
+];

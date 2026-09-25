@@ -1,0 +1,197 @@
+---
+// Modelo de 5 pilares: 01–03 forman el anillo principal, 04 es una capa que se activa
+// sobre cada uno y 05 envuelve a todos. Seleccionar un pilar muestra sus servicios.
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+import { PILARES } from '../data/servicios';
+
+const C = 220;
+const polar = (r: number, deg: number) => {
+  const a = ((deg - 90) * Math.PI) / 180;
+  return [C + r * Math.cos(a), C + r * Math.sin(a)];
+};
+const arc = (r: number, a0: number, a1: number) => {
+  const [x0, y0] = polar(r, a0);
+  const [x1, y1] = polar(r, a1);
+  return `M ${x0.toFixed(2)} ${y0.toFixed(2)} A ${r} ${r} 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`;
+};
+const GAP = 7;
+const segmentos = ['01', '02', '03'].map((n, i) => {
+  const a0 = i * 120 + GAP;
+  const a1 = (i + 1) * 120 - GAP;
+  const mid = (a0 + a1) / 2;
+  const [lx, ly] = polar(150, mid);
+  return { n, main: arc(150, a0, a1), layer: arc(112, a0 + 4, a1 - 4), lx, ly };
+});
+const [l5x, l5y] = polar(196, 0);
+const [l4x, l4y] = polar(112, 0);
+const inicial = '01';
+---
+<section class="section pillars on-dark" aria-labelledby="pd-title">
+  <div class="container">
+    <SectionHead
+      id="pd-title"
+      eyebrow="Nuestro modelo"
+      title="Cinco pilares, veintisiete servicios."
+      lead="Se contratan por separado o encadenados en una asesoría integral. Seleccione un pilar para ver qué incluye."
+    />
+
+    <div class="pd" data-pillars data-active={inicial}>
+      <div class="pd-figure reveal">
+        <svg viewBox="0 0 440 440" role="img" aria-labelledby="pd-svg-title">
+          <title id="pd-svg-title">Diagrama: los pilares 01, 02 y 03 forman un ciclo; el 04 es una capa sobre ellos y el 05 los envuelve a todos.</title>
+          <circle cx={C} cy={C} r="196" class="outer" />
+          {segmentos.map((s) => (
+            <>
+              <path d={s.layer} class={`layer draw l-${s.n}`} pathLength="100" />
+              <path d={s.main} class={`seg draw s-${s.n}`} pathLength="100" data-pick={s.n} />
+            </>
+          ))}
+          {segmentos.map((s) => (
+            <g class={`node n-${s.n}`} data-pick={s.n}>
+              <circle cx={s.lx} cy={s.ly} r="20" />
+              <text x={s.lx} y={s.ly} dy="0.35em">{s.n}</text>
+            </g>
+          ))}
+          <g class="node n-04" data-pick="04">
+            <circle cx={l4x} cy={l4y} r="15" />
+            <text x={l4x} y={l4y} dy="0.35em">04</text>
+          </g>
+          <g class="node n-05" data-pick="05">
+            <circle cx={l5x} cy={l5y} r="15" />
+            <text x={l5x} y={l5y} dy="0.35em">05</text>
+          </g>
+          <circle cx={C} cy={C} r="78" class="core" />
+          <text x={C} y={C - 8} class="core-t">Valor estratégico</text>
+          <text x={C} y={C + 16} class="core-t">con evidencia</text>
+        </svg>
+      </div>
+
+      <div class="pd-side">
+        <div class="tabs" role="tablist" aria-label="Pilares">
+          {PILARES.map((p) => (
+            <button
+              type="button"
+              role="tab"
+              id={`tab-p${p.numero}`}
+              aria-controls={`panel-p${p.numero}`}
+              aria-selected={p.numero === inicial ? 'true' : 'false'}
+              tabindex={p.numero === inicial ? 0 : -1}
+              data-pick={p.numero}
+            >
+              <span class="num">{p.numero}</span>
+              <span>{p.nombre}</span>
+            </button>
+          ))}
+        </div>
+
+        {PILARES.map((p) => (
+          <div class="panel" role="tabpanel" id={`panel-p${p.numero}`} aria-labelledby={`tab-p${p.numero}`} data-panel={p.numero}>
+            {p.transversal && <p class="badge">{p.transversal}</p>}
+            <p class="q">{p.pregunta}</p>
+            <ul role="list">
+              {p.servicios.map((s) => (
+                <li><span class="code">{s.codigo}</span>{s.nombre}</li>
+              ))}
+            </ul>
+            <a class="link" href={`/servicios/${p.slug}/`}>Ver pilar {p.numero} <Icon name="arrow-right" /></a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pillars {
+    position: relative;
+    overflow: hidden;
+    background-image: radial-gradient(60% 70% at 15% 40%, rgba(22, 93, 255, 0.28), transparent 70%);
+  }
+  .pd {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: start;
+  }
+  .pd-figure { position: sticky; top: calc(var(--header-h) + 1.5rem); }
+  svg { width: 100%; max-width: 480px; margin-inline: auto; overflow: visible; }
+
+  .outer { fill: none; stroke: rgba(63, 215, 255, 0.35); stroke-width: 2; stroke-dasharray: 3 7; }
+  .seg { fill: none; stroke: rgba(185, 206, 232, 0.28); stroke-width: 26; stroke-linecap: round; cursor: pointer; transition: stroke 0.35s var(--ease); }
+  .layer { fill: none; stroke: rgba(185, 206, 232, 0.16); stroke-width: 6; stroke-linecap: round; transition: stroke 0.35s var(--ease); }
+  .core { fill: rgba(7, 28, 56, 0.9); stroke: rgba(63, 215, 255, 0.4); stroke-width: 1.5; }
+  .core-t { fill: #F8FBFF; font-family: var(--font-display); font-size: 17px; text-anchor: middle; }
+  .node { cursor: pointer; }
+  .node circle { fill: #0B2748; stroke: rgba(185, 206, 232, 0.4); stroke-width: 1.5; transition: fill 0.3s, stroke 0.3s; }
+  .node text { fill: #F8FBFF; font: 700 13px var(--font-body); text-anchor: middle; pointer-events: none; }
+
+  /* Resaltado según el pilar activo */
+  [data-active='01'] .s-01, [data-active='02'] .s-02, [data-active='03'] .s-03 { stroke: var(--cobalt); }
+  [data-active='04'] .layer { stroke: var(--cyan); }
+  [data-active='05'] .outer { stroke: var(--cyan); stroke-width: 4; }
+  [data-active='05'] .seg { stroke: rgba(22, 93, 255, 0.55); }
+  [data-active='01'] .n-01 circle, [data-active='02'] .n-02 circle, [data-active='03'] .n-03 circle,
+  [data-active='04'] .n-04 circle, [data-active='05'] .n-05 circle { fill: var(--cyan); stroke: var(--cyan); }
+  [data-active='01'] .n-01 text, [data-active='02'] .n-02 text, [data-active='03'] .n-03 text,
+  [data-active='04'] .n-04 text, [data-active='05'] .n-05 text { fill: var(--navy); }
+  .seg:hover { stroke: rgba(22, 93, 255, 0.7); }
+
+  /* Trazado al aparecer */
+  :global(.motion) .draw { stroke-dasharray: 100 100; stroke-dashoffset: 100; transition: stroke-dashoffset 1.6s var(--ease), stroke 0.35s var(--ease); }
+  :global(.motion) .in .draw { stroke-dashoffset: 0; }
+  :global(.motion) .in .s-02, :global(.motion) .in .l-02 { transition-delay: 0.25s; }
+  :global(.motion) .in .s-03, :global(.motion) .in .l-03 { transition-delay: 0.5s; }
+  :global(.motion) .outer { opacity: 0; transform-origin: center; transform-box: fill-box; transform: rotate(-30deg); transition: opacity 1s var(--ease) 0.7s, transform 1.4s var(--ease) 0.7s, stroke 0.35s; }
+  :global(.motion) .in .outer { opacity: 1; transform: none; }
+
+  .tabs { display: grid; gap: 0.4rem; margin-bottom: 1.5rem; }
+  .tabs button {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text);
+    text-align: left;
+    font-weight: 500;
+    transition: background-color 0.25s, border-color 0.25s, transform 0.25s var(--ease);
+  }
+  .tabs button:hover { border-color: var(--border-strong); transform: translateX(4px); }
+  .tabs button[aria-selected='true'] { background: var(--accent-soft); border-color: var(--accent); }
+  .num { font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; color: var(--accent); min-width: 2ch; }
+
+  .panel {
+    padding: 1.6rem;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: grid;
+    gap: 1rem;
+  }
+  :global(.js) .panel[hidden] { display: none; }
+  :global(.motion) .panel:not([hidden]) { animation: panel-in 0.5s var(--ease); }
+  @keyframes panel-in { from { opacity: 0; transform: translateY(10px); } }
+  .badge {
+    justify-self: start;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .q { font-family: var(--font-display); font-size: var(--step-1); line-height: 1.35; }
+  .panel ul { list-style: none; padding: 0; display: grid; gap: 0.55rem; }
+  .panel li { display: grid; grid-template-columns: 3rem 1fr; gap: 0.5rem; color: var(--text-muted); font-size: 0.95rem; }
+  .code { font-weight: 700; font-size: 0.8rem; color: var(--accent); padding-top: 0.15rem; font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 900px) {
+    .pd { grid-template-columns: 1fr; }
+    .pd-figure { position: static; }
+    svg { max-width: 360px; }
+  }
+</style>

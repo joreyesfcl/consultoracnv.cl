@@ -1,0 +1,82 @@
+---
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+import { NECESIDADES } from '../data/inicio';
+import { PILARES } from '../data/servicios';
+---
+<section class="section needs" aria-labelledby="needs-title">
+  <div class="container">
+    <SectionHead
+      id="needs-title"
+      eyebrow="En qué podemos contribuir"
+      title="Parta por su necesidad. La traducción a servicios la hacemos nosotros."
+    />
+    <ul class="grid stagger" role="list">
+      {NECESIDADES.map((n) => {
+        const p = PILARES.find((x) => x.slug === n.pilar)!;
+        return (
+          <li>
+            <a class="need spotlight tilt" href={`/servicios/${p.slug}/`}>
+              <span class="ico"><Icon name={n.icono as any} size={22} /></span>
+              <span class="texto">«{n.texto}»</span>
+              <span class="pilar">
+                <small>Pilar {p.numero}</small>
+                {p.nombre}
+                <Icon name="arrow-right" size={18} class="go" />
+              </span>
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .needs { background: var(--surface-2); }
+  .grid { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .need {
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 1.1rem;
+    padding: 1.6rem;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    text-decoration: none;
+  }
+  .ico {
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .texto { font-family: var(--font-display); font-size: 1.22rem; line-height: 1.35; }
+  .pilar {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    column-gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .pilar small {
+    grid-column: 1 / -1;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .need :global(.go) { transition: transform 0.3s var(--ease); }
+  .need:hover :global(.go) { transform: translateX(4px); }
+  @media (max-width: 960px) { .grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+</style>

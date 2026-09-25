@@ -4,7 +4,7 @@ export const SITE = {
   nombre: 'Consultora CNV',
   lema: 'Inteligencia aplicada a la intervención',
   descripcion:
-    'Acompañamos a instituciones públicas, empresas y organizaciones a tomar mejores decisiones de intervención, con evidencia, rigor técnico y comprensión del territorio.',
+    'Consultora chilena que acompaña a instituciones públicas, empresas y fundaciones a decidir dónde actuar, con qué programas y con qué recursos: diagnóstico, diseño, evaluación, financiamiento y monitoreo.',
   url: 'https://consultoracnv.cl',
   email: 'contacto@consultoracnv.cl',
   ciudad: 'Santiago, Chile',

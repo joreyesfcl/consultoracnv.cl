@@ -1,0 +1,99 @@
+---
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+import { SECTORES } from '../data/sectores';
+---
+<section class="section sectors" aria-labelledby="sec-title">
+  <div class="container">
+    <SectionHead
+      id="sec-title"
+      eyebrow="A quién acompañamos"
+      title="Un mismo rigor para tres mundos que invierten en el territorio."
+    />
+    <div data-tabs class="reveal">
+      <div class="tabs" role="tablist" aria-label="Sectores">
+        {SECTORES.map((s, i) => (
+          <button
+            type="button"
+            role="tab"
+            id={`tab-${s.slug}`}
+            aria-controls={`panel-${s.slug}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+          >
+            <Icon name={s.icono as any} size={20} />
+            {s.nombre}
+          </button>
+        ))}
+      </div>
+      {SECTORES.map((s) => (
+        <div class="panel" role="tabpanel" id={`panel-${s.slug}`} aria-labelledby={`tab-${s.slug}`}>
+          <div class="intro">
+            <p class="bajada">{s.bajada}</p>
+            <a class="btn btn-ghost" href={`/sectores/${s.slug}/`}>Ver {s.nombre.toLowerCase()} <Icon name="arrow-right" /></a>
+          </div>
+          <ul class="perfiles" role="list">
+            {s.perfiles.map((p) => (
+              <li class="spotlight">
+                <h3>{p.titulo}</h3>
+                <p>{p.texto}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .tabs button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.7rem 1.2rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--text);
+    font-weight: 600;
+    transition: background-color 0.25s, color 0.25s, border-color 0.25s;
+  }
+  .tabs button:hover { border-color: var(--accent); }
+  .tabs button[aria-selected='true'] { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
+  .panel {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+  :global(.js) .panel[hidden] { display: none; }
+  :global(.motion) .panel:not([hidden]) { animation: tab-in 0.5s var(--ease); }
+  @keyframes tab-in { from { opacity: 0; transform: translateY(12px); } }
+  .intro { display: grid; gap: 1.5rem; justify-items: start; }
+  .bajada { font-family: var(--font-display); font-size: var(--step-2); line-height: 1.3; }
+  .perfiles { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .perfiles li {
+    padding: 1.4rem;
+    border-radius: var(--radius);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: grid;
+    gap: 0.4rem;
+    align-content: start;
+  }
+  .perfiles h3 { font-size: 1.1rem; }
+  .perfiles p { color: var(--text-muted); font-size: 0.93rem; }
+  @media (max-width: 900px) {
+    .panel { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .perfiles { grid-template-columns: 1fr; }
+  }
+</style>

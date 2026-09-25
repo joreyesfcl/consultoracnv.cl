@@ -52,6 +52,7 @@ const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 
     <!-- Tema guardado: se aplica antes de pintar para evitar parpadeo -->
     <script is:inline>
+      document.documentElement.classList.add('js');
       if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('motion');
       try {
         const t = localStorage.getItem('cnv-theme');
@@ -78,6 +79,7 @@ const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     <Footer />
     <script>
       import '../scripts/motion';
+      import '../scripts/ui';
     </script>
   </body>
 </html>

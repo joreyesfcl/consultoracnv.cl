@@ -1,0 +1,131 @@
+---
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+import { ESCENARIOS } from '../data/escenarios';
+---
+<section class="section scenarios" aria-labelledby="sc-title">
+  <div class="container">
+    <div class="head">
+      <SectionHead
+        id="sc-title"
+        eyebrow="Cómo se ve en la práctica"
+        title="Situaciones tipo."
+        lead="Construidas a partir de patrones frecuentes en Chile. No corresponden a un cliente en particular."
+      />
+      <div class="controls reveal">
+        <button type="button" class="ctrl" data-prev aria-label="Escenario anterior"><Icon name="arrow-left" /></button>
+        <button type="button" class="ctrl" data-next aria-label="Escenario siguiente"><Icon name="arrow-right" /></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="track" data-carousel role="region" aria-roledescription="carrusel" aria-label="Situaciones tipo" tabindex="0">
+    {ESCENARIOS.map((e, i) => (
+      <article class="card" aria-roledescription="diapositiva" aria-label={`${i + 1} de ${ESCENARIOS.length}`}>
+        <header>
+          <p class="tipo">{e.tipo}</p>
+          <h3>{e.titulo}</h3>
+        </header>
+        <div class="body">
+          <p class="lbl">Situación</p>
+          <p>{e.situacion}</p>
+          <p class="lbl">Ruta CNV</p>
+          <ol class="ruta stagger" role="list">
+            {e.ruta.map((paso) => <li>{paso}</li>)}
+          </ol>
+          <div class="resultado">
+            <p class="lbl">Resultado</p>
+            <p>{e.resultado}</p>
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+  <div class="container dots" data-dots aria-hidden="true">
+    {ESCENARIOS.map(() => <span></span>)}
+  </div>
+</section>
+
+<style>
+  .scenarios { background: var(--surface-2); overflow: hidden; }
+  .head { display: flex; justify-content: space-between; align-items: end; gap: 2rem; flex-wrap: wrap; }
+  .head :global(.section-head) { margin-bottom: 2rem; }
+  .controls { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
+  .ctrl {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text);
+    transition: background-color 0.2s, color 0.2s, transform 0.2s var(--ease);
+  }
+  .ctrl:hover { background: var(--accent); color: var(--accent-contrast); }
+  .ctrl:active { transform: scale(0.94); }
+  .ctrl:disabled { opacity: 0.35; pointer-events: none; }
+
+  .track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(460px, 86vw);
+    gap: 1.2rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: max(var(--gutter), (100vw - var(--container)) / 2);
+    padding-inline: max(var(--gutter), (100vw - var(--container)) / 2);
+    padding-block: 0.5rem 1.5rem;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .track::-webkit-scrollbar { display: none; }
+  .card {
+    scroll-snap-align: start;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+  .card header {
+    padding: 1.5rem 1.6rem;
+    background: var(--navy);
+    color: var(--snow);
+    background-image: radial-gradient(100% 120% at 100% 0%, rgba(22, 93, 255, 0.5), transparent 60%);
+    min-height: 9.5rem;
+    display: grid;
+    align-content: start;
+    gap: 0.5rem;
+  }
+  .tipo { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cyan); }
+  .card h3 { font-size: 1.3rem; }
+  .body { padding: 1.5rem 1.6rem 1.7rem; display: grid; gap: 0.5rem; align-content: start; }
+  .body > p:not(.lbl) { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.6rem; }
+  .lbl { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+  .ruta { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.8rem; }
+  .ruta li {
+    position: relative;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+  .ruta li:not(:last-child)::after { content: '→'; margin-left: 0.5rem; color: var(--text-muted); }
+  .resultado {
+    margin-top: auto;
+    padding: 1rem 1.1rem;
+    border-radius: var(--radius-sm);
+    background: var(--accent-soft);
+    display: grid;
+    gap: 0.3rem;
+  }
+  .resultado p:last-child { font-weight: 600; font-size: 0.93rem; }
+  .dots { display: flex; gap: 0.4rem; }
+  .dots span { width: 8px; height: 8px; border-radius: 999px; background: var(--border-strong); transition: width 0.3s var(--ease), background-color 0.3s; }
+  .dots span.on { width: 26px; background: var(--accent); }
+</style>

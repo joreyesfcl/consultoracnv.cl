@@ -1,0 +1,73 @@
+---
+import SectionHead from './SectionHead.astro';
+import Icon from './Icon.astro';
+import { DESAFIOS } from '../data/inicio';
+---
+<section class="section challenges" aria-labelledby="ch-title">
+  <div class="container">
+    <SectionHead
+      id="ch-title"
+      eyebrow="El contexto"
+      title="Decidir bien es cada vez más necesario, y más exigente."
+      lead="Instituciones públicas, empresas y fundaciones enfrentan desafíos comunes cuando sus decisiones afectan a personas, comunidades y territorios."
+    />
+    <ul class="bento stagger" role="list">
+      {DESAFIOS.map((d, i) => (
+        <li class:list={['cell', 'spotlight', `c${i + 1}`]}>
+          <Icon name={d.icono as any} size={26} class="ico" />
+          <h3>{d.titulo}</h3>
+          <p>{d.texto}</p>
+        </li>
+      ))}
+    </ul>
+    <p class="coda reveal">La calidad técnica de estas decisiones es una condición de legitimidad, sostenibilidad e impacto.</p>
+  </div>
+</section>
+
+<style>
+  .bento {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+  .cell {
+    display: grid;
+    align-content: start;
+    gap: 0.7rem;
+    padding: 1.7rem;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: border-color 0.3s;
+  }
+  .cell :global(.ico) { color: var(--accent); margin-bottom: 0.4rem; }
+  .cell p { color: var(--text-muted); font-size: 0.95rem; }
+  .c1, .c6 { grid-column: span 2; }
+  .c1 {
+    background: var(--navy);
+    border-color: transparent;
+    color: var(--snow);
+    background-image: radial-gradient(120% 90% at 100% 0%, rgba(22, 93, 255, 0.45), transparent 60%);
+  }
+  .c1 p { color: var(--soft-blue); }
+  .c1 :global(.ico) { color: var(--cyan); }
+  .c1 h3 { font-size: var(--step-2); }
+  .coda {
+    margin-top: 2.5rem;
+    max-width: 44ch;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--step-2);
+    line-height: 1.3;
+  }
+  @media (max-width: 960px) {
+    .bento { grid-template-columns: 1fr 1fr; }
+    .c1, .c6 { grid-column: span 2; }
+  }
+  @media (max-width: 600px) {
+    .bento { grid-template-columns: 1fr; }
+    .c1, .c6 { grid-column: auto; }
+  }
+</style>

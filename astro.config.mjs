@@ -6,8 +6,6 @@ export default defineConfig({
   site: 'https://consultoracnv.cl',
   trailingSlash: 'always',
   integrations: [
-    sitemap({
-      filter: (page) => !page.includes('/tipografia/'),
-    }),
+    sitemap(),
   ],
 });
