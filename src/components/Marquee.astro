@@ -1,0 +1,53 @@
+---
+// Franja en movimiento con los 27 servicios. Se pausa al pasar el cursor o al enfocar.
+import { TODOS_LOS_SERVICIOS } from '../data/servicios';
+
+const items = TODOS_LOS_SERVICIOS;
+---
+<section class="marquee" aria-label={`Nuestros ${items.length} servicios`}>
+  <div class="track">
+    {[0, 1].map((copy) => (
+      <ul role="list" aria-hidden={copy === 1 ? 'true' : undefined}>
+        {items.map((s) => (
+          <li><span class="code">{s.codigo}</span>{s.nombre}</li>
+        ))}
+      </ul>
+    ))}
+  </div>
+</section>
+
+<style>
+  .marquee {
+    overflow: hidden;
+    padding-block: 1.1rem;
+    background: var(--surface-2);
+    border-block: 1px solid var(--border);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .track { display: flex; width: max-content; }
+  ul { display: flex; gap: 2.5rem; padding: 0 1.25rem; list-style: none; flex-shrink: 0; }
+  li {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    white-space: nowrap;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--text);
+  }
+  li::after { content: '·'; margin-left: 1.9rem; color: var(--accent); }
+  .code { font-family: var(--font-body); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; color: var(--accent); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .track { animation: scroll 140s linear infinite; }
+    .marquee:hover .track, .marquee:focus-within .track { animation-play-state: paused; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee { mask-image: none; -webkit-mask-image: none; }
+    .track { width: auto; }
+    ul { flex-wrap: wrap; gap: 0.6rem 2rem; white-space: normal; }
+    ul[aria-hidden] { display: none; }
+  }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+</style>

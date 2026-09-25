@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
+import Marquee from '../components/Marquee.astro';
 import { SITE } from '../data/site';
 
 const org = {
@@ -21,8 +22,9 @@ const org = {
 ---
 <Base jsonLd={org}>
   <Hero />
+  <Marquee />
   <section class="section">
-    <div class="container section-head">
+    <div class="container section-head reveal">
       <p class="eyebrow">Fase 1 · Vista previa</p>
       <h2>Base del nuevo sitio</h2>
       <p class="lead">

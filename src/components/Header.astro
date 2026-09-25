@@ -59,7 +59,7 @@ const isActive = (href: string) => path.startsWith('/' + href.split('/')[1] + '/
 
     <div class="header-actions">
       <ThemeToggle />
-      <a href={CTA.href} class="btn btn-cta">{CTA.label}</a>
+      <a href={CTA.href} class="btn btn-cta magnetic">{CTA.label}</a>
       <button class="menu-btn" aria-expanded="false" aria-controls="menu-movil" aria-label="Abrir menú" data-menu-toggle>
         <Icon name="menu" size={24} class="i-open" />
         <Icon name="x" size={24} class="i-close" />
@@ -97,8 +97,9 @@ const isActive = (href: string) => path.startsWith('/' + href.split('/')[1] + '/
     color: var(--snow);
     background: rgba(7, 28, 56, 0);
     border-bottom: 1px solid transparent;
-    transition: background-color 0.35s var(--ease), border-color 0.35s var(--ease), backdrop-filter 0.35s var(--ease);
+    transition: background-color 0.35s var(--ease), border-color 0.35s var(--ease), backdrop-filter 0.35s var(--ease), height 0.35s var(--ease);
   }
+  .site-header.is-solid:not(.menu-open) { height: 62px; }
   .site-header.is-solid,
   .site-header.menu-open {
     background: rgba(7, 28, 56, 0.82);

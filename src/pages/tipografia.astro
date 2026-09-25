@@ -22,26 +22,26 @@ const opciones = [
   {opciones.map((o) => (
     <section class="section specimen" style={`--font-display:${o.familia}`}>
       <div class="container">
-        <p class="eyebrow">{o.nombre}</p>
+        <p class="eyebrow reveal">{o.nombre}</p>
         <p class="muted nota">{o.nota}</p>
 
-        <h2 class="big">Mejores decisiones <em>de intervención.</em></h2>
+        <h2 class="big reveal">Mejores decisiones <em>de intervención.</em></h2>
         <h2>Nacimos desde adentro del sistema.</h2>
         <h3>Diagnóstico e identificación de brechas</h3>
         <p class="lead">Dónde intervenir, con quiénes y por qué. El análisis baja a la unidad territorial que corresponde, no al promedio comunal.</p>
 
-        <div class="cards">
-          <article class="card">
+        <div class="cards stagger">
+          <article class="card spotlight tilt">
             <span class="code">01.1</span>
             <h3>Diagnóstico socioterritorial de problemas, brechas y oportunidades</h3>
             <p>Jerarquiza los problemas del área de influencia con evidencia y deja instalada la línea base.</p>
           </article>
-          <article class="card">
+          <article class="card spotlight tilt">
             <span class="code">03.4</span>
             <h3>Sistemas de seguimiento y monitoreo con indicadores multidimensionales</h3>
             <p>Tableros hechos para decidir, no para llenar un reporte.</p>
           </article>
-          <article class="card on-dark">
+          <article class="card on-dark spotlight tilt">
             <span class="code">Qué cambia</span>
             <h3>Resultados</h3>
             <p><s>Número de beneficiarios</s></p>
@@ -49,7 +49,7 @@ const opciones = [
           </article>
         </div>
         <div class="row">
-          <a href="#" class="btn">Conversemos <Icon name="arrow-right" /></a>
+          <a href="#" class="btn magnetic">Conversemos <Icon name="arrow-right" /></a>
           <a href="#" class="btn btn-ghost">Ver servicios</a>
           <a href="#" class="link">Ver perfil <Icon name="arrow-right" /></a>
         </div>
