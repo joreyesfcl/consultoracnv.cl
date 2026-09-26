@@ -65,15 +65,6 @@ const lineas = [
     </div>
   </div>
 
-  <div class="hero-strip">
-    <div class="container strip-inner">
-      <p class="strip-figure"><strong data-count="40" data-prefix="+">+40</strong> <span>años de experiencia combinada en el sector público</span></p>
-      <p class="strip-text">
-        Trayectoria de nuestros socios en el Ministerio de Desarrollo Social y Familia, el Sistema Nacional de Inversiones,
-        el Sistema de Monitoreo y Evaluación, CEPAL y GIZ.
-      </p>
-    </div>
-  </div>
 </section>
 
 <style>
@@ -81,7 +72,6 @@ const lineas = [
     position: relative;
     min-height: 100svh;
     display: grid;
-    grid-template-rows: 1fr auto;
     isolation: isolate;
     overflow: hidden;
   }
@@ -175,39 +165,12 @@ const lineas = [
   :global(.motion) .hero-content > .eyebrow { animation-delay: 0s; }
   :global(.motion) .hero-content > .lead { animation-delay: 0.55s; }
   :global(.motion) .hero-content > .hero-ctas { animation-delay: 0.7s; }
-  :global(.motion) .hero-strip { animation: rise 0.9s var(--ease) 0.9s both; }
   @keyframes rise { from { opacity: 0; transform: translateY(24px); } }
 
-  .hero-strip {
-    border-top: 1px solid rgba(185, 206, 232, 0.14);
-    background: rgba(7, 28, 56, 0.55);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-  .strip-inner {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: center;
-    gap: 1rem 3rem;
-    padding-block: 1.4rem;
-  }
-  .strip-figure { display: flex; align-items: baseline; gap: 0.8rem; }
-  .strip-figure strong {
-    font-variant-numeric: tabular-nums;
-    min-width: 2.4ch;
-    font-family: var(--font-display);
-    font-size: clamp(2.2rem, 1.8rem + 1.5vw, 3rem);
-    font-weight: 600;
-    line-height: 1;
-    color: var(--cyan);
-  }
-  .strip-figure span { max-width: 18ch; font-size: 0.95rem; line-height: 1.35; color: var(--snow); }
-  .strip-text { font-size: 0.92rem; color: var(--soft-blue); max-width: 70ch; }
 
   @media (max-width: 760px) {
     .hero-shade {
       background: linear-gradient(180deg, rgba(7, 28, 56, 0.55) 0%, rgba(7, 28, 56, 0.82) 45%, rgba(7, 28, 56, 0.95) 100%);
     }
-    .strip-inner { grid-template-columns: 1fr; }
   }
 </style>
