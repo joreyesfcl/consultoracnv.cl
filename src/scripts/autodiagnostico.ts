@@ -152,4 +152,11 @@ function init(root: HTMLElement) {
   ir(0);
 }
 
-document.querySelectorAll<HTMLElement>('[data-autodiag]').forEach(init);
+const start = () =>
+  document.querySelectorAll<HTMLElement>('[data-autodiag]:not([data-ready])').forEach((root) => {
+    root.dataset.ready = '';
+    init(root);
+  });
+start();
+// La vista previa de una sola página reemplaza el contenido y emite "cnv:page"
+document.addEventListener('cnv:page', start);

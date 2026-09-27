@@ -117,7 +117,7 @@ document.querySelectorAll<HTMLElement>('[data-filter]').forEach((box) => {
   const label = section.querySelector<HTMLElement>('[data-count-label]');
   const empty = section.querySelector<HTMLElement>('[data-empty]');
   let pilar = 'todos';
-  const norm = (t: string) => t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const norm = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   const apply = () => {
     const term = norm(q.value.trim());
     let n = 0;
