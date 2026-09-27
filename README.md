@@ -20,10 +20,11 @@ npm run build      # genera el sitio final en dist/
 |---|---|
 | Email, ciudad, LinkedIn, formulario, agenda, analítica | `src/data/site.ts` |
 | Servicios (5 pilares, 27 servicios) | `src/data/servicios.ts` |
-| Sectores, escenarios, equipo, preguntas frecuentes | `src/data/sectores.ts`, `escenarios.ts`, `equipo.ts`, `faq.ts` |
+| Sectores, situaciones tipo (con el código de servicio de cada paso), equipo, preguntas frecuentes | `src/data/sectores.ts`, `escenarios.ts`, `equipo.ts`, `faq.ts` |
 | Textos de las secciones de Inicio | `src/data/inicio.ts` |
+| Autodiagnóstico de madurez (afirmaciones, umbrales, mensajes) | `src/data/autodiagnostico.ts` |
 | Menú de navegación | `src/data/site.ts` (`NAV`) |
-| Colores, tipografías y estilos generales | `src/styles/global.css` |
+| Colores, tipografías (Source Serif 4, IBM Plex Sans e IBM Plex Mono) y estilos generales | `src/styles/global.css` |
 | Páginas | `src/pages/` (cada archivo `.astro` es una URL) |
 | Imágenes | `src/assets/` (se optimizan solas) · `public/` (se copian tal cual) |
 

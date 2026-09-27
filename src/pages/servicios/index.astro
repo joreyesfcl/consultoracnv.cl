@@ -25,20 +25,23 @@ const schema = {
 <Base title="Servicios" description={`${total} servicios en 5 pilares: diagnóstico, diseño, gestión y evaluación, estrategia de desarrollo integral y fortalecimiento de capacidades.`} jsonLd={schema}>
   <PageHero
     eyebrow="Servicios"
-    title="Del diagnóstico a los resultados."
+    title="Del diagnóstico"
+    accent="a los resultados."
     lead={`${total} servicios organizados en cinco pilares. Se contratan por separado o encadenados en una asesoría integral, para instituciones públicas, empresas y fundaciones.`}
     crumbs={[{ label: 'Servicios' }]}
   />
 
   <PillarDiagram
+    id="mapa"
     eyebrow="El modelo"
-    title="Cómo se relacionan los pilares."
-    lead="Los pilares 01 a 03 siguen el ciclo de una decisión. El 04 es una capa que cambia lo que cada uno entrega, y el 05 los atraviesa a todos."
+    title="Todo lo que hacemos,"
+    accent="en un solo mapa."
+    lead="Los pilares 01 a 03 siguen el ciclo de una decisión. El 04 es una capa que cambia lo que cada uno entrega, y el 05 los atraviesa a todos. Cada segmento es un servicio."
   />
 
   <section class="section" aria-labelledby="catalogo">
     <div class="container">
-      <SectionHead id="catalogo" eyebrow="Catálogo" title="Todos los servicios." />
+      <SectionHead id="catalogo" eyebrow="Catálogo" title="Los 27 servicios," accent="uno por uno." />
       <div class="filters reveal" data-filter>
         <div class="chips" role="group" aria-label="Filtrar por pilar">
           <button type="button" aria-pressed="true" data-f="todos">Todos</button>
@@ -73,15 +76,16 @@ const schema = {
   .chips button {
     padding: 0.5rem 0.95rem;
     border-radius: 999px;
-    border: 1px solid var(--border-strong);
+    border: 1px solid var(--line);
     background: transparent;
     color: var(--text);
-    font-size: 0.88rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
     font-weight: 500;
     transition: background-color 0.2s, color 0.2s, border-color 0.2s;
   }
   .chips button:hover { border-color: var(--accent); }
-  .chips button[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
+  .chips button[aria-pressed='true'] { background: var(--heading); border-color: var(--heading); color: var(--bg); }
   .search {
     display: flex;
     align-items: center;

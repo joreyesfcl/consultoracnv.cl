@@ -18,6 +18,9 @@ const p = PILARES[i];
 const prev = PILARES[i - 1];
 const next = PILARES[i + 1];
 const necesidades = NECESIDADES.filter((n) => n.pilar === p.slug);
+// Banda de color por pilar (tonos claros para mantener contraste AA con texto navy)
+const BANDA = ['#7AA2FF', '#58A9F4', '#1F9BEA', '#3FD7FF', '#8FE6FF'];
+const id = (c: string) => `s-${c.replace('.', '-')}`;
 
 const schema = {
   '@context': 'https://schema.org',
@@ -35,39 +38,54 @@ const schema = {
 ---
 <Base title={`${p.nombre}`} description={`Pilar ${p.numero}: ${p.bajada}`} jsonLd={schema}>
   <PageHero
+    tone="color"
+    color={BANDA[i]}
+    numeral={p.numero}
     eyebrow={`Pilar ${p.numero} · ${p.servicios.length} servicios`}
     title={p.nombre}
     lead={p.bajada}
-    crumbs={[{ label: 'Servicios', href: '/servicios/' }, { label: p.nombre }]}
+    crumbs={[{ label: 'Servicios', href: '/servicios/' }, { label: `Pilar ${p.numero}` }]}
   >
     {p.transversal && <p class="badge">{p.transversal}</p>}
   </PageHero>
 
   <section class="section">
     <div class="container layout">
-      <aside class="aside reveal">
-        <p class="eyebrow">La pregunta que responde</p>
-        <p class="q">{p.pregunta}</p>
-        {necesidades.length > 0 && (
-          <div class="needs">
-            <p class="lbl">Suele empezar así</p>
-            {necesidades.map((n) => <p class="need">«{n.texto}»</p>)}
-          </div>
-        )}
+      <aside class="aside">
+        <nav aria-label="Servicios del pilar" class="toc" data-spy>
+          <p class="eyebrow muted-eyebrow">{p.servicios.length} servicios</p>
+          <ol role="list">
+            {p.servicios.map((s, k) => (
+              <li><a href={`#${id(s.codigo)}`} class:list={{ on: k === 0 }}><span class="mono">{s.codigo}</span> {s.nombre}</a></li>
+            ))}
+          </ol>
+        </nav>
         <a href="/contacto/" class="btn">Conversemos <Icon name="arrow-right" /></a>
       </aside>
 
-      <ol class="list stagger" role="list">
-        {p.servicios.map((s) => (
-          <li id={`s-${s.codigo.replace('.', '-')}`} class="item spotlight">
-            <span class="code">{s.codigo}</span>
-            <div>
-              <h2>{s.nombre}</h2>
-              <p>{s.descripcion}</p>
+      <div class="content">
+        <div class="question reveal">
+          <p class="eyebrow">La pregunta que responde</p>
+          <p class="q">{p.pregunta}</p>
+          {necesidades.length > 0 && (
+            <div class="needs">
+              <p class="mono lbl">Suele empezar así</p>
+              {necesidades.map((n) => <p class="need">«{n.texto}»</p>)}
             </div>
-          </li>
-        ))}
-      </ol>
+          )}
+        </div>
+        <ol class="list" role="list">
+          {p.servicios.map((s) => (
+            <li id={id(s.codigo)} class="item" data-spy-target>
+              <span class="numeral code-n">{s.codigo}</span>
+              <div>
+                <h2>{s.nombre}</h2>
+                <p>{s.descripcion}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
     </div>
   </section>
 
@@ -75,72 +93,57 @@ const schema = {
     {prev ? (
       <a href={`/servicios/${prev.slug}/`} class="pg prev">
         <Icon name="arrow-left" />
-        <span><small>Pilar {prev.numero}</small>{prev.nombre}</span>
+        <span><small class="mono">Pilar {prev.numero}</small>{prev.nombre}</span>
       </a>
     ) : <span></span>}
     {next ? (
       <a href={`/servicios/${next.slug}/`} class="pg next">
-        <span><small>Pilar {next.numero}</small>{next.nombre}</span>
+        <span><small class="mono">Pilar {next.numero}</small>{next.nombre}</span>
         <Icon name="arrow-right" />
       </a>
-    ) : <a href="/servicios/" class="pg next"><span><small>Volver</small>Todos los servicios</span><Icon name="arrow-right" /></a>}
+    ) : <a href="/servicios/" class="pg next"><span><small class="mono">Volver</small>Todos los servicios</span><Icon name="arrow-right" /></a>}
   </nav>
 
   <CtaBand />
 </Base>
 
 <style>
-  .badge {
-    padding: 0.3rem 0.8rem;
-    border-radius: 999px;
-    border: 1px solid rgba(63, 215, 255, 0.5);
-    color: var(--cyan);
-    font-size: 0.82rem;
-    font-weight: 600;
-  }
-  .layout { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.5fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: start; }
-  .aside { position: sticky; top: calc(var(--header-h) + 1.5rem); display: grid; gap: 1.2rem; justify-items: start; }
-  .q { font-family: var(--font-display); font-size: var(--step-2); line-height: 1.3; }
-  .needs { display: grid; gap: 0.5rem; padding: 1.2rem; border-radius: var(--radius); background: var(--surface-2); width: 100%; }
-  .lbl { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
-  .need { font-family: var(--font-display); font-style: italic; }
-  .list { list-style: none; padding: 0; display: grid; gap: 0.8rem; }
-  .item {
-    display: grid;
-    grid-template-columns: 3.5rem 1fr;
-    gap: 1rem;
-    padding: 1.5rem;
-    border-radius: var(--radius);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    scroll-margin-top: calc(var(--header-h) + 1rem);
-  }
-  .item:target { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
-  .code { font-family: var(--font-display); font-size: 1.35rem; font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; }
-  .item h2 { font-size: var(--step-1); margin-bottom: 0.35rem; }
+  .badge { font-family: var(--font-mono); font-size: 0.78rem; padding: 0.35rem 0.8rem; border-radius: 999px; border: 1px solid rgba(7, 28, 56, 0.4); justify-self: start; }
+  .layout { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; row-gap: 2rem; }
+  .aside { grid-column: span 3; align-self: start; position: sticky; top: calc(var(--header-h) + 1.5rem); display: grid; gap: 1.5rem; justify-items: start; }
+  .muted-eyebrow { color: var(--text-muted); margin-bottom: 0.8rem; }
+  .toc ol { list-style: none; padding: 0 0 0 16px; display: grid; gap: 12px; border-left: 2px solid var(--line); }
+  .toc a { display: block; margin-left: -18px; padding-left: 16px; border-left: 2px solid transparent; font-size: 0.88rem; line-height: 1.35; color: var(--text-muted); text-decoration: none; transition: color 0.2s, border-color 0.2s; }
+  .toc a .mono { font-size: 0.75rem; }
+  .toc a:hover { color: var(--text); }
+  .toc a.on { color: var(--accent); font-weight: 600; border-left-color: var(--accent); }
+  .content { grid-column: 5 / span 8; display: grid; gap: 2rem; }
+  .question { display: grid; gap: 0.8rem; padding-bottom: 2rem; border-bottom: 1px solid var(--line); }
+  .q { font-family: var(--font-display); font-weight: 300; font-size: var(--step-2); line-height: 1.3; color: var(--heading); }
+  .needs { display: grid; gap: 0.4rem; margin-top: 0.4rem; }
+  .lbl { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+  .need { color: var(--text-muted); font-style: italic; }
+  .list { list-style: none; padding: 0; display: grid; gap: 6px; }
+  .item { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 24px; padding: 24px; margin-inline: -24px; border-radius: 16px; scroll-margin-top: calc(var(--header-h) + 2rem); transition: background-color 0.35s var(--ease), color 0.35s var(--ease); }
+  .item + .item { border-top: 1px solid var(--line); }
+  .code-n { font-size: 2.6rem; font-weight: 300; color: var(--text-muted); transition: color 0.35s; }
+  .item h2 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 0.4rem; }
   .item p { color: var(--text-muted); }
-  .pager { display: flex; justify-content: space-between; gap: 1rem; padding-block: 0 var(--section); flex-wrap: wrap; }
-  .pg {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.9rem;
-    padding: 1rem 1.3rem;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text);
-    text-decoration: none;
-    max-width: 100%;
-    transition: border-color 0.2s, transform 0.3s var(--ease);
-  }
-  .pg:hover { border-color: var(--accent); }
-  .prev:hover { transform: translateX(-4px); }
-  .next:hover { transform: translateX(4px); }
-  .pg span { display: grid; font-weight: 600; }
-  .pg small { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+  .item.on { background: var(--navy); color: var(--snow); border-top-color: transparent; }
+  .item.on + .item { border-top-color: transparent; }
+  .item.on h2 { color: var(--snow); }
+  .item.on p { color: var(--soft-blue); }
+  .item.on .code-n { color: var(--cyan); }
+  .pager { display: flex; justify-content: space-between; gap: 1rem; padding-bottom: var(--section); }
+  .pg { display: inline-flex; align-items: center; gap: 0.8rem; padding: 1rem 1.2rem; border-radius: var(--radius); border: 1px solid var(--line); text-decoration: none; color: var(--text); max-width: 48%; }
+  .pg:hover { border-color: var(--accent); color: var(--accent); }
+  .pg span { display: grid; gap: 0.15rem; font-weight: 600; }
+  .pg small { font-size: 0.72rem; font-weight: 400; color: var(--text-muted); }
   .next { margin-left: auto; text-align: right; }
-  @media (max-width: 900px) {
-    .layout { grid-template-columns: 1fr; }
-    .aside { position: static; }
+  @media (max-width: 960px) {
+    .aside { grid-column: 1 / -1; position: static; }
+    .toc { display: none; }
+    .content { grid-column: 1 / -1; }
+    .item { grid-template-columns: 1fr; gap: 0.4rem; margin-inline: 0; padding: 20px; }
   }
 </style>

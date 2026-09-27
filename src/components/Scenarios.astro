@@ -7,6 +7,9 @@ import Icon from './Icon.astro';
 import { ESCENARIOS } from '../data/escenarios';
 import { PILARES } from '../data/servicios';
 
+interface Props { tipos?: readonly string[]; title?: string; accent?: string }
+const { tipos, title = 'El mismo territorio,', accent = 'antes y después.' } = Astro.props;
+const lista = tipos ? ESCENARIOS.filter((e) => tipos.includes(e.tipo)) : ESCENARIOS;
 const todos = PILARES.flatMap((p) => p.servicios);
 const nombre = (c: string) => todos.find((s) => s.codigo === c)?.nombre ?? '';
 const rot = [-1.2, 0.8, -0.6, 1, -0.8];
@@ -17,17 +20,19 @@ const slug = (i: number) => `esc-${i}`;
     <div class="top">
       <header class="section-head reveal">
         <p class="eyebrow">Situaciones tipo</p>
-        <h2 id="esc-title">El mismo territorio, <em>antes y después.</em></h2>
+        <h2 id="esc-title">{title} <em>{accent}</em></h2>
       </header>
       <p class="note">Construidas a partir de patrones frecuentes en Chile. No corresponden a un cliente en particular.</p>
     </div>
+    {lista.length > 1 && (
     <div class="tabs reveal" role="tablist" aria-label="Situaciones tipo">
-      {ESCENARIOS.map((e, i) => (
+      {lista.map((e, i) => (
         <button type="button" role="tab" id={`t-${slug(i)}`} aria-controls={slug(i)} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>{e.tipo}</button>
       ))}
     </div>
-    {ESCENARIOS.map((e, i) => (
-      <div class="panel" role="tabpanel" id={slug(i)} aria-labelledby={`t-${slug(i)}`} hidden={i !== 0}>
+    )}
+    {lista.map((e, i) => (
+      <div class="panel" role={lista.length > 1 ? 'tabpanel' : undefined} id={slug(i)} aria-labelledby={lista.length > 1 ? `t-${slug(i)}` : undefined} hidden={i !== 0}>
         <section class="card before" aria-label="Antes">
           <Image src={fondo} alt="" widths={[480, 720]} sizes="(max-width: 960px) 100vw, 30vw" class="img" loading="lazy" />
           <span class="mono lbl">Antes · {e.tipo}</span>
@@ -68,6 +73,7 @@ const slug = (i: number) => `esc-${i}`;
   [role='tab'] { min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--text); font-size: 0.9rem; font-weight: 500; }
   [role='tab'][aria-selected='true'] { background: var(--navy); border-color: var(--navy); color: var(--snow); }
   :global(:root[data-theme='dark']) [role='tab'][aria-selected='true'] { background: var(--cyan); border-color: var(--cyan); color: var(--navy); }
+  .top + .panel { margin-top: 1.8rem; }
   .panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 380px) minmax(0, 1fr); gap: 20px; align-items: stretch; min-height: 520px; }
   .panel:not([hidden]) { animation: swap-in 0.45s var(--ease) both; }
   .card { position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; gap: 12px; padding: 28px; border-radius: var(--radius-lg); }

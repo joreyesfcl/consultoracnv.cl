@@ -1,0 +1,263 @@
+---
+// Autodiagnóstico de madurez (mesas 10–12 del lienzo). El contenido vive en
+// src/data/autodiagnostico.ts y la lógica en src/scripts/autodiagnostico.ts.
+import { Picture } from 'astro:assets';
+import fondo from '../assets/main.png';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { DIMENSIONES, ESCALA, NIVELES, SECTORES, TAMANOS, URGENCIAS } from '../data/autodiagnostico';
+import { PILARES } from '../data/servicios';
+import { SITE } from '../data/site';
+
+const servicios = Object.fromEntries(
+  PILARES.flatMap((p) => p.servicios.map((s) => [s.codigo, { nombre: s.nombre, href: `/servicios/${p.slug}/#s-${s.codigo.replace('.', '-')}` }]))
+);
+const datos = { DIMENSIONES, NIVELES: NIVELES.map((n) => ({ nivel: n.nivel, hasta: n.hasta === Infinity ? 99 : n.hasta })), SECTORES, servicios };
+const pasos = DIMENSIONES.length + 1;
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE.url}/` },
+    { '@type': 'ListItem', position: 2, name: 'Autodiagnóstico', item: `${SITE.url}/autodiagnostico/` },
+  ],
+};
+---
+<Base title="Autodiagnóstico de madurez" description="Evalúe en cinco minutos cómo decide su organización dónde y cómo invertir en el territorio, y descubra por dónde conviene empezar." jsonLd={breadcrumb}>
+  <div class="diag" data-autodiag data-sector="">
+    <script type="application/json" data-autodiag-data set:html={JSON.stringify(datos)} />
+
+    <aside class="profile on-dark" aria-label="Perfil por dimensión">
+      <Picture src={fondo} alt="" formats={['avif', 'webp']} widths={[640, 960]} sizes="35vw" class="bg" loading="lazy" />
+      <p class="eyebrow p-title">Su perfil, estrato por estrato</p>
+      <ol role="list" class="strata">
+        {DIMENSIONES.map((d, i) => (
+          <li class="stratum" data-stratum={i}>
+            <div class="st-head">
+              <span><span class="mono sid">{d.id}</span>{d.nombre}</span>
+              <span class="mono score" data-score>—</span>
+            </div>
+            <div class="bar"><span data-fill></span></div>
+          </li>
+        ))}
+      </ol>
+      <p class="privacy">Sus respuestas se procesan en este navegador. Nada se envía a CNV sin su autorización.</p>
+    </aside>
+
+    <div class="main">
+      <div class="progress-row">
+        <span class="mono" data-step-label aria-live="polite">Inicio</span>
+        <div class="track" aria-hidden="true"><span data-progress></span></div>
+      </div>
+
+      <noscript><p class="lead">El autodiagnóstico requiere JavaScript. Si lo prefiere, <a href="/contacto/">escríbanos</a> y conversamos.</p></noscript>
+
+      <!-- Inicio -->
+      <section class="screen" data-screen="0" aria-labelledby="d-intro">
+        <p class="eyebrow">Instrumento de madurez</p>
+        <h1 id="d-intro">¿Cuán preparada está su organización para decidir <em>dónde y cómo invertir?</em></h1>
+        <p class="lead">Evalúe {DIMENSIONES.length * 3} afirmaciones sobre la práctica de su organización. Al final verá su perfil en {DIMENSIONES.length} dimensiones y por dónde conviene empezar.</p>
+        <ul class="facts" role="list">
+          <li><b class="numeral">{DIMENSIONES.length * 3}</b> afirmaciones</li>
+          <li><b class="numeral">{DIMENSIONES.length}</b> dimensiones</li>
+          <li><b class="numeral">5</b> minutos</li>
+        </ul>
+        <div class="actions">
+          <button type="button" class="btn" data-go="1">Comenzar <Icon name="arrow-right" /></button>
+        </div>
+        <p class="small muted">Es una autoevaluación. No reemplaza un diagnóstico institucional ni una evaluación de programas.</p>
+      </section>
+
+      <!-- Contexto -->
+      <section class="screen" data-screen="1" aria-labelledby="d-ctx" hidden>
+        <p class="eyebrow">Contexto</p>
+        <h2 id="d-ctx">Primero, su organización.</h2>
+        <p class="muted">El tipo de organización ajusta la redacción de las afirmaciones. Estos datos no suman puntaje.</p>
+        <fieldset class="group">
+          <legend>Tipo de organización</legend>
+          <div class="cards">
+            {SECTORES.map((s) => (
+              <label class="card-opt">
+                <input type="radio" name="sector" value={s.id} data-sector-input />
+                <span><strong>{s.nombre}</strong><small>{s.detalle}</small></span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <fieldset class="group">
+          <legend>Tamaño del equipo técnico <span class="opt">(opcional)</span></legend>
+          <div class="pills">
+            {TAMANOS.map((t) => <label class="pill"><input type="radio" name="tam" value={t} /><span>{t}</span></label>)}
+          </div>
+        </fieldset>
+        <fieldset class="group">
+          <legend>Urgencia principal <span class="opt">(opcional)</span></legend>
+          <div class="pills">
+            {URGENCIAS.map((t) => <label class="pill"><input type="radio" name="urg" value={t} /><span>{t}</span></label>)}
+          </div>
+        </fieldset>
+        <div class="nav">
+          <button type="button" class="back" data-go="0"><Icon name="arrow-left" /> Atrás</button>
+          <button type="button" class="btn" data-go="2" data-need="sector">Continuar <Icon name="arrow-right" /></button>
+        </div>
+      </section>
+
+      <!-- Dimensiones -->
+      {DIMENSIONES.map((d, i) => (
+        <section class="screen" data-screen={i + 2} aria-labelledby={`d-${d.id}`} hidden>
+          <div class="dim-head">
+            <span class="numeral big">{d.pilar}</span>
+            <div>
+              <p class="eyebrow">{d.id} · Pilar {d.pilar}</p>
+              <h2 id={`d-${d.id}`}>{d.nombre}</h2>
+            </div>
+          </div>
+          {d.afirmaciones.map((a) => (
+            <fieldset class="item">
+              <legend>
+                <span class="mono code">{a.codigo}</span>
+                <span class="v v-gen">{a.texto}</span>
+                <span class="v v-pub">{a.publico ?? a.texto}</span>
+                <span class="v v-priv">{a.privado ?? a.texto}</span>
+              </legend>
+              <div class="scale">
+                {ESCALA.map((e) => (
+                  <label class="lvl">
+                    <input type="radio" name={a.codigo} value={e.v} />
+                    <span>
+                      <i aria-hidden="true" class={`bars v${e.v}`}><b></b><b></b><b></b><b></b></i>
+                      {e.texto}
+                    </span>
+                  </label>
+                ))}
+                <label class="lvl ns"><input type="radio" name={a.codigo} value="0" /><span>No sé / No aplica</span></label>
+              </div>
+            </fieldset>
+          ))}
+          <div class="nav">
+            <button type="button" class="back" data-go={i + 1}><Icon name="arrow-left" /> Atrás</button>
+            <span class="muted small" data-count={d.id} aria-live="polite">0 de 3 respondidas</span>
+            <button type="button" class="btn" data-go={i + 3} data-need={d.id}>{i === DIMENSIONES.length - 1 ? 'Ver resultado' : 'Continuar'} <Icon name="arrow-right" /></button>
+          </div>
+        </section>
+      ))}
+
+      <!-- Resultado -->
+      <section class="screen result" data-screen={pasos + 1} aria-labelledby="d-res" hidden>
+        <p class="eyebrow" data-res-eyebrow>Resultado</p>
+        <h2 id="d-res" data-res-title>Conviene empezar por…</h2>
+        <div class="prios" data-prios></div>
+        <p class="muted small" data-insuf hidden></p>
+        <div class="summary" data-summary hidden>
+          <p><strong>Este resumen se cargará en el formulario de contacto.</strong> Podrá editarlo antes de enviarlo.</p>
+          <pre data-summary-text></pre>
+          <a href="/contacto/#formulario" class="btn" data-send>Ir al formulario <Icon name="arrow-right" /></a>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn" data-show-summary>Enviar a CNV con mi mensaje <Icon name="arrow-right" /></button>
+          <button type="button" class="btn btn-ghost" data-print>Imprimir o guardar</button>
+          <button type="button" class="back" data-restart>Volver a empezar</button>
+        </div>
+        <p class="small muted">Es una autoevaluación. No reemplaza un diagnóstico institucional ni una evaluación de programas.</p>
+      </section>
+    </div>
+  </div>
+</Base>
+
+<script>
+  import '../scripts/autodiagnostico';
+</script>
+
+<style>
+  .diag { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); min-height: calc(100svh - var(--header-h)); }
+  .profile { grid-column: span 4; position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; justify-content: center; gap: 10px; padding: 32px clamp(1.5rem, 3vw, 40px); }
+  .bg, .bg :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 88% center; opacity: 0.22; z-index: -1; }
+  .p-title { color: var(--soft-blue); margin-bottom: 8px; }
+  .strata { list-style: none; padding: 0; display: grid; gap: 10px; }
+  .stratum { display: grid; gap: 8px; padding: 14px 16px; border-radius: 14px; background: rgba(7, 28, 56, 0.55); transition: background-color 0.3s, box-shadow 0.3s; }
+  .stratum.current { background: rgba(63, 215, 255, 0.1); box-shadow: inset 0 0 0 1px var(--cyan); }
+  .st-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 0.9rem; font-weight: 500; }
+  .sid { font-size: 0.7rem; color: var(--cyan); margin-right: 8px; }
+  .score { font-size: 0.7rem; color: var(--soft-blue); white-space: nowrap; }
+  .bar { height: 8px; border-radius: 999px; background: rgba(185, 206, 232, 0.16); overflow: hidden; }
+  .bar span { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--cobalt-2); transition: width 0.5s var(--ease), background-color 0.3s; }
+  .privacy { margin-top: 18px; font-size: 0.78rem; color: var(--soft-blue); }
+
+  .main { grid-column: span 8; display: flex; flex-direction: column; gap: 24px; padding: 28px clamp(1.5rem, 5vw, 72px) 40px; }
+  .progress-row { display: flex; align-items: center; gap: 20px; font-size: 0.8rem; color: var(--text-muted); }
+  .track { flex: 1; height: 2px; background: var(--line); }
+  .track span { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.4s var(--ease); }
+  .screen { display: flex; flex-direction: column; gap: 22px; flex: 1; }
+  .screen:not([hidden]) { animation: swap-in 0.45s var(--ease) both; }
+  .screen h1 { font-size: clamp(2.4rem, 1.4rem + 3.4vw, 4.4rem); max-width: 18ch; }
+  .screen h2 { font-size: clamp(2rem, 1.4rem + 2vw, 3rem); }
+  .facts { list-style: none; padding: 0; display: flex; gap: 28px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; }
+  .facts b { font-size: 2rem; font-weight: 300; margin-right: 8px; color: var(--heading); }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .small { font-size: 0.85rem; }
+  fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+  legend { padding: 0; }
+  .group { display: grid; gap: 10px; }
+  .group legend { font-weight: 600; margin-bottom: 10px; }
+  .opt { font-weight: 400; color: var(--text-muted); }
+  .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  label.card-opt, label.pill, label.lvl { position: relative; }
+  label input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+  .card-opt span { display: grid; gap: 4px; height: 100%; padding: 16px 18px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); }
+  .card-opt small { font-size: 0.8rem; color: var(--text-muted); }
+  .pill span { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); font-size: 0.9rem; }
+  label input:checked + span { background: var(--navy); border-color: var(--navy); color: var(--snow); }
+  label input:checked + span small { color: var(--soft-blue); }
+  label input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+  label:hover input:not(:checked) + span { border-color: var(--accent); }
+
+  .dim-head { display: flex; align-items: flex-end; gap: 24px; }
+  .big { font-size: clamp(4rem, 2rem + 5vw, 6rem); color: var(--accent); }
+  .item { display: grid; gap: 12px; padding: 16px 18px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
+  .item legend { display: block; font-size: 1rem; line-height: 1.45; margin-bottom: 12px; float: left; width: 100%; }
+  .item legend + * { clear: both; }
+  .code { font-size: 0.72rem; color: var(--accent); margin-right: 10px; }
+  .v-pub, .v-priv { display: none; }
+  [data-sector='publico'] .v-gen, [data-sector='empresa'] .v-gen, [data-sector='tercer'] .v-gen { display: none; }
+  [data-sector='publico'] .v-pub { display: inline; }
+  [data-sector='empresa'] .v-priv, [data-sector='tercer'] .v-priv { display: inline; }
+  .scale { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) 132px; gap: 6px; }
+  .lvl span { display: flex; align-items: center; gap: 10px; height: 100%; min-height: 48px; padding: 6px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); font-size: 0.8rem; line-height: 1.25; }
+  .ns span { justify-content: center; border-style: dashed; color: var(--text-muted); background: transparent; }
+  .bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 16px; flex-shrink: 0; }
+  .bars b { width: 3px; border-radius: 1px; background: var(--soft-blue); }
+  .bars b:nth-child(1) { height: 5px; } .bars b:nth-child(2) { height: 8px; } .bars b:nth-child(3) { height: 12px; } .bars b:nth-child(4) { height: 16px; }
+  .v1 b:nth-child(-n+1), .v2 b:nth-child(-n+2), .v3 b:nth-child(-n+3), .v4 b { background: var(--cobalt); }
+  input:checked + span .bars b { background: rgba(248, 251, 255, 0.25); }
+  input:checked + span .v1 b:nth-child(-n+1), input:checked + span .v2 b:nth-child(-n+2), input:checked + span .v3 b:nth-child(-n+3), input:checked + span .v4 b { background: var(--cyan); }
+  .nav { margin-top: auto; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+  .back { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 48px; padding: 0 12px; border: 0; background: transparent; color: var(--accent); font-weight: 500; }
+  .back :global(svg) { width: 16px; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .prios { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .prios :global(.prio) { display: grid; gap: 12px; align-content: start; padding: 22px; border-radius: 18px; background: var(--navy); color: var(--snow); }
+  .prios :global(.p-top) { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.75rem; color: var(--cyan); }
+  .prios :global(.p-lvl) { padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(63, 215, 255, 0.5); }
+  .prios :global(h3) { font-size: 1.5rem; color: var(--snow); }
+  .prios :global(p) { font-size: 0.95rem; color: var(--soft-blue); }
+  .prios :global(a) { display: flex; gap: 10px; align-items: baseline; padding: 10px 12px; border-radius: 10px; background: rgba(185, 206, 232, 0.08); color: var(--snow); text-decoration: none; font-size: 0.9rem; }
+  .prios :global(a:hover) { background: rgba(63, 215, 255, 0.14); }
+  .prios :global(a .mono) { font-size: 0.75rem; color: var(--cyan); }
+  .summary { display: grid; gap: 10px; padding: 16px 18px; border-radius: 14px; border: 1px dashed var(--accent); background: var(--surface-2); justify-items: start; }
+  .summary pre { margin: 0; white-space: pre-wrap; font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.55; }
+
+  @media (max-width: 1000px) {
+    .diag { grid-template-columns: 1fr; }
+    .profile { grid-column: 1; order: 2; }
+    .main { grid-column: 1; }
+    .scale { grid-template-columns: 1fr; }
+    .cards, .prios { grid-template-columns: 1fr; }
+  }
+  @media print {
+    :global(.site-header), :global(.site-footer), .progress-row, .actions, .nav, .summary { display: none !important; }
+    .diag { display: block; }
+    .profile { color: #000; background: #fff; }
+  }
+</style>

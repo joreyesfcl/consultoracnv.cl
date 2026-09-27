@@ -1,6 +1,6 @@
-// Interacciones de las secciones: pestañas accesibles, diagrama de pilares,
-// alternador "Qué cambia", carrusel de escenarios, filtro de servicios,
-// autodiagnóstico y formulario de contacto. initUI() corre al cargar y en "cnv:page".
+// Interacciones de las secciones: pestañas accesibles, necesidades por pilar,
+// mapa radial de servicios, índice vivo del pilar, filtro de servicios y
+// formulario de contacto (con el resumen del autodiagnóstico). initUI() corre al cargar y en "cnv:page".
 
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -36,19 +36,6 @@ function initTabs(list: HTMLElement, onChange?: (tab: HTMLElement) => void) {
 
 function initUI() {
 document.querySelectorAll<HTMLElement>('[data-tabs] [role="tablist"]').forEach((l) => initTabs(l));
-
-// ---------- Diagrama de pilares ----------
-document.querySelectorAll<HTMLElement>('[data-pillars]').forEach((root) => {
-  const list = root.querySelector<HTMLElement>('[role="tablist"]')!;
-  const select = initTabs(list, (tab) => (root.dataset.active = tab.dataset.pick));
-  root.querySelectorAll<SVGElement>('svg [data-pick]').forEach((el) =>
-    el.addEventListener('click', () => {
-      const tab = list.querySelector<HTMLElement>(`[data-pick="${el.dataset.pick}"]`);
-      if (tab) select(tab);
-    })
-  );
-});
-
 
 // ---------- ¿En qué podemos contribuir? (necesidad → pilar) ----------
 document.querySelectorAll<HTMLElement>('[data-needs]').forEach((root) => {
@@ -101,50 +88,26 @@ document.querySelectorAll<HTMLElement>('[data-smap]').forEach((root) => {
   });
 });
 
-// ---------- Qué cambia en la práctica ----------
-document.querySelectorAll<HTMLElement>('[data-ba]').forEach((root) => {
-  const buttons = root.querySelectorAll<HTMLButtonElement>('[data-ba-set]');
-  let touched = false;
-  const set = (state: string) => {
-    root.dataset.state = state;
-    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.baSet === state)));
+
+// ---------- Índice vivo de la página de pilar ----------
+document.querySelectorAll<HTMLElement>('[data-spy]').forEach((nav) => {
+  const links = Array.from(nav.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'));
+  const items = links.map((a) => document.getElementById(a.hash.slice(1))).filter(Boolean) as HTMLElement[];
+  const set = (id: string) => {
+    links.forEach((a) => a.classList.toggle('on', a.hash === `#${id}`));
+    items.forEach((it) => it.classList.toggle('on', it.id === id));
   };
-  buttons.forEach((b) => b.addEventListener('click', () => { touched = true; set(b.dataset.baSet!); }));
-  if (reduce) { set('despues'); return; }
-  // Al entrar en pantalla muestra primero el punto de partida y luego cómo queda
-  set('antes');
-  const io = new IntersectionObserver((entries) => {
-    if (!entries[0].isIntersecting) return;
-    io.disconnect();
-    setTimeout(() => { if (!touched) set('despues'); }, 1400);
-  }, { threshold: 0.45 });
-  io.observe(root.querySelector('.rows')!);
+  const spy = new IntersectionObserver(
+    (entries) => {
+      const vis = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      if (vis[0]) set(vis[0].target.id);
+    },
+    { rootMargin: '-35% 0px -55% 0px' }
+  );
+  items.forEach((it) => spy.observe(it));
+  if (location.hash && items.some((it) => `#${it.id}` === location.hash)) set(location.hash.slice(1));
 });
 
-// ---------- Carrusel ----------
-document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((track) => {
-  const section = track.closest('section')!;
-  const prev = section.querySelector<HTMLButtonElement>('[data-prev]');
-  const next = section.querySelector<HTMLButtonElement>('[data-next]');
-  const dots = Array.from(section.querySelectorAll<HTMLElement>('[data-dots] span'));
-  const cards = Array.from(track.children) as HTMLElement[];
-  const step = () => (cards[1]?.offsetLeft ?? 0) - (cards[0]?.offsetLeft ?? 0) || track.clientWidth;
-  const update = () => {
-    const i = Math.round(track.scrollLeft / step());
-    dots.forEach((d, k) => d.classList.toggle('on', k === i));
-    if (prev) prev.disabled = track.scrollLeft <= 4;
-    if (next) next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 4;
-  };
-  const go = (dir: number) => track.scrollBy({ left: dir * step(), behavior: reduce ? 'auto' : 'smooth' });
-  prev?.addEventListener('click', () => go(-1));
-  next?.addEventListener('click', () => go(1));
-  track.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
-  });
-  track.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
-  update();
-});
 // ---------- Filtro de servicios ----------
 document.querySelectorAll<HTMLElement>('[data-filter]').forEach((box) => {
   const section = box.closest('section')!;
@@ -177,52 +140,17 @@ document.querySelectorAll<HTMLElement>('[data-filter]').forEach((box) => {
   q.addEventListener('input', apply);
 });
 
-// ---------- Autodiagnóstico ----------
-document.querySelectorAll<HTMLElement>('[data-diag]').forEach((root) => {
-  const pilares = JSON.parse(root.dataset.pilares ?? '{}') as Record<string, { nombre: string; slug: string }>;
-  const q = (sel: string) => root.querySelector<HTMLElement>(sel)!;
-  const body = q('[data-r-body]');
-  const emptyMsg = q('[data-r-empty]');
-  const meter = q('[data-r-meter]');
-  const val = (name: string) => root.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`)?.value;
-  const labelOf = (name: string) =>
-    root.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`)?.nextElementSibling?.textContent ?? '';
-  const orgTxt: Record<string, string> = { publico: 'una institución pública', empresa: 'una empresa', tercer: 'una fundación u ONG' };
-  let resumen = '';
-  const update = () => {
-    const org = val('org'), etapa = val('etapa'), modo = val('modo'), plazo = val('plazo');
-    const answered = [org, etapa, modo, plazo].filter(Boolean).length;
-    meter.style.width = `${answered * 25}%`;
-    if (!etapa) { body.hidden = true; emptyMsg.hidden = false; return; }
-    const num = etapa;
-    const p = pilares[num];
-    // Si buscan que el equipo aprenda, el pilar 05 acompaña al principal
-    q('[data-r-num]').textContent = `Pilar ${num}${modo === 'Apoyo a equipos' ? ' + Pilar 05' : ''}`;
-    q('[data-r-name]').textContent = p.nombre;
-    let texto = `${org ? `Para ${orgTxt[org]}` : 'Para su organización'} en este punto, lo recomendable es comenzar por el pilar ${num}.`;
-    if (modo === 'Apoyo a equipos') texto += ' El pilar 05 permite que su equipo aprenda durante el trabajo.';
-    if (modo) texto += ` La modalidad que mejor calza es «${modo}».`;
-    if (plazo && plazo !== 'sin plazo externo') texto += ` Como hay una ${plazo}, conviene conversarlo pronto.`;
-    q('[data-r-text]').textContent = texto;
-    (q('[data-r-link]') as HTMLAnchorElement).href = `/servicios/${p.slug}/`;
-    resumen = `Autodiagnóstico: ${[org && orgTxt[org], labelOf('etapa'), modo, plazo].filter(Boolean).join(' · ')}. Pilar sugerido: ${num} · ${p.nombre}.`;
-    emptyMsg.hidden = true;
-    body.hidden = false;
-  };
-  root.addEventListener('change', update);
-  q('[data-r-use]').addEventListener('click', () => {
-    const msg = document.querySelector<HTMLTextAreaElement>('#mensaje');
-    const tipo = document.querySelector<HTMLSelectElement>('#tipo');
-    if (!msg) return;
-    msg.value = resumen + (msg.value ? '\n\n' + msg.value : '\n\n');
-    const org = val('org');
-    if (tipo && !tipo.value && org) {
-      const guess = { publico: 'Servicio público', empresa: 'Empresa', tercer: 'Fundación, corporación u ONG' }[org];
-      if (guess) tipo.value = guess;
-    }
-    document.querySelector('#formulario')?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-    setTimeout(() => msg.focus({ preventScroll: true }), reduce ? 0 : 600);
-  });
+// ---------- Resumen del autodiagnóstico precargado en Contacto ----------
+document.querySelectorAll<HTMLFormElement>('form[data-contact]').forEach((form) => {
+  let data: { resumen?: string; tipo?: string } | null = null;
+  try { data = JSON.parse(sessionStorage.getItem('cnv-autodiagnostico') ?? 'null'); } catch {}
+  if (!data?.resumen) return;
+  const msg = form.querySelector<HTMLTextAreaElement>('#mensaje');
+  const tipo = form.querySelector<HTMLSelectElement>('#tipo');
+  if (msg && !msg.value) msg.value = data.resumen + '\n\n';
+  if (tipo && data.tipo && !tipo.value) tipo.value = data.tipo;
+  form.querySelector<HTMLElement>('[data-diag-note]')?.removeAttribute('hidden');
+  try { sessionStorage.removeItem('cnv-autodiagnostico'); } catch {}
 });
 
 // ---------- Formulario de contacto ----------
