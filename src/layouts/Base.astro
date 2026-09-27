@@ -1,5 +1,10 @@
 ---
-import '@fontsource-variable/inter';
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/500.css';
+import '@fontsource/ibm-plex-sans/600.css';
+import '@fontsource/ibm-plex-sans/400-italic.css';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
 import '@fontsource-variable/source-serif-4/opsz.css';
 import '@fontsource-variable/source-serif-4/opsz-italic.css';
 import '../styles/global.css';
@@ -13,9 +18,11 @@ interface Props {
   image?: string;
   noindex?: boolean;
   jsonLd?: object | object[];
+  /** Tono de la cabecera: 'dark' cuando la página abre con una cabecera navy */
+  tone?: 'light' | 'dark';
 }
 
-const { title, description = SITE.descripcion, image = '/og-image.png', noindex = false, jsonLd } = Astro.props;
+const { title, description = SITE.descripcion, image = '/og-image.png', noindex = false, jsonLd, tone = 'light' } = Astro.props;
 const fullTitle = title ? `${title} · ${SITE.nombre}` : `${SITE.nombre} · ${SITE.lema}`;
 const canonical = new URL(Astro.url.pathname, SITE.url).href;
 const ogImage = new URL(image, SITE.url).href;
@@ -72,7 +79,7 @@ const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
   </head>
   <body>
     <a href="#contenido" class="skip-link">Saltar al contenido</a>
-    <Header />
+    <Header tone={tone} />
     <main id="contenido">
       <slot />
     </main>

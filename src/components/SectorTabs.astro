@@ -1,99 +1,83 @@
 ---
-import SectionHead from './SectionHead.astro';
+// Sectores en pestañas (mesa 15): bajada, perfiles y servicios más pedidos por sector.
 import Icon from './Icon.astro';
 import { SECTORES } from '../data/sectores';
+import { ESCENARIOS } from '../data/escenarios';
+import { PILARES } from '../data/servicios';
+
+const todos = PILARES.flatMap((p) => p.servicios.map((s) => ({ ...s, slug: p.slug })));
+const svc = (c: string) => todos.find((s) => s.codigo === c)!;
+const escenario = (tipo: string) => ESCENARIOS.find((e) => e.tipo === tipo);
 ---
-<section class="section sectors" aria-labelledby="sec-title">
-  <div class="container">
-    <SectionHead
-      id="sec-title"
-      eyebrow="A quién acompañamos"
-      title="Un mismo rigor para tres mundos que invierten en el territorio."
-    />
-    <div data-tabs class="reveal">
-      <div class="tabs" role="tablist" aria-label="Sectores">
+<section class="section sectors on-ice" id="sectores" aria-labelledby="sec-title">
+  <div class="container" data-tabs>
+    <div class="top">
+      <header class="section-head reveal">
+        <p class="eyebrow">Para quién trabajamos</p>
+        <h2 id="sec-title">Un mismo catálogo, <em>tres formas de usarlo.</em></h2>
+      </header>
+      <div class="tabs reveal" role="tablist" aria-label="Sectores">
         {SECTORES.map((s, i) => (
-          <button
-            type="button"
-            role="tab"
-            id={`tab-${s.slug}`}
-            aria-controls={`panel-${s.slug}`}
-            aria-selected={i === 0 ? 'true' : 'false'}
-            tabindex={i === 0 ? 0 : -1}
-          >
-            <Icon name={s.icono as any} size={20} />
+          <button type="button" role="tab" id={`tab-${s.slug}`} aria-controls={`panel-${s.slug}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
             {s.nombre}
           </button>
         ))}
       </div>
-      {SECTORES.map((s) => (
-        <div class="panel" role="tabpanel" id={`panel-${s.slug}`} aria-labelledby={`tab-${s.slug}`}>
-          <div class="intro">
-            <p class="bajada">{s.bajada}</p>
-            <a class="btn btn-ghost" href={`/sectores/${s.slug}/`}>Ver {s.nombre.toLowerCase()} <Icon name="arrow-right" /></a>
-          </div>
-          <ul class="perfiles" role="list">
-            {s.perfiles.map((p) => (
-              <li class="spotlight">
-                <h3>{p.titulo}</h3>
-                <p>{p.texto}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
     </div>
+    {SECTORES.map((s, i) => {
+      const e = escenario(s.escenarios[0]);
+      return (
+        <div class="panel" role="tabpanel" id={`panel-${s.slug}`} aria-labelledby={`tab-${s.slug}`} hidden={i !== 0}>
+          <div class="main">
+            <p class="bajada">{s.bajada}</p>
+            <ul class="perfiles" role="list">
+              {s.perfiles.map((p) => (
+                <li><h3>{p.titulo}</h3><p>{p.texto}</p></li>
+              ))}
+            </ul>
+          </div>
+          <aside class="side on-dark">
+            <p class="eyebrow">Servicios más pedidos</p>
+            <ul role="list" class="svcs">
+              {s.servicios.map((c) => {
+                const x = svc(c);
+                return <li><a href={`/servicios/${x.slug}/#s-${c.replace('.', '-')}`}><span class="mono">{c}</span>{x.nombre}</a></li>;
+              })}
+            </ul>
+            {e && <p class="esc">Situación tipo: {e.titulo}</p>}
+            <a href={`/sectores/${s.slug}/`} class="btn">Ver la página del sector <Icon name="arrow-right" /></a>
+          </aside>
+        </div>
+      );
+    })}
   </div>
 </section>
 
 <style>
-  .tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-  }
-  .tabs button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    padding: 0.7rem 1.2rem;
-    border-radius: 999px;
-    border: 1px solid var(--border-strong);
-    background: transparent;
-    color: var(--text);
-    font-weight: 600;
-    transition: background-color 0.25s, color 0.25s, border-color 0.25s;
-  }
-  .tabs button:hover { border-color: var(--accent); }
-  .tabs button[aria-selected='true'] { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
-  .panel {
-    display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
-    gap: clamp(1.5rem, 4vw, 3.5rem);
-    align-items: start;
-  }
-  :global(.js) .panel[hidden] { display: none; }
-  :global(.motion) .panel:not([hidden]) { animation: tab-in 0.5s var(--ease); }
-  @keyframes tab-in { from { opacity: 0; transform: translateY(12px); } }
-  .intro { display: grid; gap: 1.5rem; justify-items: start; }
-  .bajada { font-family: var(--font-display); font-size: var(--step-2); line-height: 1.3; }
-  .perfiles { list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .perfiles li {
-    padding: 1.4rem;
-    border-radius: var(--radius);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    display: grid;
-    gap: 0.4rem;
-    align-content: start;
-  }
-  .perfiles h3 { font-size: 1.1rem; }
-  .perfiles p { color: var(--text-muted); font-size: 0.93rem; }
-  @media (max-width: 900px) {
-    .panel { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 560px) {
+  .top { display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem; }
+  .top .section-head { margin: 0; }
+  .tabs { display: flex; gap: 6px; padding: 6px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); }
+  [role='tab'] { min-height: 48px; padding: 0 22px; border: 0; border-radius: 999px; background: transparent; font-size: 0.95rem; font-weight: 600; color: var(--text); }
+  [role='tab'][aria-selected='true'] { background: var(--navy); color: var(--snow); }
+  :global(:root[data-theme='dark']) [role='tab'][aria-selected='true'] { background: var(--cyan); color: var(--navy); }
+  .panel { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; row-gap: 1.5rem; }
+  .panel:not([hidden]) { animation: swap-in 0.45s var(--ease) both; }
+  .main { grid-column: span 7; display: grid; gap: 1.4rem; align-content: start; }
+  .bajada { font-family: var(--font-display); font-weight: 300; font-size: var(--step-2); line-height: 1.3; color: var(--heading); }
+  .perfiles { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .perfiles li { display: grid; gap: 6px; align-content: start; padding: 18px 20px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); }
+  .perfiles h3 { font-family: var(--font-body); font-size: 1rem; font-weight: 600; }
+  .perfiles p { font-size: 0.9rem; color: var(--text-muted); }
+  .side { grid-column: 9 / span 4; display: grid; gap: 14px; align-content: start; padding: 26px; border-radius: 22px; }
+  .svcs { list-style: none; padding: 0; }
+  .svcs a { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); color: var(--snow); text-decoration: none; font-size: 0.9rem; line-height: 1.35; }
+  .svcs a:hover { color: var(--cyan); }
+  .svcs .mono { font-size: 0.75rem; color: var(--cyan); }
+  .esc { font-size: 0.85rem; color: var(--soft-blue); }
+  @media (max-width: 960px) {
+    .main, .side { grid-column: 1 / -1; }
     .perfiles { grid-template-columns: 1fr; }
+    .tabs { width: 100%; }
+    [role='tab'] { flex: 1; padding: 0 10px; font-size: 0.85rem; }
   }
 </style>

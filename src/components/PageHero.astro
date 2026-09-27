@@ -1,12 +1,22 @@
 ---
-// Cabecera de las páginas internas: fondo de marca, migas de pan y título.
+// Cabecera de las páginas internas (lenguaje "Estratos"): migas de pan en mono,
+// titular serif grande con acento en cursiva y retícula de fondo.
+// tone: 'light' (fondo claro), 'dark' (navy con la imagen de marca) o 'color' (banda de color de pilar).
 import { Picture } from 'astro:assets';
 import fondo from '../assets/main.png';
-import Icon from './Icon.astro';
 
 interface Crumb { label: string; href?: string }
-interface Props { eyebrow?: string; title: string; lead?: string; crumbs?: Crumb[] }
-const { eyebrow, title, lead, crumbs = [] } = Astro.props;
+interface Props {
+  eyebrow?: string;
+  title: string;
+  accent?: string;
+  lead?: string;
+  crumbs?: Crumb[];
+  tone?: 'light' | 'dark' | 'color';
+  color?: string;
+  numeral?: string;
+}
+const { eyebrow, title, accent, lead, crumbs = [], tone = 'light', color, numeral } = Astro.props;
 const base = 'https://consultoracnv.cl';
 const breadcrumb = crumbs.length
   ? {
@@ -20,28 +30,35 @@ const breadcrumb = crumbs.length
       })),
     }
   : null;
+const aria = accent ? `${title} ${accent}` : title;
 ---
-<section class="page-hero on-dark" data-hero>
+<section
+  class:list={['page-hero', 'grat', `tone-${tone}`, { 'on-dark': tone === 'dark' }]}
+  style={color ? `--band: ${color}` : undefined}
+>
   {breadcrumb && <script type="application/ld+json" set:html={JSON.stringify(breadcrumb)} />}
-  <Picture src={fondo} alt="" formats={["avif", "webp"]} widths={[640, 960, 1254]} sizes="(max-width: 760px) 200vw, 100vw" class="bg" loading="eager" fetchpriority="high" />
-  <div class="shade" aria-hidden="true"></div>
+  {tone === 'dark' && (
+    <Picture src={fondo} alt="" formats={['avif', 'webp']} widths={[640, 960, 1254]} sizes="(max-width: 760px) 100vw, 50vw" class="bg" loading="eager" fetchpriority="high" />
+  )}
   <div class="container inner">
     {crumbs.length > 0 && (
-      <nav aria-label="Ruta de navegación" class="crumbs">
+      <nav aria-label="Ruta de navegación" class="crumbs rise">
         <ol role="list">
           <li><a href="/">Inicio</a></li>
           {crumbs.map((c) => (
-            <li>
-              <Icon name="arrow-right" size={14} />
-              {c.href ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}
-            </li>
+            <li>{c.href ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}</li>
           ))}
         </ol>
       </nav>
     )}
-    {eyebrow && <p class="eyebrow rise">{eyebrow}</p>}
-    <h1 class="rise">{title}</h1>
-    {lead && <p class="lead rise">{lead}</p>}
+    <div class:list={['head', { 'with-num': numeral }]}>
+      {numeral && <span class="numeral big-num rise" aria-hidden="true">{numeral}</span>}
+      <div class="head-text">
+        {eyebrow && <p class="eyebrow rise">{eyebrow}</p>}
+        <h1 class="rise" aria-label={aria}>{title}{accent && <> <em>{accent}</em></>}</h1>
+        {lead && <p class="lead rise">{lead}</p>}
+      </div>
+    </div>
     <slot />
   </div>
 </section>
@@ -49,39 +66,47 @@ const breadcrumb = crumbs.length
 <style>
   .page-hero {
     position: relative;
-    isolation: isolate;
     overflow: hidden;
-    padding-block: calc(var(--header-h) + clamp(3rem, 7vw, 5.5rem)) clamp(3rem, 6vw, 4.5rem);
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(3rem, 6vw, 5rem);
+    background: var(--bg);
   }
+  .tone-color {
+    --heading: var(--navy);
+    --text: var(--navy);
+    --text-muted: rgba(7, 28, 56, 0.78);
+    --accent: var(--navy);
+    --grid-line: rgba(7, 28, 56, 0.14);
+    background: var(--band, var(--sky));
+    color: var(--navy);
+  }
+  .tone-color .crumbs ol { color: var(--navy); }
   .bg, .bg :global(img) {
     position: absolute;
-    inset: 0;
-    width: 100%;
+    top: 0;
+    right: 0;
+    width: min(52%, 720px);
     height: 100%;
     object-fit: cover;
-    object-position: right 30%;
+    object-position: 88% 30%;
     z-index: -2;
+    opacity: 0.6;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 35%);
+    mask-image: linear-gradient(90deg, transparent, #000 35%);
   }
-  .shade {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: linear-gradient(90deg, rgba(7, 28, 56, 0.95) 0%, rgba(7, 28, 56, 0.8) 50%, rgba(7, 28, 56, 0.35) 100%);
-  }
-  .inner { display: grid; gap: 1.2rem; justify-items: start; }
-  .inner > * { max-width: 760px; }
+  .inner { display: grid; gap: 1.6rem; }
+  .head { display: grid; gap: 1.2rem; }
+  .head.with-num { grid-template-columns: auto minmax(0, 1fr); align-items: end; column-gap: clamp(1.2rem, 3vw, 2.5rem); }
+  .big-num { font-size: clamp(6rem, 3rem + 11vw, 13.75rem); color: var(--heading); }
+  .head-text { display: grid; gap: 1rem; justify-items: start; max-width: 900px; }
   h1 { font-size: var(--step-4); }
-  .lead { color: rgba(234, 246, 255, 0.82); }
-  .crumbs ol { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; list-style: none; padding: 0; font-size: 0.85rem; color: var(--soft-blue); }
-  .crumbs li { display: inline-flex; align-items: center; gap: 0.4rem; }
-  .crumbs a { color: var(--soft-blue); text-decoration: none; }
-  .crumbs a:hover { color: var(--white); text-decoration: underline; text-underline-offset: 3px; }
-  .crumbs [aria-current] { color: var(--white); }
+  .with-num h1 { font-size: var(--step-3); font-weight: 400; }
+  .tone-color h1 em { color: var(--navy); }
   :global(.motion) .rise { animation: ph-rise 0.8s var(--ease) both; }
   :global(.motion) h1.rise { animation-delay: 0.08s; }
   :global(.motion) .lead.rise { animation-delay: 0.16s; }
   @keyframes ph-rise { from { opacity: 0; transform: translateY(20px); } }
   @media (max-width: 760px) {
-    .shade { background: linear-gradient(180deg, rgba(7, 28, 56, 0.8), rgba(7, 28, 56, 0.95)); }
+    .bg, .bg :global(img) { width: 100%; opacity: 0.25; -webkit-mask-image: none; mask-image: none; }
+    .head.with-num { grid-template-columns: 1fr; }
   }
 </style>

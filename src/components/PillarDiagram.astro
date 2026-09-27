@@ -1,203 +1,163 @@
 ---
-// Modelo de 5 pilares: 01–03 forman el anillo principal, 04 es una capa que se activa
-// sobre cada uno y 05 envuelve a todos. Seleccionar un pilar muestra sus servicios.
-import SectionHead from './SectionHead.astro';
+// Mapa radial de los 27 servicios (mesa 02): los 5 pilares en el anillo interior y sus
+// servicios en el exterior. Al pasar el cursor o enfocar un segmento se muestra su ficha;
+// el buscador resalta los servicios que coinciden. Lógica en src/scripts/ui.ts ([data-smap]).
 import Icon from './Icon.astro';
 import { PILARES } from '../data/servicios';
 
-const C = 220;
-const polar = (r: number, deg: number) => {
+interface Props { eyebrow?: string; title?: string; accent?: string; lead?: string; id?: string }
+const {
+  eyebrow = 'Nuestro modelo',
+  title = 'Todo lo que hacemos,',
+  accent = 'en un solo mapa.',
+  lead = 'Cinco pilares y veintisiete servicios, que se contratan por separado o encadenados en una asesoría integral. Cada segmento es un servicio: al pasar el cursor muestra su ficha.',
+  id = 'modelo',
+} = Astro.props;
+
+const C = 300;
+const COLORS = ['var(--p01)', 'var(--p02)', 'var(--p03)', 'var(--p04)', 'var(--p05)'];
+const TXT = ['#F8FBFF', '#F8FBFF', '#F8FBFF', '#071C38', '#071C38'];
+const pt = (r: number, deg: number) => {
   const a = ((deg - 90) * Math.PI) / 180;
   return [C + r * Math.cos(a), C + r * Math.sin(a)];
 };
-const arc = (r: number, a0: number, a1: number) => {
-  const [x0, y0] = polar(r, a0);
-  const [x1, y1] = polar(r, a1);
-  return `M ${x0.toFixed(2)} ${y0.toFixed(2)} A ${r} ${r} 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`;
+const f = (n: number) => n.toFixed(1);
+const sector = (r0: number, r1: number, a0: number, a1: number) => {
+  const [x0, y0] = pt(r1, a0), [x1, y1] = pt(r1, a1), [x2, y2] = pt(r0, a1), [x3, y3] = pt(r0, a0);
+  const large = a1 - a0 > 180 ? 1 : 0;
+  return `M${f(x0)} ${f(y0)}A${r1} ${r1} 0 ${large} 1 ${f(x1)} ${f(y1)}L${f(x2)} ${f(y2)}A${r0} ${r0} 0 ${large} 0 ${f(x3)} ${f(y3)}Z`;
 };
-const GAP = 7;
-const segmentos = ['01', '02', '03'].map((n, i) => {
-  const a0 = i * 120 + GAP;
-  const a1 = (i + 1) * 120 - GAP;
-  const mid = (a0 + a1) / 2;
-  const [lx, ly] = polar(150, mid);
-  return { n, main: arc(150, a0, a1), layer: arc(112, a0 + 4, a1 - 4), lx, ly };
+const total = PILARES.reduce((n, p) => n + p.servicios.length, 0);
+const step = 360 / total;
+let k = 0;
+const pilares = PILARES.map((p, i) => {
+  const a0 = k * step;
+  const servicios = p.servicios.map((s) => {
+    const b0 = k * step + 0.45, b1 = (k + 1) * step - 0.45;
+    k++;
+    return { ...s, d: sector(158, 258, b0, b1), dOn: sector(158, 276, b0, b1) };
+  });
+  const a1 = k * step;
+  const [lx, ly] = pt(121, (a0 + a1) / 2);
+  return { ...p, i, color: COLORS[i], txt: TXT[i], d: sector(92, 150, a0 + 0.6, a1 - 0.6), lx, ly, servicios };
 });
-const [l5x, l5y] = polar(196, 0);
-const [l4x, l4y] = polar(112, 0);
-interface Props { eyebrow?: string; title?: string; lead?: string; linkPanels?: boolean }
-const {
-  eyebrow = 'Nuestro modelo',
-  title = 'Cinco pilares, veintisiete servicios.',
-  lead = 'Se contratan por separado o encadenados en una asesoría integral. Seleccione un pilar para ver qué incluye.',
-} = Astro.props;
-const inicial = '01';
+const first = pilares[2].servicios[3];
 ---
-<section class="section pillars on-dark" aria-labelledby="pd-title">
-  <div class="container">
-    <SectionHead
-      id="pd-title"
-      eyebrow={eyebrow}
-      title={title}
-      lead={lead}
-    />
-
-    <div class="pd" data-pillars data-active={inicial}>
-      <div class="pd-figure reveal">
-        <svg viewBox="0 0 440 440" role="img" aria-labelledby="pd-svg-title">
-          <title id="pd-svg-title">Diagrama: los pilares 01, 02 y 03 forman un ciclo; el 04 es una capa sobre ellos y el 05 los envuelve a todos.</title>
-          <circle cx={C} cy={C} r="196" class="outer" />
-          {segmentos.map((s) => (
-            <>
-              <path d={s.layer} class={`layer draw l-${s.n}`} pathLength="100" />
-              <path d={s.main} class={`seg draw s-${s.n}`} pathLength="100" data-pick={s.n} />
-            </>
-          ))}
-          {segmentos.map((s) => (
-            <g class={`node n-${s.n}`} data-pick={s.n}>
-              <circle cx={s.lx} cy={s.ly} r="20" />
-              <text x={s.lx} y={s.ly} dy="0.35em">{s.n}</text>
-            </g>
-          ))}
-          <g class="node n-04" data-pick="04">
-            <circle cx={l4x} cy={l4y} r="15" />
-            <text x={l4x} y={l4y} dy="0.35em">04</text>
+<section class="smap on-dark" id={id} aria-labelledby={`${id}-title`} data-smap>
+  <div class="container grid">
+    <div class="figure reveal">
+      <svg viewBox="0 0 600 600" role="group" aria-labelledby={`${id}-svg`}>
+        <title id={`${id}-svg`}>Mapa radial: los 5 pilares en el anillo interior y sus {total} servicios en el anillo exterior</title>
+        <circle cx={C} cy={C} r="286" class="orbit" />
+        {pilares.map((p) => (
+          <g class="pilar" style={`--c:${p.color}`}>
+            <path d={p.d} class="p-seg" />
+            <text x={f(p.lx)} y={f(p.ly)} dy="0.35em" text-anchor="middle" fill={p.txt} class="p-num">{p.numero}</text>
+            {p.servicios.map((s) => (
+              <a
+                href={`/servicios/${p.slug}/#s-${s.codigo.replace('.', '-')}`}
+                class:list={['svc', { on: s.codigo === first.codigo }]}
+                data-svc
+                data-code={s.codigo}
+                data-name={s.nombre}
+                data-desc={s.descripcion}
+                data-pilar={p.numero}
+                data-href={`/servicios/${p.slug}/`}
+                aria-label={`${s.codigo} ${s.nombre}`}
+              >
+                <path d={s.codigo === first.codigo ? s.dOn : s.d} data-d={s.d} data-don={s.dOn} />
+              </a>
+            ))}
           </g>
-          <g class="node n-05" data-pick="05">
-            <circle cx={l5x} cy={l5y} r="15" />
-            <text x={l5x} y={l5y} dy="0.35em">05</text>
-          </g>
-          <circle cx={C} cy={C} r="78" class="core" />
-          <text x={C} y={C - 8} class="core-t">Valor estratégico</text>
-          <text x={C} y={C + 16} class="core-t">con evidencia</text>
-        </svg>
-      </div>
-
-      <div class="pd-side">
-        <div class="tabs" role="tablist" aria-label="Pilares">
-          {PILARES.map((p) => (
-            <button
-              type="button"
-              role="tab"
-              id={`tab-p${p.numero}`}
-              aria-controls={`panel-p${p.numero}`}
-              aria-selected={p.numero === inicial ? 'true' : 'false'}
-              tabindex={p.numero === inicial ? 0 : -1}
-              data-pick={p.numero}
-            >
-              <span class="num">{p.numero}</span>
-              <span>{p.nombre}</span>
-            </button>
-          ))}
-        </div>
-
-        {PILARES.map((p) => (
-          <div class="panel" role="tabpanel" id={`panel-p${p.numero}`} aria-labelledby={`tab-p${p.numero}`} data-panel={p.numero}>
-            {p.transversal && <p class="badge">{p.transversal}</p>}
-            <p class="q">{p.pregunta}</p>
-            <ul role="list">
-              {p.servicios.map((s) => (
-                <li><span class="code">{s.codigo}</span>{s.nombre}</li>
-              ))}
-            </ul>
-            <a class="link" href={`/servicios/${p.slug}/`}>Ver pilar {p.numero} <Icon name="arrow-right" /></a>
-          </div>
         ))}
+        <circle cx={C} cy={C} r="84" class="hub" />
+        <text x={C} y="292" text-anchor="middle" class="hub-n">{total}</text>
+        <text x={C} y="322" text-anchor="middle" class="hub-t">SERVICIOS</text>
+      </svg>
+      <div class="card" data-card aria-live="polite">
+        <span class="mono code" data-c-code>{first.codigo} · Pilar {pilares[2].numero}</span>
+        <span class="c-name" data-c-name>{first.nombre}</span>
+        <span class="c-desc" data-c-desc>{first.descripcion}</span>
+        <a href={`/servicios/${pilares[2].slug}/`} class="link" data-c-link>Abrir el pilar <Icon name="arrow-right" /></a>
       </div>
+    </div>
+
+    <div class="text">
+      <header class="section-head reveal">
+        <p class="eyebrow">{eyebrow}</p>
+        <h2 id={`${id}-title`}>{title} <em>{accent}</em></h2>
+        <p class="lead">{lead}</p>
+      </header>
+      <label class="search reveal">
+        <span class="sr-only">Buscar un servicio</span>
+        <Icon name="search" size={18} />
+        <input type="search" placeholder="Buscar: evaluación, fondos, indicadores…" data-smap-q autocomplete="off" />
+        <span class="mono count" data-smap-count aria-live="polite"></span>
+      </label>
+      <ul class="legend reveal" role="list">
+        {pilares.map((p) => (
+          <li>
+            <a href={`/servicios/${p.slug}/`} style={`--c:${p.color}`}>
+              <span class="sw" aria-hidden="true"></span>
+              <span>{p.numero} · {p.nombre}</span>
+              <span class="mono n">{p.servicios.length} servicios</span>
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
   </div>
 </section>
 
 <style>
-  .pillars {
-    position: relative;
-    overflow: hidden;
-    background-image: radial-gradient(60% 70% at 15% 40%, rgba(22, 93, 255, 0.28), transparent 70%);
-  }
-  .pd {
+  .smap { padding-block: var(--section); overflow: hidden; }
+  .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; row-gap: 2rem; align-items: center; }
+  .figure { grid-column: span 7; position: relative; }
+  .figure svg { width: min(100%, 680px); height: auto; overflow: visible; }
+  .text { grid-column: span 5; display: grid; gap: 1.6rem; }
+  .text .section-head { margin: 0; }
+  .orbit { fill: none; stroke: var(--soft-blue); stroke-opacity: 0.15; stroke-dasharray: 2 6; }
+  .p-seg { fill: var(--c); }
+  .p-num { font-family: var(--font-body); font-size: 15px; font-weight: 600; pointer-events: none; }
+  .svc path { fill: var(--c); fill-opacity: 0.42; transition: fill-opacity 0.25s, opacity 0.25s; }
+  .svc:hover path, .svc:focus-visible path, .svc.on path { fill-opacity: 1; }
+  .svc:focus-visible { outline: none; }
+  .svc:focus-visible path { stroke: var(--snow); stroke-width: 2; }
+  .smap.searching .svc:not(.match) path { opacity: 0.18; }
+  .smap.searching .svc.match path { fill-opacity: 0.9; }
+  .hub { fill: var(--navy); }
+  .hub-n { font-family: var(--font-display); font-size: 46px; font-weight: 300; fill: var(--snow); }
+  .hub-t { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; fill: var(--soft-blue); }
+  .card {
+    position: absolute;
+    right: 0;
+    bottom: 2%;
+    width: min(330px, 70%);
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-    gap: clamp(2rem, 5vw, 4.5rem);
-    align-items: start;
+    gap: 8px;
+    padding: 18px 20px;
+    border-radius: 14px;
+    background: var(--snow);
+    color: var(--ink);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+    --accent: var(--cobalt);
   }
-  .pd-figure { position: sticky; top: calc(var(--header-h) + 1.5rem); }
-  svg { width: 100%; max-width: 480px; margin-inline: auto; overflow: visible; }
-
-  .outer { fill: none; stroke: rgba(63, 215, 255, 0.35); stroke-width: 2; stroke-dasharray: 3 7; }
-  .seg { fill: none; stroke: rgba(185, 206, 232, 0.28); stroke-width: 26; stroke-linecap: round; cursor: pointer; transition: stroke 0.35s var(--ease); }
-  .layer { fill: none; stroke: rgba(185, 206, 232, 0.16); stroke-width: 6; stroke-linecap: round; transition: stroke 0.35s var(--ease); }
-  .core { fill: rgba(7, 28, 56, 0.9); stroke: rgba(63, 215, 255, 0.4); stroke-width: 1.5; }
-  .core-t { fill: #F8FBFF; font-family: var(--font-display); font-size: 17px; text-anchor: middle; }
-  .node { cursor: pointer; }
-  .node circle { fill: #0B2748; stroke: rgba(185, 206, 232, 0.4); stroke-width: 1.5; transition: fill 0.3s, stroke 0.3s; }
-  .node text { fill: #F8FBFF; font: 700 13px var(--font-body); text-anchor: middle; pointer-events: none; }
-
-  /* Resaltado según el pilar activo */
-  [data-active='01'] .s-01, [data-active='02'] .s-02, [data-active='03'] .s-03 { stroke: var(--cobalt); }
-  [data-active='04'] .layer { stroke: var(--cyan); }
-  [data-active='05'] .outer { stroke: var(--cyan); stroke-width: 4; }
-  [data-active='05'] .seg { stroke: rgba(22, 93, 255, 0.55); }
-  [data-active='01'] .n-01 circle, [data-active='02'] .n-02 circle, [data-active='03'] .n-03 circle,
-  [data-active='04'] .n-04 circle, [data-active='05'] .n-05 circle { fill: var(--cyan); stroke: var(--cyan); }
-  [data-active='01'] .n-01 text, [data-active='02'] .n-02 text, [data-active='03'] .n-03 text,
-  [data-active='04'] .n-04 text, [data-active='05'] .n-05 text { fill: var(--navy); }
-  .seg:hover { stroke: rgba(22, 93, 255, 0.7); }
-
-  /* Trazado al aparecer */
-  :global(.motion) .draw { stroke-dasharray: 100 100; stroke-dashoffset: 100; transition: stroke-dashoffset 1.6s var(--ease), stroke 0.35s var(--ease); }
-  :global(.motion) .in .draw { stroke-dashoffset: 0; }
-  :global(.motion) .in .s-02, :global(.motion) .in .l-02 { transition-delay: 0.25s; }
-  :global(.motion) .in .s-03, :global(.motion) .in .l-03 { transition-delay: 0.5s; }
-  :global(.motion) .outer { opacity: 0; transform-origin: center; transform-box: fill-box; transform: rotate(-30deg); transition: opacity 1s var(--ease) 0.7s, transform 1.4s var(--ease) 0.7s, stroke 0.35s; }
-  :global(.motion) .in .outer { opacity: 1; transform: none; }
-
-  .tabs { display: grid; gap: 0.4rem; margin-bottom: 1.5rem; }
-  .tabs button {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    width: 100%;
-    padding: 0.8rem 1rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    color: var(--text);
-    text-align: left;
-    font-weight: 500;
-    transition: background-color 0.25s, border-color 0.25s, transform 0.25s var(--ease);
-  }
-  .tabs button:hover { border-color: var(--border-strong); transform: translateX(4px); }
-  .tabs button[aria-selected='true'] { background: var(--accent-soft); border-color: var(--accent); }
-  .num { font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; color: var(--accent); min-width: 2ch; }
-
-  .panel {
-    padding: 1.6rem;
-    border-radius: var(--radius);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    display: grid;
-    gap: 1rem;
-  }
-  :global(.js) .panel[hidden] { display: none; }
-  :global(.motion) .panel:not([hidden]) { animation: panel-in 0.5s var(--ease); }
-  @keyframes panel-in { from { opacity: 0; transform: translateY(10px); } }
-  .badge {
-    justify-self: start;
-    padding: 0.25rem 0.7rem;
-    border-radius: 999px;
-    border: 1px solid var(--border-strong);
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--accent);
-  }
-  .q { font-family: var(--font-display); font-size: var(--step-1); line-height: 1.35; }
-  .panel ul { list-style: none; padding: 0; display: grid; gap: 0.55rem; }
-  .panel li { display: grid; grid-template-columns: 3rem 1fr; gap: 0.5rem; color: var(--text-muted); font-size: 0.95rem; }
-  .code { font-weight: 700; font-size: 0.8rem; color: var(--accent); padding-top: 0.15rem; font-variant-numeric: tabular-nums; }
-
-  @media (max-width: 900px) {
-    .pd { grid-template-columns: 1fr; }
-    .pd-figure { position: static; }
-    svg { max-width: 360px; }
+  .card .code { font-size: 0.75rem; color: var(--cobalt); }
+  .c-name { font-family: var(--font-display); font-size: 1.2rem; line-height: 1.2; font-weight: 600; color: var(--navy); }
+  .c-desc { font-size: 0.88rem; color: var(--slate); }
+  .card .link { font-size: 0.88rem; color: var(--cobalt); }
+  .search { display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(185, 206, 232, 0.3); background: rgba(248, 251, 255, 0.04); color: var(--soft-blue); }
+  .search input { flex: 1; min-width: 0; border: 0; background: transparent; color: var(--snow); font-size: 0.95rem; outline: none; }
+  .search:focus-within { border-color: var(--cyan); }
+  .count { font-size: 0.72rem; white-space: nowrap; }
+  .legend { list-style: none; padding: 0; border-top: 1px solid var(--line); }
+  .legend a { display: grid; grid-template-columns: 28px 1fr auto; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); color: var(--snow); text-decoration: none; font-size: 0.95rem; }
+  .legend a:hover { color: var(--cyan); }
+  .sw { width: 14px; height: 14px; border-radius: 4px; background: var(--c); }
+  .legend .n { font-size: 0.72rem; color: var(--soft-blue); }
+  @media (max-width: 960px) {
+    .figure, .text { grid-column: 1 / -1; }
+    .text { order: -1; }
+    .card { position: static; width: 100%; margin-top: 1rem; }
   }
 </style>

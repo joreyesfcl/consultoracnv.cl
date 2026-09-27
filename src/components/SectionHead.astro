@@ -1,14 +1,17 @@
 ---
-interface Props { eyebrow: string; title: string; lead?: string; id?: string; center?: boolean }
-const { eyebrow, title, lead, id, center = false } = Astro.props;
+// Encabezado de sección: rótulo en mono, titular serif liviano con acento en cursiva
+// y bajada (a la derecha cuando split = true).
+interface Props { eyebrow: string; title: string; accent?: string; lead?: string; id?: string; center?: boolean; split?: boolean }
+const { eyebrow, title, accent, lead, id, center = false, split = false } = Astro.props;
 ---
-<header class:list={['section-head', 'reveal', { center }]}>
+<header class:list={['section-head', 'reveal', { center, split }]}>
   <p class="eyebrow">{eyebrow}</p>
-  <h2 id={id}>{title}</h2>
-  {lead && <p class="lead">{lead}</p>}
+  <h2 id={id}>{title}{accent && <> <em>{accent}</em></>}</h2>
+  {lead && <p class:list={['lead', { aside: split }]}>{lead}</p>}
   <slot />
 </header>
 
 <style>
   .center { margin-inline: auto; text-align: center; justify-items: center; }
+  .split .lead { font-size: var(--step-0); }
 </style>

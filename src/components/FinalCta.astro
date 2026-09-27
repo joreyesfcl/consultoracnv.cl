@@ -1,42 +1,47 @@
 ---
+// Cierre "Conversemos" (mesa 17): tarjeta navy con la imagen de marca.
+import { Image } from 'astro:assets';
+import fondo from '../assets/main.png';
 import Icon from './Icon.astro';
 import { SITE } from '../data/site';
 ---
-<section class="cta on-dark" aria-labelledby="cta-title">
-  <svg class="lines" viewBox="0 0 1200 400" preserveAspectRatio="none" aria-hidden="true">
-    {Array.from({ length: 7 }, (_, i) => (
-      <path d={`M-50 ${120 + i * 26} C 300 ${40 + i * 30}, 700 ${300 - i * 18}, 1250 ${150 + i * 22}`} style={`--k:${i}`} />
-    ))}
-  </svg>
-  <div class="container inner reveal">
-    <p class="eyebrow">Conversemos</p>
-    <h2 id="cta-title">Cuéntenos cuál es su desafío más complejo.</h2>
-    <p class="lead">
-      Buena parte de nuestros encargos empieza con una conversación en la que el desafío se cuenta en los términos
-      de quien lo tiene. La traducción a servicios la hacemos nosotros.
-    </p>
-    <div class="actions">
-      <a href="/contacto/" class="btn magnetic">Escríbanos <Icon name="arrow-right" /></a>
-      <a href={SITE.agenda} class="btn btn-ghost" target="_blank" rel="noopener"><Icon name="calendar" /> Agendar una reunión</a>
+<section class="cta-wrap" aria-labelledby="cta-title">
+  <div class="container">
+    <div class="cta on-dark reveal">
+      <Image src={fondo} alt="" widths={[640, 960, 1254]} sizes="(max-width: 900px) 100vw, 1280px" class="img" loading="lazy" />
+      <div class="text">
+        <p class="eyebrow">Conversemos</p>
+        <h2 id="cta-title">Cuéntenos cuál es su desafío <em>más complejo.</em></h2>
+        <p class="lead">Buena parte de nuestros encargos empieza con una conversación en la que el desafío se cuenta en los términos de quien lo tiene. La traducción a servicios la hacemos nosotros.</p>
+      </div>
+      <div class="actions">
+        <a href="/contacto/" class="btn magnetic">Escribirnos <Icon name="arrow-right" /></a>
+        <a href={SITE.agenda} class="btn btn-ghost" target="_blank" rel="noopener"><Icon name="calendar" /> Agendar una reunión</a>
+        <a href="/autodiagnostico/" class="link">O haga el autodiagnóstico en 5 minutos</a>
+      </div>
     </div>
   </div>
 </section>
 
 <style>
+  .cta-wrap { padding-bottom: var(--section); }
   .cta {
     position: relative;
+    isolation: isolate;
     overflow: hidden;
-    padding-block: clamp(5rem, 10vw, 8rem);
-    background-image: radial-gradient(70% 90% at 85% 10%, rgba(22, 93, 255, 0.4), transparent 70%);
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    gap: 2rem clamp(1.5rem, 4vw, 4rem);
+    align-items: end;
+    padding: clamp(2rem, 5vw, 3.5rem);
+    border-radius: 28px;
   }
-  .lines { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.5; }
-  .lines path { fill: none; stroke: var(--cyan); stroke-width: 1; stroke-opacity: calc(0.15 + var(--k) * 0.05); vector-effect: non-scaling-stroke; }
-  @media (prefers-reduced-motion: no-preference) {
-    .lines path { animation: drift 14s ease-in-out infinite alternate; animation-delay: calc(var(--k) * -1.7s); }
-  }
-  @keyframes drift { to { transform: translateY(-40px); } }
-  .inner { position: relative; display: grid; gap: 1.4rem; justify-items: start; }
-  .inner > * { max-width: 820px; }
-  h2 { font-size: var(--step-4); }
-  .actions { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 0.6rem; }
+  .img, .cta :global(img.img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 90% 60%; opacity: 0.35; z-index: -1; }
+  .text { display: grid; gap: 1rem; }
+  h2 { font-size: var(--step-3); }
+  .lead { font-size: var(--step-0); }
+  .actions { display: grid; gap: 10px; }
+  .actions .btn { width: 100%; }
+  .actions .link { justify-self: center; font-size: 0.9rem; }
+  @media (max-width: 860px) { .cta { grid-template-columns: 1fr; } }
 </style>

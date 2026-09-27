@@ -1,176 +1,175 @@
 ---
+// Portada (mesa 01 del lienzo "Estratos"): texto a la izquierda y, a la derecha, la imagen
+// de marca con una retícula geográfica calibrada sobre la silueta de Chile, Santiago
+// referenciado y un punto que sigue al cursor (lógica en src/scripts/motion.ts).
 import { Picture } from 'astro:assets';
 import fondo from '../assets/main.png';
 import Icon from './Icon.astro';
+import { SITE } from '../data/site';
 
-// Nodos aproximados sobre el trazado de Chile en main.png (coordenadas de la imagen 1254×820)
-const nodos = [
-  [1122, 96], [1138, 160], [1128, 222], [1112, 288], [1098, 352],
-  [1084, 418], [1070, 482], [1056, 540], [1046, 596], [1072, 640], [1112, 668],
+// Índice lateral: secciones del Inicio
+const indice = [
+  ['contribuir', 'En qué contribuimos'],
+  ['que-cambia', 'Qué cambia'],
+  ['desafios', 'Desafíos'],
+  ['modelo', 'Modelo de servicios'],
+  ['sectores', 'Sectores'],
+  ['equipo', 'Equipo'],
 ];
-// Titular dividido en palabras para la entrada escalonada
-const titular = ['Mejores', 'decisiones'];
-const acento = ['para', 'el', 'territorio.'];
-const lineas = [
-  'M760 660 C 880 610, 980 640, 1056 540',
-  'M820 720 C 930 700, 1010 690, 1072 640',
-  'M1254 380 C 1190 390, 1130 400, 1098 352',
-  'M1254 560 C 1180 560, 1110 580, 1056 540',
+// Escala de la retícula (coordenadas del lienzo 600×900): latitud → y, longitud → x
+const lat = (l: number) => 95 + (l - 17.5) * 17.27;
+const lon = (o: number) => 518 + (70.67 - o) * 20;
+const paralelos = [20, 30, 40, 50];
+const meridianos = [76, 72, 68];
+const flujos = [
+  'M151 724 C 283 670, 420 560, 518 370',
+  'M217 790 C 360 740, 470 560, 518 370',
+  'M693 417 C 623 428, 560 400, 518 370',
+  'M693 615 C 620 600, 545 480, 518 370',
+  'M0 330 C 180 320, 360 385, 518 370',
 ];
 ---
-<section class="hero on-dark" data-hero aria-labelledby="hero-title">
-  <Picture
-    src={fondo}
-    alt=""
-    formats={['avif', 'webp']}
-    widths={[640, 960, 1254]}
-    sizes="(max-width: 760px) 300vw, 100vw"
-    loading="eager"
-    fetchpriority="high"
-    class="hero-bg"
-    data-parallax
-  />
-  <svg class="hero-net" viewBox="0 0 1254 820" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
-    <defs>
-      <radialGradient id="glow">
-        <stop offset="0%" stop-color="#3FD7FF" stop-opacity="0.9" />
-        <stop offset="100%" stop-color="#3FD7FF" stop-opacity="0" />
-      </radialGradient>
-    </defs>
-    {lineas.map((d, i) => <path d={d} class="net-line" style={`--d:${i * 1.3}s`} />)}
-    {nodos.map(([x, y], i) => (
-      <g class="node" style={`--n:${i}; --d:${(i * 0.37) % 3}s`}>
-        <circle cx={x} cy={y} r="14" fill="url(#glow)" class="net-halo" />
-        <circle cx={x} cy={y} r="2.6" class="net-dot" />
-      </g>
-    ))}
-  </svg>
-  <div class="hero-shade" aria-hidden="true"></div>
-  <div class="hero-glow" aria-hidden="true"></div>
-
-  <div class="container hero-content">
-    <p class="eyebrow">Inteligencia aplicada a la intervención</p>
-    <h1 id="hero-title" aria-label="Mejores decisiones para el territorio.">
-      <span class="words" aria-hidden="true">
-        {titular.map((w, i) => <span class="w" style={`--w:${i}`}>{w}</span>)}
-        <em>{acento.map((w, i) => <span class="w" style={`--w:${i + titular.length}`}>{w}</span>)}</em>
-      </span>
-    </h1>
-    <p class="lead">
-      Acompañamos a instituciones públicas, empresas y fundaciones a decidir dónde actuar, con qué programas y con qué recursos, desde el diagnóstico hasta los resultados.
-    </p>
-    <div class="hero-ctas">
-      <a href="/contacto/" class="btn magnetic">Conversemos <Icon name="arrow-right" /></a>
-      <a href="/servicios/" class="btn btn-ghost">Ver servicios</a>
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-text">
+    <ol class="index" aria-label="En esta página">
+      {indice.map(([id, label], i) => (
+        <li><a href={`#${id}`} class:list={{ on: i === 0 }}><span aria-hidden="true">{String(i + 1).padStart(2, '0')}</span><span class="sr-only">{label}</span><span class="tip" aria-hidden="true">{label}</span></a></li>
+      ))}
+    </ol>
+    <div class="copy">
+      <p class="eyebrow rise">{SITE.lema}</p>
+      <h1 id="hero-title" class="rise">Mejores decisiones <em>para el territorio.</em></h1>
+      <div class="bottom rise">
+        <p class="lead">Acompañamos a instituciones públicas, empresas y fundaciones a decidir dónde actuar, con qué programas y con qué recursos.</p>
+        <div class="ctas">
+          <a href="/contacto/" class="btn magnetic">Conversemos <Icon name="arrow-right" /></a>
+          <a href="/autodiagnostico/" class="btn btn-ghost">Autodiagnóstico · 5 minutos</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot mono">
+      <span>Sector público · Empresas · Tercer sector</span>
+      <a href="#contribuir" class="scroll">Desplácese <span aria-hidden="true"></span></a>
     </div>
   </div>
 
+  <div class="panel on-dark" data-tracker>
+    <div class="stage">
+      <Picture src={fondo} alt="" formats={['avif', 'webp']} widths={[640, 960, 1254]} sizes="(max-width: 900px) 100vw, 45vw" loading="eager" fetchpriority="high" class="img" />
+      <svg viewBox="0 0 600 900" aria-hidden="true" class="overlay">
+        <defs>
+          <radialGradient id="hGlow"><stop offset="0%" stop-color="#3FD7FF" stop-opacity="0.9" /><stop offset="100%" stop-color="#3FD7FF" stop-opacity="0" /></radialGradient>
+        </defs>
+        <g class="grid">
+          {paralelos.map((l) => <line x1="0" y1={lat(l)} x2="600" y2={lat(l)} />)}
+          {meridianos.map((o) => <line x1={lon(o)} y1="0" x2={lon(o)} y2="900" />)}
+        </g>
+        <g class="labels">
+          {paralelos.map((l) => <text x="16" y={lat(l) - 6}>{l}°S</text>)}
+          {meridianos.map((o, i) => <text x={i === 2 ? lon(o) - 6 : lon(o) + 6} y="886" text-anchor={i === 2 ? 'end' : 'start'}>{o}°O</text>)}
+        </g>
+        <g class="flows">
+          {flujos.map((d, i) => <path d={d} style={`--d:${-i * 1.4}s`} />)}
+        </g>
+        <g class="santiago">
+          <line x1="64" y1="370" x2="504" y2="370" class="guide" />
+          <line x1="16" y1="370" x2="56" y2="370" class="tick" />
+          <text x="16" y="362" class="lat">33°27′S</text>
+          <circle cx="518" cy="370" r="16" fill="url(#hGlow)" opacity="0.55" />
+          <circle cx="518" cy="370" r="12" class="ring" />
+          <circle cx="518" cy="370" r="7" class="ring-static" />
+          <circle cx="518" cy="370" r="2.6" class="dot" />
+          <text x="504" y="346" text-anchor="end" class="name">SANTIAGO</text>
+          <text x="504" y="360" text-anchor="end" class="coords">33°27′S · 70°40′O</text>
+        </g>
+        <g class="tracker" data-tracker-dot>
+          <circle r="18" fill="url(#hGlow)" opacity="0.7" />
+          <circle r="9" class="t-ring" />
+          <circle r="3.5" class="t-dot" />
+          <text x="16" y="4" data-tracker-label></text>
+        </g>
+      </svg>
+    </div>
+  </div>
 </section>
 
 <style>
   .hero {
-    position: relative;
-    min-height: 100svh;
     display: grid;
-    isolation: isolate;
-    overflow: hidden;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    min-height: calc(100svh - var(--header-h));
+    max-height: 1100px;
   }
-  .hero-bg, .hero-bg :global(img) {
+  .hero-text {
+    grid-column: span 7;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: 1fr auto;
+    column-gap: 2rem;
+    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.5rem, 4vw, 3.5rem) 2rem var(--gutter);
+  }
+  .index { align-self: center; list-style: none; padding: 0; display: grid; gap: 0.9rem; border-left: 1px solid var(--line); font-family: var(--font-mono); font-size: 0.7rem; }
+  .index a { position: relative; display: block; padding-left: 0.8rem; margin-left: -1px; color: var(--text-muted); text-decoration: none; border-left: 2px solid transparent; }
+  .index a.on, .index a:hover { color: var(--accent); border-left-color: var(--accent); }
+  .tip { position: absolute; left: 3rem; top: 50%; transform: translate(-6px, -50%); white-space: nowrap; padding: 0.2rem 0.5rem; border-radius: 6px; background: var(--heading); color: var(--bg); opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s var(--ease); }
+  .index a:hover .tip, .index a:focus-visible .tip { opacity: 1; transform: translate(0, -50%); }
+  .copy { align-self: center; display: grid; gap: clamp(1.2rem, 2.5vw, 1.8rem); }
+  h1 { font-size: clamp(3rem, 1.2rem + 5.4vw, 7rem); line-height: 0.92; letter-spacing: -0.045em; }
+  .bottom { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; align-items: end; }
+  .lead { font-size: var(--step-1); }
+  .ctas { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .foot { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+  .scroll { display: inline-flex; align-items: center; gap: 0.6rem; color: inherit; text-decoration: none; }
+  .scroll span { display: inline-block; width: 1px; height: 22px; background: var(--accent); }
+
+  .panel { grid-column: span 5; position: relative; overflow: hidden; container-type: size; background: var(--navy); min-height: 480px; }
+  .stage {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: right center;
-    z-index: -3;
+    right: 0;
+    top: 50%;
+    width: max(100cqw, 100cqh * 2 / 3);
+    height: max(100cqh, 100cqw * 1.5);
+    transform: translateY(-50%);
   }
-  .hero-net {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -2;
-    pointer-events: none;
-  }
-  .net-dot { fill: #EAF6FF; }
-  :global(.motion) .node { animation: ignite 0.9s var(--ease) both; animation-delay: calc(0.5s + var(--n) * 0.14s); }
-  @keyframes ignite {
-    0% { opacity: 0; }
-    40% { opacity: 1; filter: drop-shadow(0 0 10px #3FD7FF); }
-    100% { opacity: 1; filter: none; }
-  }
-  .net-halo { opacity: 0.25; transform-box: fill-box; transform-origin: center; }
-  .net-line {
-    fill: none;
-    stroke: #3FD7FF;
-    stroke-width: 1.2;
-    stroke-opacity: 0.55;
-    stroke-dasharray: 6 220;
-    stroke-linecap: round;
-  }
+  .img, .img :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 88% center; opacity: 0.92; }
+  .overlay { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .grid line { stroke: #EAF6FF; stroke-opacity: 0.14; }
+  .labels text, .santiago text, .tracker text { font-family: var(--font-mono); letter-spacing: 1px; }
+  .labels text { font-size: 11px; fill: var(--soft-blue); }
+  .flows path { fill: none; stroke: #3FD7FF; stroke-width: 1.2; stroke-opacity: 0.6; stroke-linecap: round; stroke-dasharray: 6 220; }
+  .guide { stroke: #3FD7FF; stroke-opacity: 0.55; stroke-dasharray: 2 5; }
+  .tick { stroke: #3FD7FF; stroke-width: 1.5; }
+  .lat { font-size: 11px; fill: #3FD7FF; }
+  .ring, .ring-static { fill: none; stroke: #3FD7FF; }
+  .ring { stroke-width: 1.5; transform-box: fill-box; transform-origin: center; }
+  .dot { fill: var(--snow); }
+  .name { font-size: 12px; font-weight: 500; fill: var(--snow); letter-spacing: 1.5px; }
+  .coords { font-size: 10px; fill: var(--soft-blue); }
+  .tracker { opacity: 0; transition: opacity 0.35s var(--ease); pointer-events: none; }
+  .tracker.on { opacity: 1; }
+  .t-ring { fill: none; stroke: #3FD7FF; stroke-opacity: 0.6; }
+  .t-dot { fill: #3FD7FF; }
+  .tracker text { font-size: 10px; fill: var(--snow); }
   @media (prefers-reduced-motion: no-preference) {
-    .net-halo { animation: pulse 3.2s var(--ease) infinite var(--d); }
-    .net-line { animation: flow 7s linear infinite var(--d); }
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 0.15; transform: scale(0.7); }
-    50% { opacity: 0.7; transform: scale(1.5); }
+    .flows path { animation: flow 7s linear infinite var(--d); }
+    .ring { animation: ring 2.4s ease-out infinite; }
   }
   @keyframes flow { to { stroke-dashoffset: -452; } }
+  @keyframes ring { 0% { opacity: 0.8; transform: scale(0.6); } 100% { opacity: 0; transform: scale(2.2); } }
 
-  .hero-shade {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background:
-      linear-gradient(90deg, rgba(7, 28, 56, 0.92) 0%, rgba(7, 28, 56, 0.7) 38%, rgba(7, 28, 56, 0) 68%),
-      linear-gradient(0deg, rgba(7, 28, 56, 0.85) 0%, rgba(7, 28, 56, 0) 30%);
-  }
-
-  .hero-glow {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background: radial-gradient(520px circle at var(--gx, 80%) var(--gy, 40%), rgba(63, 215, 255, 0.1), transparent 60%);
-    transition: background 0.2s linear;
-  }
-  .hero-bg, .hero-bg :global(img) { will-change: transform; }
-
-  .hero-content {
-    align-self: center;
-    display: grid;
-    justify-items: start;
-    gap: 1.5rem;
-    padding-block: calc(var(--header-h) + 3rem) 3rem;
-  }
-  .hero-content > * { max-width: 640px; }
-  h1 { font-size: clamp(2.6rem, 1.6rem + 4.4vw, 5rem); line-height: 1.04; letter-spacing: -0.025em; }
-  h1 em { font-style: italic; font-weight: 500; color: var(--cyan); }
-  .words { display: block; }
-  .w { display: inline-block; margin-right: 0.24em; }
-  h1 em { display: inline-block; }
-  :global(.motion) .w {
-    animation: word 0.9s var(--ease) both;
-    animation-delay: calc(0.15s + var(--w) * 0.11s);
-  }
-  @keyframes word {
-    from { opacity: 0; transform: translateY(0.45em) rotate(2deg); filter: blur(6px); }
-    to { opacity: 1; transform: none; filter: none; }
-  }
-  .lead { color: rgba(234, 246, 255, 0.82); }
-  .hero-ctas { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 0.5rem; }
-
-  :global(.motion) .hero-content > :not(h1) { animation: rise 0.9s var(--ease) both; }
-  :global(.motion) .hero-content > .eyebrow { animation-delay: 0s; }
-  :global(.motion) .hero-content > .lead { animation-delay: 0.55s; }
-  :global(.motion) .hero-content > .hero-ctas { animation-delay: 0.7s; }
+  :global(.motion) .rise { animation: rise 0.9s var(--ease) both; }
+  :global(.motion) h1.rise { animation-delay: 0.1s; }
+  :global(.motion) .bottom.rise { animation-delay: 0.3s; }
   @keyframes rise { from { opacity: 0; transform: translateY(24px); } }
 
-
-  @media (max-width: 760px) {
-    .hero-shade {
-      background: linear-gradient(180deg, rgba(7, 28, 56, 0.55) 0%, rgba(7, 28, 56, 0.82) 45%, rgba(7, 28, 56, 0.95) 100%);
-    }
+  @media (max-width: 1080px) {
+    .bottom { grid-template-columns: 1fr; gap: 1.4rem; }
+  }
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; min-height: 0; max-height: none; }
+    .hero-text { grid-column: 1; grid-template-columns: 1fr; padding-inline: var(--gutter); padding-top: 1.5rem; }
+    .index { display: none; }
+    .panel { grid-column: 1; margin: 0 var(--gutter) 1.5rem; border-radius: var(--radius-lg); height: min(62svh, 560px); min-height: 360px; }
+    .foot { display: none; }
   }
 </style>

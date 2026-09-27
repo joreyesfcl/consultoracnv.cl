@@ -49,6 +49,58 @@ document.querySelectorAll<HTMLElement>('[data-pillars]').forEach((root) => {
   );
 });
 
+
+// ---------- ¿En qué podemos contribuir? (necesidad → pilar) ----------
+document.querySelectorAll<HTMLElement>('[data-needs]').forEach((root) => {
+  const btns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-need]'));
+  const strata = Array.from(root.querySelectorAll<HTMLElement>('[data-stratum]'));
+  btns.forEach((b) =>
+    b.addEventListener('click', () => {
+      btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      strata.forEach((s) => s.classList.toggle('on', s.dataset.stratum === b.dataset.need));
+    })
+  );
+});
+
+
+// ---------- Mapa radial de servicios ----------
+document.querySelectorAll<HTMLElement>('[data-smap]').forEach((root) => {
+  const segs = Array.from(root.querySelectorAll<SVGAElement>('[data-svc]'));
+  const q = (sel: string) => root.querySelector<HTMLElement>(sel)!;
+  const show = (a: SVGAElement) => {
+    segs.forEach((x) => {
+      const on = x === a;
+      x.classList.toggle('on', on);
+      const p = x.querySelector('path')!;
+      p.setAttribute('d', on ? p.dataset.don! : p.dataset.d!);
+    });
+    q('[data-c-code]').textContent = `${a.dataset.code} · Pilar ${a.dataset.pilar}`;
+    q('[data-c-name]').textContent = a.dataset.name!;
+    q('[data-c-desc]').textContent = a.dataset.desc!;
+    (q('[data-c-link]') as HTMLAnchorElement).href = a.dataset.href!;
+  };
+  segs.forEach((a) => {
+    a.addEventListener('pointerenter', () => show(a));
+    a.addEventListener('focus', () => show(a));
+  });
+  const input = root.querySelector<HTMLInputElement>('[data-smap-q]');
+  const count = root.querySelector<HTMLElement>('[data-smap-count]');
+  const norm = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  input?.addEventListener('input', () => {
+    const term = norm(input.value.trim());
+    root.classList.toggle('searching', !!term);
+    let n = 0;
+    let firstMatch: SVGAElement | null = null;
+    segs.forEach((a) => {
+      const ok = !!term && norm(`${a.dataset.code} ${a.dataset.name} ${a.dataset.desc}`).includes(term);
+      a.classList.toggle('match', ok);
+      if (ok) { n++; firstMatch ??= a; }
+    });
+    if (count) count.textContent = term ? `${n} ${n === 1 ? 'servicio' : 'servicios'}` : '';
+    if (firstMatch) show(firstMatch);
+  });
+});
+
 // ---------- Qué cambia en la práctica ----------
 document.querySelectorAll<HTMLElement>('[data-ba]').forEach((root) => {
   const buttons = root.querySelectorAll<HTMLButtonElement>('[data-ba-set]');
