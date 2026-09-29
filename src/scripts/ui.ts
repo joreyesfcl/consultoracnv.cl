@@ -51,25 +51,39 @@ document.querySelectorAll<HTMLElement>('[data-needs]').forEach((root) => {
 
 
 // ---------- Mapa radial de servicios ----------
+// La ficha aparece solo mientras el cursor (o el foco) está sobre un segmento de la rueda.
 document.querySelectorAll<HTMLElement>('[data-smap]').forEach((root) => {
+  const svg = root.querySelector<SVGSVGElement>('svg')!;
   const segs = Array.from(root.querySelectorAll<SVGAElement>('[data-svc]'));
   const q = (sel: string) => root.querySelector<HTMLElement>(sel)!;
-  const show = (a: SVGAElement) => {
+  const card = q('[data-card]');
+  const slot = card.parentElement!;
+  const expand = (a: SVGAElement | null) =>
     segs.forEach((x) => {
       const on = x === a;
       x.classList.toggle('on', on);
       const p = x.querySelector('path')!;
       p.setAttribute('d', on ? p.dataset.don! : p.dataset.d!);
     });
+  const show = (a: SVGAElement) => {
+    expand(a);
     q('[data-c-code]').textContent = `${a.dataset.code} · Pilar ${a.dataset.pilar}`;
     q('[data-c-name]').textContent = a.dataset.name!;
     q('[data-c-desc]').textContent = a.dataset.desc!;
-    (q('[data-c-link]') as HTMLAnchorElement).href = a.dataset.href!;
+    card.hidden = false;
+    slot.classList.add('active');
+  };
+  const hide = () => {
+    expand(null);
+    card.hidden = true;
+    slot.classList.remove('active');
   };
   segs.forEach((a) => {
     a.addEventListener('pointerenter', () => show(a));
     a.addEventListener('focus', () => show(a));
   });
+  svg.addEventListener('pointerleave', hide);
+  svg.addEventListener('focusout', (e) => { if (!svg.contains(e.relatedTarget as Node)) hide(); });
   const input = root.querySelector<HTMLInputElement>('[data-smap-q]');
   const count = root.querySelector<HTMLElement>('[data-smap-count]');
   const norm = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -77,17 +91,14 @@ document.querySelectorAll<HTMLElement>('[data-smap]').forEach((root) => {
     const term = norm(input.value.trim());
     root.classList.toggle('searching', !!term);
     let n = 0;
-    let firstMatch: SVGAElement | null = null;
     segs.forEach((a) => {
       const ok = !!term && norm(`${a.dataset.code} ${a.dataset.name} ${a.dataset.desc}`).includes(term);
       a.classList.toggle('match', ok);
-      if (ok) { n++; firstMatch ??= a; }
+      if (ok) n++;
     });
     if (count) count.textContent = term ? `${n} ${n === 1 ? 'servicio' : 'servicios'}` : '';
-    if (firstMatch) show(firstMatch);
   });
 });
-
 
 // ---------- Índice vivo de la página de pilar ----------
 document.querySelectorAll<HTMLElement>('[data-spy]').forEach((nav) => {

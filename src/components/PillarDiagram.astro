@@ -41,7 +41,6 @@ const pilares = PILARES.map((p, i) => {
   const [lx, ly] = pt(121, (a0 + a1) / 2);
   return { ...p, i, color: COLORS[i], txt: TXT[i], d: sector(92, 150, a0 + 0.6, a1 - 0.6), lx, ly, servicios };
 });
-const first = pilares[2].servicios[3];
 ---
 <section class="smap on-dark" id={id} aria-labelledby={`${id}-title`} data-smap>
   <div class="container grid">
@@ -56,7 +55,7 @@ const first = pilares[2].servicios[3];
             {p.servicios.map((s) => (
               <a
                 href={`/servicios/${p.slug}/#s-${s.codigo.replace('.', '-')}`}
-                class:list={['svc', { on: s.codigo === first.codigo }]}
+                class="svc"
                 data-svc
                 data-code={s.codigo}
                 data-name={s.nombre}
@@ -65,7 +64,7 @@ const first = pilares[2].servicios[3];
                 data-href={`/servicios/${p.slug}/`}
                 aria-label={`${s.codigo} ${s.nombre}`}
               >
-                <path d={s.codigo === first.codigo ? s.dOn : s.d} data-d={s.d} data-don={s.dOn} />
+                <path d={s.d} data-d={s.d} data-don={s.dOn} />
               </a>
             ))}
           </g>
@@ -74,12 +73,6 @@ const first = pilares[2].servicios[3];
         <text x={C} y="292" text-anchor="middle" class="hub-n">{total}</text>
         <text x={C} y="322" text-anchor="middle" class="hub-t">SERVICIOS</text>
       </svg>
-      <div class="card" data-card aria-live="polite">
-        <span class="mono code" data-c-code>{first.codigo} · Pilar {pilares[2].numero}</span>
-        <span class="c-name" data-c-name>{first.nombre}</span>
-        <span class="c-desc" data-c-desc>{first.descripcion}</span>
-        <a href={`/servicios/${pilares[2].slug}/`} class="link" data-c-link>Abrir el pilar <Icon name="arrow-right" /></a>
-      </div>
     </div>
 
     <div class="text">
@@ -94,6 +87,15 @@ const first = pilares[2].servicios[3];
         <input type="search" placeholder="Buscar: evaluación, fondos, indicadores…" data-smap-q autocomplete="off" />
         <span class="mono count" data-smap-count aria-live="polite"></span>
       </label>
+      <div class="slot reveal" aria-live="polite">
+        <p class="mono hint" data-card-hint>Pase el cursor sobre la rueda para ver cada servicio</p>
+        <div class="card" data-card hidden>
+          <span class="mono code" data-c-code></span>
+          <span class="c-name" data-c-name></span>
+          <span class="c-desc" data-c-desc></span>
+          <span class="mono c-go" aria-hidden="true">Clic para abrir el pilar →</span>
+        </div>
+      </div>
       <ul class="legend reveal" role="list">
         {pilares.map((p) => (
           <li>
@@ -128,24 +130,25 @@ const first = pilares[2].servicios[3];
   .hub { fill: var(--navy); }
   .hub-n { font-family: var(--font-display); font-size: 46px; font-weight: 300; fill: var(--snow); }
   .hub-t { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; fill: var(--soft-blue); }
+  .slot { position: relative; min-height: 152px; display: grid; }
+  .hint { align-self: center; justify-self: start; padding: 0.6rem 1rem; border-radius: 999px; border: 1px dashed rgba(185, 206, 232, 0.35); font-size: 0.75rem; color: var(--soft-blue); }
+  .slot.active .hint { display: none; }
   .card {
-    position: absolute;
-    right: 0;
-    bottom: 2%;
-    width: min(330px, 70%);
     display: grid;
-    gap: 8px;
-    padding: 18px 20px;
+    align-content: start;
+    gap: 6px;
+    padding: 16px 18px;
     border-radius: 14px;
     background: var(--snow);
     color: var(--ink);
     box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
     --accent: var(--cobalt);
+    animation: swap-in 0.25s var(--ease) both;
   }
   .card .code { font-size: 0.75rem; color: var(--cobalt); }
   .c-name { font-family: var(--font-display); font-size: 1.2rem; line-height: 1.2; font-weight: 600; color: var(--navy); }
   .c-desc { font-size: 0.88rem; color: var(--slate); }
-  .card .link { font-size: 0.88rem; color: var(--cobalt); }
+  .c-go { font-size: 0.72rem; color: var(--cobalt); }
   .search { display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(185, 206, 232, 0.3); background: rgba(248, 251, 255, 0.04); color: var(--soft-blue); }
   .search input { flex: 1; min-width: 0; border: 0; background: transparent; color: var(--snow); font-size: 0.95rem; outline: none; }
   .search:focus-within { border-color: var(--cyan); }
@@ -155,9 +158,9 @@ const first = pilares[2].servicios[3];
   .legend a:hover { color: var(--cyan); }
   .sw { width: 14px; height: 14px; border-radius: 4px; background: var(--c); }
   .legend .n { font-size: 0.72rem; color: var(--soft-blue); }
+  @media (hover: none) { .slot { display: none; } }
   @media (max-width: 960px) {
     .figure, .text { grid-column: 1 / -1; }
     .text { order: -1; }
-    .card { position: static; width: 100%; margin-top: 1rem; }
   }
 </style>
