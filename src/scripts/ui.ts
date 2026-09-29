@@ -1,6 +1,6 @@
 // Interacciones de las secciones: pestañas accesibles, necesidades por pilar,
 // mapa radial de servicios, índice vivo del pilar, filtro de servicios y
-// formulario de contacto (con el resumen del autodiagnóstico). initUI() corre al cargar y en "cnv:page".
+// formulario de contacto. initUI() corre al cargar y en "cnv:page".
 
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -149,19 +149,6 @@ document.querySelectorAll<HTMLElement>('[data-filter]').forEach((box) => {
     })
   );
   q.addEventListener('input', apply);
-});
-
-// ---------- Resumen del autodiagnóstico precargado en Contacto ----------
-document.querySelectorAll<HTMLFormElement>('form[data-contact]').forEach((form) => {
-  let data: { resumen?: string; tipo?: string } | null = null;
-  try { data = JSON.parse(sessionStorage.getItem('cnv-autodiagnostico') ?? 'null'); } catch {}
-  if (!data?.resumen) return;
-  const msg = form.querySelector<HTMLTextAreaElement>('#mensaje');
-  const tipo = form.querySelector<HTMLSelectElement>('#tipo');
-  if (msg && !msg.value) msg.value = data.resumen + '\n\n';
-  if (tipo && data.tipo && !tipo.value) tipo.value = data.tipo;
-  form.querySelector<HTMLElement>('[data-diag-note]')?.removeAttribute('hidden');
-  try { sessionStorage.removeItem('cnv-autodiagnostico'); } catch {}
 });
 
 // ---------- Formulario de contacto ----------
