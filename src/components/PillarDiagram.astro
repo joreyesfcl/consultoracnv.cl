@@ -1,6 +1,7 @@
 ---
 // Mapa radial de los 27 servicios (mesa 02): los 5 pilares en el anillo interior y sus
-// servicios en el exterior. Al pasar el cursor o enfocar un segmento se muestra su ficha;
+// servicios en el exterior. Al pasar el cursor, tocar o enfocar un segmento se muestra su ficha flotante,
+// con un enlace al pilar;
 // el buscador resalta los servicios que coinciden. Lógica en src/scripts/ui.ts ([data-smap]).
 import Icon from './Icon.astro';
 import { PILARES } from '../data/servicios';
@@ -73,6 +74,13 @@ const pilares = PILARES.map((p, i) => {
         <text x={C} y="292" text-anchor="middle" class="hub-n">{total}</text>
         <text x={C} y="322" text-anchor="middle" class="hub-t">SERVICIOS</text>
       </svg>
+      <div class="card" data-card hidden>
+        <span class="mono code" data-c-code></span>
+        <span class="c-name" data-c-name></span>
+        <span class="c-desc" data-c-desc></span>
+        <a class="mono c-go" data-c-link href="#">Abrir el pilar <span data-c-pilar></span> →</a>
+      </div>
+      <p class="mono cap"><span class="fine">Pase el cursor sobre la rueda; haga clic para abrir el pilar</span><span class="coarse">Toque un segmento para ver su ficha; toque otra vez para abrir el pilar</span></p>
     </div>
 
     <div class="text">
@@ -87,15 +95,6 @@ const pilares = PILARES.map((p, i) => {
         <input type="search" placeholder="Buscar: evaluación, fondos, indicadores…" data-smap-q autocomplete="off" />
         <span class="mono count" data-smap-count aria-live="polite"></span>
       </label>
-      <div class="slot reveal" aria-live="polite">
-        <p class="mono hint" data-card-hint>Pase el cursor sobre la rueda para ver cada servicio</p>
-        <div class="card" data-card hidden>
-          <span class="mono code" data-c-code></span>
-          <span class="c-name" data-c-name></span>
-          <span class="c-desc" data-c-desc></span>
-          <span class="mono c-go" aria-hidden="true">Clic para abrir el pilar →</span>
-        </div>
-      </div>
       <ul class="legend reveal" role="list">
         {pilares.map((p) => (
           <li>
@@ -123,17 +122,19 @@ const pilares = PILARES.map((p, i) => {
   .p-num { font-family: var(--font-body); font-size: 15px; font-weight: 600; pointer-events: none; }
   .svc path { fill: var(--c); fill-opacity: 0.42; transition: fill-opacity 0.25s, opacity 0.25s; }
   .svc:hover path, .svc:focus-visible path, .svc.on path { fill-opacity: 1; }
-  .svc:focus-visible { outline: none; }
+  .svc:focus, .svc:focus-visible { outline: none; }
   .svc:focus-visible path { stroke: var(--snow); stroke-width: 2; }
   .smap.searching .svc:not(.match) path { opacity: 0.18; }
   .smap.searching .svc.match path { fill-opacity: 0.9; }
   .hub { fill: var(--navy); }
   .hub-n { font-family: var(--font-display); font-size: 46px; font-weight: 300; fill: var(--snow); }
   .hub-t { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; fill: var(--soft-blue); }
-  .slot { position: relative; min-height: 152px; display: grid; }
-  .hint { align-self: center; justify-self: start; padding: 0.6rem 1rem; border-radius: 999px; border: 1px dashed rgba(185, 206, 232, 0.35); font-size: 0.75rem; color: var(--soft-blue); }
-  .slot.active .hint { display: none; }
   .card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 20;
+    width: min(300px, calc(100vw - 32px));
     display: grid;
     align-content: start;
     gap: 6px;
@@ -143,12 +144,17 @@ const pilares = PILARES.map((p, i) => {
     color: var(--ink);
     box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
     --accent: var(--cobalt);
-    animation: swap-in 0.25s var(--ease) both;
+    animation: swap-in 0.2s var(--ease) both;
   }
+  .card.dock { position: relative; top: auto; left: auto; width: min(100%, 520px); margin-top: 12px; }
   .card .code { font-size: 0.75rem; color: var(--cobalt); }
   .c-name { font-family: var(--font-display); font-size: 1.2rem; line-height: 1.2; font-weight: 600; color: var(--navy); }
   .c-desc { font-size: 0.88rem; color: var(--slate); }
-  .c-go { font-size: 0.72rem; color: var(--cobalt); }
+  .c-go { justify-self: start; margin-top: 4px; font-size: 0.75rem; font-weight: 500; color: var(--cobalt); text-decoration: none; }
+  .c-go:hover, .c-go:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+  .cap { margin-top: 0.8rem; font-size: 0.72rem; color: var(--soft-blue); }
+  .coarse { display: none; }
+  @media (hover: none) { .fine { display: none; } .coarse { display: inline; } }
   .search { display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(185, 206, 232, 0.3); background: rgba(248, 251, 255, 0.04); color: var(--soft-blue); }
   .search input { flex: 1; min-width: 0; border: 0; background: transparent; color: var(--snow); font-size: 0.95rem; outline: none; }
   .search:focus-within { border-color: var(--cyan); }
@@ -158,7 +164,6 @@ const pilares = PILARES.map((p, i) => {
   .legend a:hover { color: var(--cyan); }
   .sw { width: 14px; height: 14px; border-radius: 4px; background: var(--c); }
   .legend .n { font-size: 0.72rem; color: var(--soft-blue); }
-  @media (hover: none) { .slot { display: none; } }
   @media (max-width: 960px) {
     .figure, .text { grid-column: 1 / -1; }
     .text { order: -1; }

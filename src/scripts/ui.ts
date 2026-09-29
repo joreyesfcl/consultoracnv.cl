@@ -57,7 +57,12 @@ document.querySelectorAll<HTMLElement>('[data-smap]').forEach((root) => {
   const segs = Array.from(root.querySelectorAll<SVGAElement>('[data-svc]'));
   const q = (sel: string) => root.querySelector<HTMLElement>(sel)!;
   const card = q('[data-card]');
-  const slot = card.parentElement!;
+  const fig = card.parentElement!;
+  const link = q('[data-c-link]') as HTMLAnchorElement;
+  let active: SVGAElement | null = null;
+  let timer = 0;
+  let touch = false;
+  let pending = 0;
   const expand = (a: SVGAElement | null) =>
     segs.forEach((x) => {
       const on = x === a;
@@ -65,25 +70,111 @@ document.querySelectorAll<HTMLElement>('[data-smap]').forEach((root) => {
       const p = x.querySelector('path')!;
       p.setAttribute('d', on ? p.dataset.don! : p.dataset.d!);
     });
+  // Ubica la ficha junto al segmento, hacia afuera de la rueda, sin taparlo ni salirse de la vista
+  const place = (a: SVGAElement) => {
+    // Con la rueda a todo el ancho (móvil y tableta) no hay espacio al costado: la ficha va bajo la rueda
+    const dock = innerWidth <= 960;
+    card.classList.toggle('dock', dock);
+    if (dock) {
+      card.style.left = card.style.top = '';
+      const c = card.getBoundingClientRect();
+      if (c.bottom > innerHeight) scrollBy({ top: c.bottom - innerHeight + 16, behavior: 'smooth' });
+      return;
+    }
+    const b = a.getBoundingClientRect();
+    const w = card.offsetWidth, h = card.offsetHeight, gap = 12, m = 12;
+    const r = root.getBoundingClientRect();
+    const top = Math.max(r.top, 76) + m, bottom = Math.min(r.bottom, innerHeight) - m;
+    const left = r.left + m, right = r.right - m;
+    const s = svg.getBoundingClientRect();
+    const cx = s.left + s.width / 2, cy = s.top + s.height / 2;
+    const mx = b.left + b.width / 2, my = b.top + b.height / 2;
+    const ang = Math.atan2(my - cy, mx - cx), co = Math.cos(ang), si = Math.sin(ang);
+    const R = s.width / 2 * (290 / 300);
+    const ax = cx + R * co, ay = cy + R * si;
+    const east = mx >= cx, south = my >= cy;
+    const cands: [number, number][] = [
+      // tangente al borde exterior de la rueda, en la dirección del segmento
+      [ax - w / 2 + (w / 2 + gap) * co, ay - h / 2 + (h / 2 + gap) * si],
+      // al costado exterior del segmento
+      east ? [b.right + gap, my - h / 2] : [b.left - w - gap, my - h / 2],
+      south ? [mx - w / 2, b.bottom + gap] : [mx - w / 2, b.top - h - gap],
+      south ? [mx - w / 2, b.top - h - gap] : [mx - w / 2, b.bottom + gap],
+      east ? [b.left - w - gap, my - h / 2] : [b.right + gap, my - h / 2],
+    ];
+    const clamp = ([x, y]: [number, number]): [number, number] => [
+      Math.min(Math.max(x, left), Math.max(left, right - w)),
+      Math.min(Math.max(y, top), Math.max(top, bottom - h)),
+    ];
+    const overlap = ([x, y]: [number, number]) =>
+      Math.max(0, Math.min(x + w, b.right + 4) - Math.max(x, b.left - 4)) * Math.max(0, Math.min(y + h, b.bottom + 4) - Math.max(y, b.top - 4));
+    const all = cands.map(clamp);
+    const pick = all.find((c) => overlap(c) === 0) ?? all.reduce((p, c) => (overlap(c) < overlap(p) ? c : p));
+    const f = fig.getBoundingClientRect();
+    card.style.left = `${Math.round(pick[0] - f.left)}px`;
+    card.style.top = `${Math.round(pick[1] - f.top)}px`;
+  };
   const show = (a: SVGAElement) => {
+    clearTimeout(timer);
+    if (active === a && !card.hidden) return;
+    active = a;
     expand(a);
     q('[data-c-code]').textContent = `${a.dataset.code} · Pilar ${a.dataset.pilar}`;
     q('[data-c-name]').textContent = a.dataset.name!;
     q('[data-c-desc]').textContent = a.dataset.desc!;
+    q('[data-c-pilar]').textContent = a.dataset.pilar!;
+    link.href = a.getAttribute('href')!;
     card.hidden = false;
-    slot.classList.add('active');
+    card.style.animation = 'none';
+    void card.offsetWidth;
+    card.style.animation = '';
+    place(a);
   };
   const hide = () => {
+    clearTimeout(timer);
+    clearTimeout(pending);
+    active = null;
     expand(null);
     card.hidden = true;
-    slot.classList.remove('active');
+  };
+  const later = () => {
+    clearTimeout(timer);
+    timer = window.setTimeout(hide, 350);
   };
   segs.forEach((a) => {
-    a.addEventListener('pointerenter', () => show(a));
-    a.addEventListener('focus', () => show(a));
+    // Con una ficha abierta, el cambio a otro segmento espera un instante: así se puede cruzar
+    // la rueda hacia la ficha sin que cambie en el camino
+    a.addEventListener('pointerenter', (e) => {
+      if (e.pointerType === 'touch') return;
+      clearTimeout(pending);
+      if (card.hidden) show(a);
+      else pending = window.setTimeout(() => show(a), 140);
+    });
+    a.addEventListener('pointerleave', () => clearTimeout(pending));
+    a.addEventListener('focus', () => { if (!touch) show(a); });
+    // En pantallas táctiles, el primer toque muestra la ficha y el segundo abre el pilar
+    a.addEventListener('click', (e) => {
+      if (touch && active !== a) {
+        e.preventDefault();
+        show(a);
+      }
+    });
   });
-  svg.addEventListener('pointerleave', hide);
-  svg.addEventListener('focusout', (e) => { if (!svg.contains(e.relatedTarget as Node)) hide(); });
+  root.addEventListener('pointerdown', (e) => { touch = e.pointerType === 'touch'; }, { capture: true });
+  svg.addEventListener('pointerenter', () => clearTimeout(timer));
+  svg.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') later(); });
+  card.addEventListener('pointerenter', () => { clearTimeout(timer); clearTimeout(pending); });
+  card.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') later(); });
+  fig.addEventListener('focusout', (e) => { if (!fig.contains(e.relatedTarget as Node)) later(); });
+  fig.addEventListener('focusin', () => clearTimeout(timer));
+  document.addEventListener('pointerdown', (e) => { if (active && !fig.contains(e.target as Node)) hide(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || !active) return;
+    const back = card.contains(document.activeElement) ? active : null;
+    back?.focus();
+    hide();
+  });
+  window.addEventListener('resize', () => { if (active) place(active); });
   const input = root.querySelector<HTMLInputElement>('[data-smap-q]');
   const count = root.querySelector<HTMLElement>('[data-smap-count]');
   const norm = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -108,15 +199,24 @@ document.querySelectorAll<HTMLElement>('[data-spy]').forEach((nav) => {
     links.forEach((a) => a.classList.toggle('on', a.hash === `#${id}`));
     items.forEach((it) => it.classList.toggle('on', it.id === id));
   };
+  // Al llegar con un ancla (o al hacer clic en el índice) se respeta ese servicio hasta que la persona desplace la página
+  let lock = false;
+  const unlock = () => { lock = false; };
+  ['wheel', 'touchstart', 'keydown'].forEach((t) => addEventListener(t, unlock, { passive: true }));
+  links.forEach((a) => a.addEventListener('click', () => { set(a.hash.slice(1)); lock = true; }));
   const spy = new IntersectionObserver(
     (entries) => {
+      if (lock) return;
       const vis = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
       if (vis[0]) set(vis[0].target.id);
     },
     { rootMargin: '-35% 0px -55% 0px' }
   );
   items.forEach((it) => spy.observe(it));
-  if (location.hash && items.some((it) => `#${it.id}` === location.hash)) set(location.hash.slice(1));
+  if (location.hash && items.some((it) => `#${it.id}` === location.hash)) {
+    set(location.hash.slice(1));
+    lock = true;
+  }
 });
 
 // ---------- Filtro de servicios ----------
