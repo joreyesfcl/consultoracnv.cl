@@ -1,0 +1,82 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { MODALIDADES, PROCESO } from '../data/nosotros';
+---
+<Base title="Cómo trabajamos" description="Seis modalidades de trabajo que se ajustan al encargo y a lo que su equipo puede asumir, y un proceso que empieza con una conversación.">
+  <PageHero
+    eyebrow="Cómo trabajamos"
+    title="La modalidad se ajusta"
+    accent="al encargo."
+    lead="Y a lo que su equipo puede asumir. Desde un producto acotado hasta el acompañamiento del ciclo completo, siempre con transferencia de capacidades."
+    crumbs={[{ label: 'Cómo trabajamos' }]}
+  />
+
+  <section class="proc-wrap" aria-labelledby="proceso">
+    <div class="container">
+      <div class="proc on-dark grat">
+        <div class="proc-head reveal">
+          <h2 id="proceso">Cuatro pasos, desde la primera conversación.</h2>
+          <p class="eyebrow">El proceso</p>
+        </div>
+        <ol class="steps stagger" role="list">
+          {PROCESO.map((p, i) => (
+            <li class:list={['step', { first: i === 0 }]}>
+              <span class="dot" aria-hidden="true"></span>
+              <span class="numeral">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{p.titulo}</h3>
+              <p>{p.texto}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="modalidades">
+    <div class="container">
+      <SectionHead id="modalidades" eyebrow="Modalidades" title="Seis formas" accent="de trabajar juntos." lead="Se pueden combinar. Muchas asesorías integrales incluyen apoyo a equipos y presentación de resultados." split />
+      <ul class="mods stagger" role="list">
+        {MODALIDADES.map((m, i) => (
+          <li class:list={['mod', 'spotlight', { featured: i === 1 }]}>
+            <span class="mono">M{i + 1}</span>
+            <h3>{m.titulo}</h3>
+            <p>{m.texto}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .proc { position: relative; padding: clamp(2rem, 4vw, 3rem); border-radius: 28px; overflow: hidden; }
+  .proc-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem 2rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+  .proc-head h2 { font-size: var(--step-2); }
+  .steps { position: relative; list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; }
+  .steps::before { content: ''; position: absolute; left: 11px; right: 0; top: 10px; height: 2px; background: linear-gradient(90deg, var(--cyan), rgba(63, 215, 255, 0.2)); }
+  .step { position: relative; display: grid; gap: 10px; align-content: start; padding-top: 44px; }
+  .dot { position: absolute; top: 0; left: 0; width: 22px; height: 22px; border-radius: 999px; background: var(--navy); border: 2px solid var(--cyan); }
+  .first .dot { background: var(--cyan); }
+  .step .numeral { font-size: 3.5rem; color: var(--cyan); }
+  .step h3 { font-size: 1.5rem; }
+  .step p { font-size: 0.95rem; color: var(--soft-blue); }
+  .mods { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .mod { display: grid; gap: 10px; align-content: start; padding: 24px; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); }
+  .mod .mono { font-size: 0.78rem; color: var(--accent); }
+  .mod h3 { font-size: 1.5rem; }
+  .mod p { font-size: 0.95rem; color: var(--text-muted); }
+  .featured { background: var(--cobalt); border-color: var(--cobalt); }
+  .featured .mono, .featured p { color: var(--ice); }
+  .featured h3 { color: var(--white); }
+  @media (max-width: 960px) {
+    .steps { grid-template-columns: 1fr 1fr; }
+    .steps::before { display: none; }
+    .mods { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 600px) { .steps, .mods { grid-template-columns: 1fr; } }
+</style>

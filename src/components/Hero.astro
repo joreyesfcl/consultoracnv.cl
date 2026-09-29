@@ -1,0 +1,175 @@
+---
+// Portada (mesa 01 del lienzo "Estratos"): texto a la izquierda y, a la derecha, la imagen
+// de marca con una retícula geográfica calibrada sobre la silueta de Chile, Santiago
+// referenciado y un punto que sigue al cursor (lógica en src/scripts/motion.ts).
+import { Picture } from 'astro:assets';
+import fondo from '../assets/main.png';
+import Icon from './Icon.astro';
+import { SITE } from '../data/site';
+
+// Índice lateral: secciones del Inicio
+const indice = [
+  ['contribuir', 'En qué contribuimos'],
+  ['que-cambia', 'Qué cambia'],
+  ['desafios', 'Desafíos'],
+  ['modelo', 'Modelo de servicios'],
+  ['sectores', 'Sectores'],
+  ['equipo', 'Equipo'],
+];
+// Escala de la retícula (coordenadas del lienzo 600×900): latitud → y, longitud → x
+const lat = (l: number) => 95 + (l - 17.5) * 17.27;
+const lon = (o: number) => 518 + (70.67 - o) * 20;
+const paralelos = [20, 30, 40, 50];
+const meridianos = [76, 72, 68];
+const flujos = [
+  'M151 724 C 283 670, 420 560, 518 370',
+  'M217 790 C 360 740, 470 560, 518 370',
+  'M693 417 C 623 428, 560 400, 518 370',
+  'M693 615 C 620 600, 545 480, 518 370',
+  'M0 330 C 180 320, 360 385, 518 370',
+];
+---
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-text">
+    <ol class="index" aria-label="En esta página">
+      {indice.map(([id, label], i) => (
+        <li><a href={`#${id}`} class:list={{ on: i === 0 }}><span aria-hidden="true">{String(i + 1).padStart(2, '0')}</span><span class="sr-only">{label}</span><span class="tip" aria-hidden="true">{label}</span></a></li>
+      ))}
+    </ol>
+    <div class="copy">
+      <p class="eyebrow rise">{SITE.lema}</p>
+      <h1 id="hero-title" class="rise">Mejores decisiones <em>para el territorio.</em></h1>
+      <div class="bottom rise">
+        <p class="lead">Acompañamos a instituciones públicas, empresas y fundaciones a decidir dónde actuar, con qué programas y con qué recursos.</p>
+        <div class="ctas">
+          <a href="/contacto/" class="btn magnetic">Conversemos <Icon name="arrow-right" /></a>
+          <a href="/servicios/" class="btn btn-ghost">Ver servicios</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot mono">
+      <span>Sector público · Empresas · Tercer sector</span>
+      <a href="#contribuir" class="scroll">Desplácese <span aria-hidden="true"></span></a>
+    </div>
+  </div>
+
+  <div class="panel on-dark" data-tracker>
+    <div class="stage">
+      <Picture src={fondo} alt="" formats={['avif', 'webp']} widths={[640, 960, 1254]} sizes="(max-width: 900px) 100vw, 45vw" loading="eager" fetchpriority="high" class="img" />
+      <svg viewBox="0 0 600 900" aria-hidden="true" class="overlay">
+        <defs>
+          <radialGradient id="hGlow"><stop offset="0%" stop-color="#3FD7FF" stop-opacity="0.9" /><stop offset="100%" stop-color="#3FD7FF" stop-opacity="0" /></radialGradient>
+        </defs>
+        <g class="grid">
+          {paralelos.map((l) => <line x1="0" y1={lat(l)} x2="600" y2={lat(l)} />)}
+          {meridianos.map((o) => <line x1={lon(o)} y1="0" x2={lon(o)} y2="900" />)}
+        </g>
+        <g class="labels">
+          {paralelos.map((l) => <text x="16" y={lat(l) - 6}>{l}°S</text>)}
+          {meridianos.map((o, i) => <text x={i === 2 ? lon(o) - 6 : lon(o) + 6} y="886" text-anchor={i === 2 ? 'end' : 'start'}>{o}°O</text>)}
+        </g>
+        <g class="flows">
+          {flujos.map((d, i) => <path d={d} style={`--d:${-i * 1.4}s`} />)}
+        </g>
+        <g class="santiago">
+          <line x1="64" y1="370" x2="504" y2="370" class="guide" />
+          <line x1="16" y1="370" x2="56" y2="370" class="tick" />
+          <text x="16" y="362" class="lat">33°27′S</text>
+          <circle cx="518" cy="370" r="16" fill="url(#hGlow)" opacity="0.55" />
+          <circle cx="518" cy="370" r="12" class="ring" />
+          <circle cx="518" cy="370" r="7" class="ring-static" />
+          <circle cx="518" cy="370" r="2.6" class="dot" />
+          <text x="504" y="346" text-anchor="end" class="name">SANTIAGO</text>
+          <text x="504" y="360" text-anchor="end" class="coords">33°27′S · 70°40′O</text>
+        </g>
+        <g class="tracker" data-tracker-dot>
+          <circle r="18" fill="url(#hGlow)" opacity="0.7" />
+          <circle r="9" class="t-ring" />
+          <circle r="3.5" class="t-dot" />
+          <text x="16" y="4" data-tracker-label></text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    min-height: calc(100svh - var(--header-h));
+    max-height: 1100px;
+  }
+  .hero-text {
+    grid-column: span 7;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: 1fr auto;
+    column-gap: 2rem;
+    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.5rem, 4vw, 3.5rem) 2rem var(--gutter);
+  }
+  .index { align-self: center; list-style: none; padding: 0; display: grid; gap: 0.9rem; border-left: 1px solid var(--line); font-family: var(--font-mono); font-size: 0.7rem; }
+  .index a { position: relative; display: block; padding-left: 0.8rem; margin-left: -1px; color: var(--text-muted); text-decoration: none; border-left: 2px solid transparent; }
+  .index a.on, .index a:hover { color: var(--accent); border-left-color: var(--accent); }
+  .tip { position: absolute; left: 3rem; top: 50%; transform: translate(-6px, -50%); white-space: nowrap; padding: 0.2rem 0.5rem; border-radius: 6px; background: var(--heading); color: var(--bg); opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s var(--ease); }
+  .index a:hover .tip, .index a:focus-visible .tip { opacity: 1; transform: translate(0, -50%); }
+  .copy { align-self: center; display: grid; gap: clamp(1.2rem, 2.5vw, 1.8rem); }
+  h1 { font-size: clamp(3rem, 1.2rem + 5.4vw, 7rem); line-height: 0.92; letter-spacing: -0.045em; }
+  .bottom { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; align-items: end; }
+  .lead { font-size: var(--step-1); }
+  .ctas { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .foot { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--line); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+  .scroll { display: inline-flex; align-items: center; gap: 0.6rem; color: inherit; text-decoration: none; }
+  .scroll span { display: inline-block; width: 1px; height: 22px; background: var(--accent); }
+
+  .panel { grid-column: span 5; position: relative; overflow: hidden; container-type: size; background: var(--navy); min-height: 480px; }
+  .stage {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: max(100cqw, 100cqh * 2 / 3);
+    height: max(100cqh, 100cqw * 1.5);
+    transform: translateY(-50%);
+  }
+  .img, .img :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 88% center; opacity: 0.92; }
+  .overlay { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .grid line { stroke: #EAF6FF; stroke-opacity: 0.14; }
+  .labels text, .santiago text, .tracker text { font-family: var(--font-mono); letter-spacing: 1px; }
+  .labels text { font-size: 11px; fill: var(--soft-blue); }
+  .flows path { fill: none; stroke: #3FD7FF; stroke-width: 1.2; stroke-opacity: 0.6; stroke-linecap: round; stroke-dasharray: 6 220; }
+  .guide { stroke: #3FD7FF; stroke-opacity: 0.55; stroke-dasharray: 2 5; }
+  .tick { stroke: #3FD7FF; stroke-width: 1.5; }
+  .lat { font-size: 11px; fill: #3FD7FF; }
+  .ring, .ring-static { fill: none; stroke: #3FD7FF; }
+  .ring { stroke-width: 1.5; transform-box: fill-box; transform-origin: center; }
+  .dot { fill: var(--snow); }
+  .name { font-size: 12px; font-weight: 500; fill: var(--snow); letter-spacing: 1.5px; }
+  .coords { font-size: 10px; fill: var(--soft-blue); }
+  .tracker { opacity: 0; transition: opacity 0.35s var(--ease); pointer-events: none; }
+  .tracker.on { opacity: 1; }
+  .t-ring { fill: none; stroke: #3FD7FF; stroke-opacity: 0.6; }
+  .t-dot { fill: #3FD7FF; }
+  .tracker text { font-size: 10px; fill: var(--snow); }
+  @media (prefers-reduced-motion: no-preference) {
+    .flows path { animation: flow 7s linear infinite var(--d); }
+    .ring { animation: ring 2.4s ease-out infinite; }
+  }
+  @keyframes flow { to { stroke-dashoffset: -452; } }
+  @keyframes ring { 0% { opacity: 0.8; transform: scale(0.6); } 100% { opacity: 0; transform: scale(2.2); } }
+
+  :global(.motion) .rise { animation: rise 0.9s var(--ease) both; }
+  :global(.motion) h1.rise { animation-delay: 0.1s; }
+  :global(.motion) .bottom.rise { animation-delay: 0.3s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(24px); } }
+
+  @media (max-width: 1080px) {
+    .bottom { grid-template-columns: 1fr; gap: 1.4rem; }
+  }
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; min-height: 0; max-height: none; }
+    .hero-text { grid-column: 1; grid-template-columns: 1fr; padding-inline: var(--gutter); padding-top: 1.5rem; }
+    .index { display: none; }
+    .panel { grid-column: 1; margin: 0 var(--gutter) 1.5rem; border-radius: var(--radius-lg); height: min(62svh, 560px); min-height: 360px; }
+    .foot { display: none; }
+  }
+</style>

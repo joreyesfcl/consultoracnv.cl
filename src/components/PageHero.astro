@@ -1,0 +1,112 @@
+---
+// Cabecera de las páginas internas (lenguaje "Estratos"): migas de pan en mono,
+// titular serif grande con acento en cursiva y retícula de fondo.
+// tone: 'light' (fondo claro), 'dark' (navy con la imagen de marca) o 'color' (banda de color de pilar).
+import { Picture } from 'astro:assets';
+import fondo from '../assets/main.png';
+
+interface Crumb { label: string; href?: string }
+interface Props {
+  eyebrow?: string;
+  title: string;
+  accent?: string;
+  lead?: string;
+  crumbs?: Crumb[];
+  tone?: 'light' | 'dark' | 'color';
+  color?: string;
+  numeral?: string;
+}
+const { eyebrow, title, accent, lead, crumbs = [], tone = 'light', color, numeral } = Astro.props;
+const base = 'https://consultoracnv.cl';
+const breadcrumb = crumbs.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [{ label: 'Inicio', href: '/' }, ...crumbs].map((c, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: c.label,
+        ...(c.href || i === crumbs.length ? { item: base + (c.href ?? Astro.url.pathname) } : {}),
+      })),
+    }
+  : null;
+const aria = accent ? `${title} ${accent}` : title;
+---
+<section
+  class:list={['page-hero', 'grat', `tone-${tone}`, { 'on-dark': tone === 'dark' }]}
+  style={color ? `--band: ${color}` : undefined}
+>
+  {breadcrumb && <script type="application/ld+json" set:html={JSON.stringify(breadcrumb)} />}
+  {tone === 'dark' && (
+    <Picture src={fondo} alt="" formats={['avif', 'webp']} widths={[640, 960, 1254]} sizes="(max-width: 760px) 100vw, 50vw" class="bg" loading="eager" fetchpriority="high" />
+  )}
+  <div class="container inner">
+    {crumbs.length > 0 && (
+      <nav aria-label="Ruta de navegación" class="crumbs rise">
+        <ol role="list">
+          <li><a href="/">Inicio</a></li>
+          {crumbs.map((c) => (
+            <li>{c.href ? <a href={c.href}>{c.label}</a> : <span aria-current="page">{c.label}</span>}</li>
+          ))}
+        </ol>
+      </nav>
+    )}
+    <div class:list={['head', { 'with-num': numeral }]}>
+      {numeral && <span class="numeral big-num rise" aria-hidden="true">{numeral}</span>}
+      <div class="head-text">
+        {eyebrow && <p class="eyebrow rise">{eyebrow}</p>}
+        <h1 class="rise" aria-label={aria}>{title}{accent && <> <em>{accent}</em></>}</h1>
+        {lead && <p class="lead rise">{lead}</p>}
+      </div>
+    </div>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(3rem, 6vw, 5rem);
+    background: var(--bg);
+  }
+  .tone-color {
+    --heading: var(--navy);
+    --text: var(--navy);
+    --text-muted: rgba(7, 28, 56, 0.78);
+    --accent: var(--navy);
+    --grid-line: rgba(7, 28, 56, 0.14);
+    background: var(--band, var(--sky));
+    color: var(--navy);
+  }
+  .tone-color .crumbs ol { color: var(--navy); }
+  .bg, .bg :global(img) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: min(52%, 720px);
+    height: 100%;
+    object-fit: cover;
+    object-position: 88% 30%;
+    z-index: -2;
+    opacity: 0.6;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 35%);
+    mask-image: linear-gradient(90deg, transparent, #000 35%);
+  }
+  .inner { display: grid; gap: 1.6rem; }
+  .head { display: grid; gap: 1.2rem; }
+  .head.with-num { grid-template-columns: auto minmax(0, 1fr); align-items: end; column-gap: clamp(1.2rem, 3vw, 2.5rem); }
+  .big-num { font-size: clamp(6rem, 3rem + 11vw, 13.75rem); color: var(--heading); }
+  .head-text { display: grid; gap: 1rem; justify-items: start; max-width: 900px; }
+  h1 { font-size: var(--step-4); }
+  .with-num h1 { font-size: var(--step-3); font-weight: 400; }
+  .tone-color h1 em { color: var(--navy); }
+  :global(.motion) .rise { animation: ph-rise 0.8s var(--ease) both; }
+  :global(.motion) h1.rise { animation-delay: 0.08s; }
+  :global(.motion) .lead.rise { animation-delay: 0.16s; }
+  @keyframes ph-rise { from { opacity: 0; transform: translateY(20px); } }
+  @media (max-width: 760px) {
+    .bg, .bg :global(img) { width: 100%; opacity: 0.25; -webkit-mask-image: none; mask-image: none; }
+    .head.with-num { grid-template-columns: 1fr; }
+  }
+</style>

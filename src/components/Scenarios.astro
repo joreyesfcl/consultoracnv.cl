@@ -1,0 +1,124 @@
+---
+// Situaciones tipo (mesa 16C): el mismo territorio antes y después, con los pasos de la
+// ruta como fichas de un expediente que llevan el código del servicio del catálogo.
+import { Image } from 'astro:assets';
+import fondo from '../assets/main.png';
+import Icon from './Icon.astro';
+import { ESCENARIOS } from '../data/escenarios';
+import { PILARES } from '../data/servicios';
+
+interface Props { tipos?: readonly string[]; title?: string; accent?: string }
+const { tipos, title = 'El mismo territorio,', accent = 'antes y después.' } = Astro.props;
+const lista = tipos ? ESCENARIOS.filter((e) => tipos.includes(e.tipo)) : ESCENARIOS;
+const todos = PILARES.flatMap((p) => p.servicios);
+const nombre = (c: string) => todos.find((s) => s.codigo === c)?.nombre ?? '';
+const rot = [-1.2, 0.8, -0.6, 1, -0.8];
+const slug = (i: number) => `esc-${i}`;
+---
+<section class="section scenarios" id="situaciones" aria-labelledby="esc-title">
+  <div class="container" data-tabs>
+    <div class="top">
+      <header class="section-head reveal">
+        <p class="eyebrow">Situaciones tipo</p>
+        <h2 id="esc-title">{title} <em>{accent}</em></h2>
+      </header>
+      <p class="note">Construidas a partir de patrones frecuentes en Chile. No corresponden a un cliente en particular.</p>
+    </div>
+    {lista.length > 1 && (
+    <div class="tabs reveal" role="tablist" aria-label="Situaciones tipo">
+      {lista.map((e, i) => (
+        <button type="button" role="tab" id={`t-${slug(i)}`} aria-controls={slug(i)} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>{e.tipo}</button>
+      ))}
+    </div>
+    )}
+    {lista.map((e, i) => (
+      <div class="panel" role={lista.length > 1 ? 'tabpanel' : undefined} id={slug(i)} aria-labelledby={lista.length > 1 ? `t-${slug(i)}` : undefined} hidden={i !== 0}>
+        <section class="card before" aria-label="Antes">
+          <Image src={fondo} alt="" widths={[480, 720]} sizes="(max-width: 960px) 100vw, 30vw" class="img" loading="lazy" />
+          <span class="mono lbl">Antes · {e.tipo}</span>
+          <h3>{e.titulo}</h3>
+          <p>{e.situacion}</p>
+        </section>
+        <section class="file" aria-label="Expediente de trabajo">
+          <span class="mono lbl">Expediente de trabajo</span>
+          <ol role="list">
+            {e.ruta.map((paso, k) => (
+              <li style={`--r:${rot[k]}deg; --k:${k}`}>
+                <span class="code mono">{e.servicios[k]}</span>
+                <span class="txt">
+                  <span class="mono step">Paso {String(k + 1).padStart(2, '0')}</span>
+                  <strong>{paso}</strong>
+                  <span class="svc">{nombre(e.servicios[k])}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+        <section class="card after on-dark" aria-label="Después">
+          <Image src={fondo} alt="" widths={[480, 720]} sizes="(max-width: 960px) 100vw, 30vw" class="img" loading="lazy" />
+          <span class="mono lbl">Después</span>
+          <p class="res">{e.resultado}</p>
+          <a href="/contacto/" class="btn">Conversemos sobre su caso <Icon name="arrow-right" /></a>
+        </section>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .top { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem 3rem; flex-wrap: wrap; }
+  .top .section-head { margin: 0; }
+  .note { max-width: 360px; font-size: 0.85rem; color: var(--text-muted); }
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 1.8rem 0 1.4rem; }
+  [role='tab'] { min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--text); font-size: 0.9rem; font-weight: 500; }
+  [role='tab'][aria-selected='true'] { background: var(--navy); border-color: var(--navy); color: var(--snow); }
+  :global(:root[data-theme='dark']) [role='tab'][aria-selected='true'] { background: var(--cyan); border-color: var(--cyan); color: var(--navy); }
+  .top + .panel { margin-top: 1.8rem; }
+  .panel { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 380px) minmax(0, 1fr); gap: 20px; align-items: stretch; min-height: 520px; }
+  .panel:not([hidden]) { animation: swap-in 0.45s var(--ease) both; }
+  .card { position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; gap: 12px; padding: 28px; border-radius: var(--radius-lg); }
+  .img, .card :global(img.img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 88% 40%; z-index: -1; }
+  .lbl { position: relative; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; }
+  .before { background: #DDE6F1; color: #3D5372; }
+  .before :global(img) { filter: grayscale(1); opacity: 0.18; }
+  .before .lbl { color: var(--slate); }
+  .before h3 { color: var(--slate); font-size: 1.6rem; font-weight: 400; }
+  .before p { margin-top: auto; font-size: 1rem; line-height: 1.55; }
+  .after :global(img) { opacity: 0.55; }
+  .after .lbl { color: var(--cyan); }
+  .res { margin-top: auto; font-family: var(--font-display); font-size: 1.6rem; line-height: 1.3; }
+  .after .btn { align-self: flex-start; }
+  .file { display: flex; flex-direction: column; justify-content: center; }
+  .file .lbl { text-align: center; color: var(--text-muted); margin-bottom: 12px; }
+  .file ol { list-style: none; padding: 0; display: flex; flex-direction: column; }
+  .file li {
+    position: relative;
+    z-index: calc(var(--k) + 1);
+    display: grid;
+    grid-template-columns: 58px minmax(0, 1fr);
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: 0 10px 24px -14px rgba(7, 28, 56, 0.45);
+    transform: rotate(var(--r));
+    margin-top: -6px;
+    transition: transform 0.3s var(--ease);
+  }
+  .file li:first-child { margin-top: 0; }
+  .file li:hover { transform: rotate(0deg) translateX(4px); }
+  .code { display: flex; align-items: center; justify-content: center; height: 46px; border-radius: 10px; background: var(--navy); color: var(--cyan); font-size: 0.78rem; }
+  .txt { display: grid; gap: 2px; }
+  .step { font-size: 0.65rem; color: var(--text-muted); }
+  .txt strong { font-size: 0.9rem; line-height: 1.25; color: var(--heading); }
+  .svc { font-size: 0.78rem; line-height: 1.3; color: var(--text-muted); }
+  :global(.motion) .panel:not([hidden]) .file li { animation: deal 0.5s var(--ease) both; animation-delay: calc(var(--k) * 90ms + 0.1s); }
+  @keyframes deal { from { opacity: 0; transform: translateY(-18px) rotate(0deg); } }
+  :global(:root[data-theme='dark']) .before { background: var(--navy-3); color: var(--soft-blue); }
+  @media (max-width: 960px) {
+    .panel { grid-template-columns: 1fr; min-height: 0; }
+    .card { min-height: 260px; }
+  }
+</style>

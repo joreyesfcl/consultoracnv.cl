@@ -1,0 +1,111 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { SITE } from '../data/site';
+
+const tipos = [
+  'Gobierno regional', 'Municipio o corporación municipal', 'Servicio público', 'Asociación de municipios',
+  'Asociación de Gobiernos Regionales', 'Empresa', 'Área de sostenibilidad o RSE', 'Fundación corporativa',
+  'Fundación, corporación u ONG', 'Organismo multilateral', 'Otro',
+];
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE.url}/` },
+    { '@type': 'ListItem', position: 2, name: 'Contacto', item: `${SITE.url}/contacto/` },
+  ],
+};
+---
+<Base jsonLd={breadcrumb} title="Contacto" description="Cuéntenos cuál es su desafío. Escríbanos o agende una reunión: la traducción a servicios la hacemos nosotros.">
+  <section class="section contact">
+    <div class="container grid">
+      <div class="side">
+        <nav aria-label="Ruta de navegación" class="crumbs"><ol role="list"><li><a href="/">Inicio</a></li><li><span aria-current="page">Contacto</span></li></ol></nav>
+        <h1>Cuéntenos cuál es su desafío <em>más complejo.</em></h1>
+        <p class="lead">Buena parte de nuestros encargos empieza con una conversación en la que el desafío se cuenta en los términos de quien lo tiene. La traducción a servicios la hacemos nosotros.</p>
+        <dl class="info">
+          <dt class="mono">Correo</dt><dd><a href={`mailto:${SITE.email}`}>{SITE.email}</a></dd>
+          <dt class="mono">Ciudad</dt><dd>{SITE.ciudad}</dd>
+          <dt class="mono">LinkedIn</dt><dd><a href={SITE.linkedin} target="_blank" rel="noopener">Consultora CNV ↗</a></dd>
+        </dl>
+        <a href={SITE.agenda} target="_blank" rel="noopener" class="btn btn-ghost agenda"><Icon name="calendar" /> Agendar una reunión</a>
+      </div>
+
+      <div class="form-card" id="formulario">
+        <h2 class="h">Escríbanos</h2>
+        <form data-contact action={SITE.formspree} method="POST" novalidate>
+          <div class="row">
+            <label for="nombre">Nombre<input id="nombre" name="nombre" autocomplete="name" required /></label>
+            <label for="cargo">Cargo<input id="cargo" name="cargo" autocomplete="organization-title" /></label>
+          </div>
+          <div class="row">
+            <label for="organizacion">Organización<input id="organizacion" name="organizacion" autocomplete="organization" /></label>
+            <label for="email">Correo electrónico<input id="email" name="email" type="email" autocomplete="email" required /></label>
+          </div>
+          <label for="tipo">Tipo de organización
+            <select id="tipo" name="tipo">
+              <option value="">Seleccione…</option>
+              {tipos.map((t) => <option>{t}</option>)}
+            </select>
+          </label>
+          <label for="mensaje">¿Cuál es su desafío?
+            <textarea id="mensaje" name="mensaje" rows="7" required placeholder="Describa brevemente la situación, su organización y los plazos, si los hay."></textarea>
+          </label>
+          <label class="hp" aria-hidden="true">No completar<input name="_gotcha" tabindex="-1" autocomplete="off" /></label>
+          <label class="check" for="consentimiento">
+            <input type="checkbox" id="consentimiento" name="consentimiento" required />
+            <span>Acepto que Consultora CNV use estos datos solo para responder mi mensaje, según la <a href="/privacidad/">política de privacidad</a>.</span>
+          </label>
+          <button type="submit" class="btn">Enviar mensaje <Icon name="arrow-right" /></button>
+          <p class="status" role="status" aria-live="polite" data-status></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact { padding-top: clamp(1.5rem, 3vw, 2.5rem); }
+  .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; row-gap: 2.5rem; align-items: start; }
+  .side { grid-column: span 5; display: grid; gap: 1.4rem; justify-items: start; }
+  h1 { font-size: clamp(2.6rem, 1.6rem + 3.4vw, 4.4rem); }
+  .lead { font-size: var(--step-0); }
+  .info { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px 16px; margin: 0; }
+  .info dt { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); padding-top: 3px; }
+  .info dd { margin: 0; font-weight: 600; }
+  .info a { text-decoration: none; }
+  .info a:hover { color: var(--accent); text-decoration: underline; }
+
+  .form-card { grid-column: 7 / span 6; padding: clamp(1.5rem, 4vw, 2.3rem); border-radius: 28px; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-lg); scroll-margin-top: calc(var(--header-h) + 1rem); }
+  .h { font-size: 1.9rem; font-weight: 400; margin-bottom: 1rem; }
+  form { display: grid; gap: 1rem; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  form > label, .row label { display: grid; gap: 0.4rem; font-size: 0.85rem; font-weight: 600; color: var(--heading); }
+  input:not([type='checkbox']):not([type='radio']), select, textarea {
+    width: 100%;
+    min-height: 50px;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--text);
+    font-weight: 400;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  textarea { resize: vertical; }
+  [aria-invalid='true'] { border-color: #C0392B !important; }
+  .check input[aria-invalid='true'] { outline: 2px solid #C0392B; outline-offset: 2px; }
+  .hp { position: absolute; left: -9999px; }
+  .check { display: flex !important; gap: 0.7rem; align-items: flex-start; font-size: 0.85rem; font-weight: 400 !important; color: var(--text-muted) !important; }
+  .check input { margin-top: 0.15rem; width: 20px; height: 20px; accent-color: var(--cobalt); flex-shrink: 0; }
+  form .btn { justify-self: start; }
+  .status { font-size: 0.95rem; }
+  .status.ok { color: var(--accent); font-weight: 600; }
+  .status.err { color: #C0392B; }
+  :global(:root[data-theme='dark']) .status.err, :global(:root[data-theme='dark']) [aria-invalid='true'] { color: #FF8A80; border-color: #FF8A80 !important; }
+  @media (max-width: 900px) { .side, .form-card { grid-column: 1 / -1; } }
+  @media (max-width: 560px) { .row { grid-template-columns: 1fr; } }
+</style>

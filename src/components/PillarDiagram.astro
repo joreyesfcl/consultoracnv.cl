@@ -1,0 +1,166 @@
+---
+// Mapa radial de los 27 servicios (mesa 02): los 5 pilares en el anillo interior y sus
+// servicios en el exterior. Al pasar el cursor o enfocar un segmento se muestra su ficha;
+// el buscador resalta los servicios que coinciden. Lógica en src/scripts/ui.ts ([data-smap]).
+import Icon from './Icon.astro';
+import { PILARES } from '../data/servicios';
+
+interface Props { eyebrow?: string; title?: string; accent?: string; lead?: string; id?: string }
+const {
+  eyebrow = 'Nuestro modelo',
+  title = 'Todo lo que hacemos,',
+  accent = 'en un solo mapa.',
+  lead = 'Cinco pilares y veintisiete servicios, que se contratan por separado o encadenados en una asesoría integral. Cada segmento es un servicio: al pasar el cursor muestra su ficha.',
+  id = 'modelo',
+} = Astro.props;
+
+const C = 300;
+const COLORS = ['var(--p01)', 'var(--p02)', 'var(--p03)', 'var(--p04)', 'var(--p05)'];
+const TXT = ['#F8FBFF', '#F8FBFF', '#F8FBFF', '#071C38', '#071C38'];
+const pt = (r: number, deg: number) => {
+  const a = ((deg - 90) * Math.PI) / 180;
+  return [C + r * Math.cos(a), C + r * Math.sin(a)];
+};
+const f = (n: number) => n.toFixed(1);
+const sector = (r0: number, r1: number, a0: number, a1: number) => {
+  const [x0, y0] = pt(r1, a0), [x1, y1] = pt(r1, a1), [x2, y2] = pt(r0, a1), [x3, y3] = pt(r0, a0);
+  const large = a1 - a0 > 180 ? 1 : 0;
+  return `M${f(x0)} ${f(y0)}A${r1} ${r1} 0 ${large} 1 ${f(x1)} ${f(y1)}L${f(x2)} ${f(y2)}A${r0} ${r0} 0 ${large} 0 ${f(x3)} ${f(y3)}Z`;
+};
+const total = PILARES.reduce((n, p) => n + p.servicios.length, 0);
+const step = 360 / total;
+let k = 0;
+const pilares = PILARES.map((p, i) => {
+  const a0 = k * step;
+  const servicios = p.servicios.map((s) => {
+    const b0 = k * step + 0.45, b1 = (k + 1) * step - 0.45;
+    k++;
+    return { ...s, d: sector(158, 258, b0, b1), dOn: sector(158, 276, b0, b1) };
+  });
+  const a1 = k * step;
+  const [lx, ly] = pt(121, (a0 + a1) / 2);
+  return { ...p, i, color: COLORS[i], txt: TXT[i], d: sector(92, 150, a0 + 0.6, a1 - 0.6), lx, ly, servicios };
+});
+---
+<section class="smap on-dark" id={id} aria-labelledby={`${id}-title`} data-smap>
+  <div class="container grid">
+    <div class="figure reveal">
+      <svg viewBox="0 0 600 600" role="group" aria-labelledby={`${id}-svg`}>
+        <title id={`${id}-svg`}>Mapa radial: los 5 pilares en el anillo interior y sus {total} servicios en el anillo exterior</title>
+        <circle cx={C} cy={C} r="286" class="orbit" />
+        {pilares.map((p) => (
+          <g class="pilar" style={`--c:${p.color}`}>
+            <path d={p.d} class="p-seg" />
+            <text x={f(p.lx)} y={f(p.ly)} dy="0.35em" text-anchor="middle" fill={p.txt} class="p-num">{p.numero}</text>
+            {p.servicios.map((s) => (
+              <a
+                href={`/servicios/${p.slug}/#s-${s.codigo.replace('.', '-')}`}
+                class="svc"
+                data-svc
+                data-code={s.codigo}
+                data-name={s.nombre}
+                data-desc={s.descripcion}
+                data-pilar={p.numero}
+                data-href={`/servicios/${p.slug}/`}
+                aria-label={`${s.codigo} ${s.nombre}`}
+              >
+                <path d={s.d} data-d={s.d} data-don={s.dOn} />
+              </a>
+            ))}
+          </g>
+        ))}
+        <circle cx={C} cy={C} r="84" class="hub" />
+        <text x={C} y="292" text-anchor="middle" class="hub-n">{total}</text>
+        <text x={C} y="322" text-anchor="middle" class="hub-t">SERVICIOS</text>
+      </svg>
+    </div>
+
+    <div class="text">
+      <header class="section-head reveal">
+        <p class="eyebrow">{eyebrow}</p>
+        <h2 id={`${id}-title`}>{title} <em>{accent}</em></h2>
+        <p class="lead">{lead}</p>
+      </header>
+      <label class="search reveal">
+        <span class="sr-only">Buscar un servicio</span>
+        <Icon name="search" size={18} />
+        <input type="search" placeholder="Buscar: evaluación, fondos, indicadores…" data-smap-q autocomplete="off" />
+        <span class="mono count" data-smap-count aria-live="polite"></span>
+      </label>
+      <div class="slot reveal" aria-live="polite">
+        <p class="mono hint" data-card-hint>Pase el cursor sobre la rueda para ver cada servicio</p>
+        <div class="card" data-card hidden>
+          <span class="mono code" data-c-code></span>
+          <span class="c-name" data-c-name></span>
+          <span class="c-desc" data-c-desc></span>
+          <span class="mono c-go" aria-hidden="true">Clic para abrir el pilar →</span>
+        </div>
+      </div>
+      <ul class="legend reveal" role="list">
+        {pilares.map((p) => (
+          <li>
+            <a href={`/servicios/${p.slug}/`} style={`--c:${p.color}`}>
+              <span class="sw" aria-hidden="true"></span>
+              <span>{p.numero} · {p.nombre}</span>
+              <span class="mono n">{p.servicios.length} servicios</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .smap { padding-block: var(--section); overflow: hidden; }
+  .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; row-gap: 2rem; align-items: center; }
+  .figure { grid-column: span 7; position: relative; }
+  .figure svg { width: min(100%, 680px); height: auto; overflow: visible; }
+  .text { grid-column: span 5; display: grid; gap: 1.6rem; }
+  .text .section-head { margin: 0; }
+  .orbit { fill: none; stroke: var(--soft-blue); stroke-opacity: 0.15; stroke-dasharray: 2 6; }
+  .p-seg { fill: var(--c); }
+  .p-num { font-family: var(--font-body); font-size: 15px; font-weight: 600; pointer-events: none; }
+  .svc path { fill: var(--c); fill-opacity: 0.42; transition: fill-opacity 0.25s, opacity 0.25s; }
+  .svc:hover path, .svc:focus-visible path, .svc.on path { fill-opacity: 1; }
+  .svc:focus-visible { outline: none; }
+  .svc:focus-visible path { stroke: var(--snow); stroke-width: 2; }
+  .smap.searching .svc:not(.match) path { opacity: 0.18; }
+  .smap.searching .svc.match path { fill-opacity: 0.9; }
+  .hub { fill: var(--navy); }
+  .hub-n { font-family: var(--font-display); font-size: 46px; font-weight: 300; fill: var(--snow); }
+  .hub-t { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; fill: var(--soft-blue); }
+  .slot { position: relative; min-height: 152px; display: grid; }
+  .hint { align-self: center; justify-self: start; padding: 0.6rem 1rem; border-radius: 999px; border: 1px dashed rgba(185, 206, 232, 0.35); font-size: 0.75rem; color: var(--soft-blue); }
+  .slot.active .hint { display: none; }
+  .card {
+    display: grid;
+    align-content: start;
+    gap: 6px;
+    padding: 16px 18px;
+    border-radius: 14px;
+    background: var(--snow);
+    color: var(--ink);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+    --accent: var(--cobalt);
+    animation: swap-in 0.25s var(--ease) both;
+  }
+  .card .code { font-size: 0.75rem; color: var(--cobalt); }
+  .c-name { font-family: var(--font-display); font-size: 1.2rem; line-height: 1.2; font-weight: 600; color: var(--navy); }
+  .c-desc { font-size: 0.88rem; color: var(--slate); }
+  .c-go { font-size: 0.72rem; color: var(--cobalt); }
+  .search { display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(185, 206, 232, 0.3); background: rgba(248, 251, 255, 0.04); color: var(--soft-blue); }
+  .search input { flex: 1; min-width: 0; border: 0; background: transparent; color: var(--snow); font-size: 0.95rem; outline: none; }
+  .search:focus-within { border-color: var(--cyan); }
+  .count { font-size: 0.72rem; white-space: nowrap; }
+  .legend { list-style: none; padding: 0; border-top: 1px solid var(--line); }
+  .legend a { display: grid; grid-template-columns: 28px 1fr auto; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); color: var(--snow); text-decoration: none; font-size: 0.95rem; }
+  .legend a:hover { color: var(--cyan); }
+  .sw { width: 14px; height: 14px; border-radius: 4px; background: var(--c); }
+  .legend .n { font-size: 0.72rem; color: var(--soft-blue); }
+  @media (hover: none) { .slot { display: none; } }
+  @media (max-width: 960px) {
+    .figure, .text { grid-column: 1 / -1; }
+    .text { order: -1; }
+  }
+</style>

@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { Picture } from 'astro:assets';
+import fondo from '../assets/main.png';
+---
+<Base title="Página no encontrada" noindex tone="dark">
+  <section class="nf on-dark grat">
+    <Picture src={fondo} alt="" formats={['avif', 'webp']} widths={[640, 960, 1254]} sizes="50vw" class="bg" loading="eager" />
+    <svg viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true" class="map">
+      <line x1="780" y1="560" x2="1150" y2="330" class="guide" />
+      <circle cx="780" cy="560" r="22" class="halo" />
+      <circle cx="780" cy="560" r="6" class="lost" />
+      <text x="800" y="598">UBICACIÓN DESCONOCIDA · 404</text>
+      <circle cx="1150" cy="330" r="4" class="stgo" />
+      <text x="1136" y="318" text-anchor="end" class="stgo-t">SANTIAGO</text>
+    </svg>
+    <div class="container inner">
+      <span class="numeral code">404</span>
+      <h1>Esta página no está en el mapa.</h1>
+      <p class="lead">Puede que la dirección haya cambiado con el nuevo sitio.</p>
+      <div class="actions">
+        <a href="/" class="btn">Volver a Santiago: ir al inicio <Icon name="arrow-right" /></a>
+        <a href="/servicios/" class="btn btn-ghost">Ver servicios</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf { position: relative; overflow: hidden; min-height: calc(100svh - var(--header-h)); display: grid; align-items: center; padding-block: 3rem 5rem; }
+  .bg, .bg :global(img) { position: absolute; right: 0; top: 0; width: min(560px, 45%); height: 100%; object-fit: cover; object-position: 88% center; opacity: 0.8; z-index: -2; }
+  .map { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
+  .guide { stroke: var(--cyan); stroke-opacity: 0.5; stroke-dasharray: 3 6; }
+  .halo { fill: none; stroke: var(--cyan); stroke-opacity: 0.35; }
+  .lost { fill: var(--cyan); }
+  .stgo { fill: var(--snow); }
+  .map text { font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px; fill: var(--soft-blue); }
+  .map .stgo-t { fill: var(--snow); }
+  @media (prefers-reduced-motion: no-preference) {
+    .halo { transform-box: fill-box; transform-origin: center; animation: ping 2.4s ease-out infinite; }
+  }
+  @keyframes ping { 0% { opacity: 1; transform: scale(0.6); } 100% { opacity: 0; transform: scale(2); } }
+  .inner { display: grid; gap: 1.3rem; justify-items: start; }
+  .inner > * { max-width: 700px; }
+  .code { font-size: clamp(6rem, 16vw, 10rem); color: var(--cyan); }
+  h1 { font-size: var(--step-3); }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+  @media (max-width: 760px) { .map, .bg { opacity: 0.3; } }
+</style>

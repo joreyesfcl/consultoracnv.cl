@@ -1,0 +1,95 @@
+---
+// ¿En qué podemos contribuir? (mesa 13): al elegir una necesidad se ilumina su pilar
+// en una pila de cinco estratos. Lógica en src/scripts/ui.ts ([data-needs]).
+import Icon from './Icon.astro';
+import { NECESIDADES } from '../data/inicio';
+import { PILARES } from '../data/servicios';
+
+const idx = (slug: string) => PILARES.findIndex((p) => p.slug === slug);
+---
+<section class="section needs" id="contribuir" aria-labelledby="needs-title" data-needs>
+  <div class="container grid">
+    <div class="left">
+      <header class="section-head reveal">
+        <p class="eyebrow">En qué podemos contribuir</p>
+        <h2 id="needs-title">Cuéntenos qué le pasa. <em>La traducción a servicios la hacemos nosotros.</em></h2>
+      </header>
+      <ul class="list" role="list">
+        {NECESIDADES.map((n, i) => {
+          const p = PILARES[idx(n.pilar)];
+          return (
+            <li>
+              <button type="button" class="need" aria-pressed={i === 0 ? 'true' : 'false'} aria-controls="needs-panel" data-need={idx(n.pilar)}>
+                <span class="mono num">{String(i + 1).padStart(2, '0')}</span>
+                <span class="texto">{n.texto}</span>
+                <span class="mono tag">Pilar {p.numero} →</span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+    <aside class="panel on-dark grat" id="needs-panel" aria-live="polite" aria-label="Pilar que corresponde">
+      <p class="eyebrow">Cinco pilares, un recorrido</p>
+      <ol role="list" class="strata">
+        {PILARES.map((p, i) => (
+          <li class:list={['stratum', { on: i === idx(NECESIDADES[0].pilar) }]} data-stratum={i}>
+            <div class="st-head"><span class="numeral">{p.numero}</span><span class="st-name">{p.nombre}</span></div>
+            <div class="st-body">
+              <p>{p.bajada}</p>
+              <a href={`/servicios/${p.slug}/`} class="link">Ver los servicios del pilar {p.numero} <Icon name="arrow-right" /></a>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; row-gap: 2rem; }
+  .left { grid-column: span 7; }
+  .panel { grid-column: 9 / span 4; align-self: start; position: sticky; top: calc(var(--header-h) + 1.5rem); display: grid; gap: 8px; padding: 28px; border-radius: var(--radius-lg); }
+  .list { list-style: none; padding: 0; border-top: 1px solid var(--line); }
+  .list li { border-bottom: 1px solid var(--line); }
+  .need {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    min-height: 64px;
+    padding: 12px 16px;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    text-align: left;
+    font-size: 1.12rem;
+    line-height: 1.4;
+    color: var(--text);
+    transition: background-color 0.25s var(--ease), color 0.25s var(--ease);
+  }
+  .need:hover { background: var(--accent-soft); }
+  .need[aria-pressed='true'] { background: var(--navy); color: var(--snow); }
+  :global(:root[data-theme='dark']) .need[aria-pressed='true'] { background: var(--navy-3); box-shadow: inset 0 0 0 1px var(--cyan); }
+  .num { font-size: 0.75rem; opacity: 0.7; }
+  .tag { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
+  .need[aria-pressed='true'] .tag { color: var(--cyan); }
+  .strata { list-style: none; padding: 0; display: grid; gap: 8px; }
+  .stratum { display: grid; gap: 10px; padding: 14px 16px; border-radius: 14px; background: rgba(7, 28, 56, 0.6); transition: background-color 0.3s, box-shadow 0.3s; }
+  .stratum.on { background: rgba(63, 215, 255, 0.1); box-shadow: inset 0 0 0 1px var(--cyan); }
+  .st-head { display: flex; align-items: baseline; gap: 12px; }
+  .st-head .numeral { font-size: 1.9rem; font-weight: 300; color: var(--slate); }
+  .stratum.on .numeral { color: var(--cyan); }
+  .st-name { font-size: 0.95rem; font-weight: 500; }
+  .st-body { display: none; gap: 10px; }
+  .stratum.on .st-body { display: grid; animation: swap-in 0.45s var(--ease) both; }
+  .st-body p { font-size: 0.9rem; color: var(--soft-blue); }
+  .st-body .link { font-size: 0.9rem; }
+  @media (max-width: 960px) {
+    .left, .panel { grid-column: 1 / -1; }
+    .panel { position: static; }
+    .need { font-size: 1rem; grid-template-columns: 32px minmax(0, 1fr); }
+    .tag { grid-column: 2; }
+  }
+</style>

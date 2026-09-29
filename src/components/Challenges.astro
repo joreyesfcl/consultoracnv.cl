@@ -1,0 +1,50 @@
+---
+// Desafíos del contexto (mesa 14): seis capas de un corte del terreno.
+import { DESAFIOS } from '../data/inicio';
+
+const tonos = ['#0B2748', '#0E2F57', '#113766', '#143F75', '#174784', '#1A4F93'];
+---
+<section class="challenges on-dark" id="desafios" aria-labelledby="ch-title">
+  <div class="container">
+    <header class="section-head split reveal">
+      <p class="eyebrow">El contexto</p>
+      <h2 id="ch-title">Seis desafíos que se repiten, <em>capa sobre capa.</em></h2>
+      <p class="lead aside">Aparecen en el sector público, en las empresas y en las fundaciones cuando sus decisiones afectan a personas, comunidades y territorios.</p>
+    </header>
+  </div>
+  <ol class="layers" role="list">
+    {DESAFIOS.map((d, i) => (
+      <li class="layer reveal" style={`--tone:${tonos[i]}; --i:${i}`}>
+        <svg viewBox="0 0 1440 16" preserveAspectRatio="none" aria-hidden="true" class="wave">
+          <path d={`M0 8 C 240 ${2 + i}, 480 ${14 - i}, 720 8 S 1200 ${3 + i}, 1440 8`} style={`stroke-opacity:${(0.25 + i * 0.08).toFixed(2)}`} />
+        </svg>
+        <div class="container row">
+          <span class="numeral">{String(i + 1).padStart(2, '0')}</span>
+          <h3>{d.titulo}</h3>
+          <p>{d.texto}</p>
+          <span class="mono tag">ESTRATO {String(i + 1).padStart(2, '0')}</span>
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .challenges { padding-top: var(--section); overflow: hidden; }
+  .layers { list-style: none; padding: 0; }
+  .layer { position: relative; background: var(--tone); }
+  .wave { position: absolute; left: 0; top: -8px; width: 100%; height: 16px; }
+  .wave path { fill: none; stroke: var(--cyan); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+  .row { display: grid; grid-template-columns: 110px minmax(0, 360px) minmax(0, 1fr) 110px; align-items: center; gap: 24px; padding-block: 1.4rem; }
+  .numeral { font-size: 3rem; color: var(--cyan); }
+  h3 { font-size: 1.5rem; }
+  p { font-size: 0.95rem; color: var(--soft-blue); }
+  .tag { font-size: 0.7rem; letter-spacing: 0.1em; text-align: right; color: var(--soft-blue); }
+  :global(.motion) .layer.reveal { transform: translateY(18px); transition-delay: calc(var(--i) * 70ms); }
+  @media (max-width: 860px) {
+    .row { grid-template-columns: 56px minmax(0, 1fr); row-gap: 0.4rem; }
+    .numeral { font-size: 2.2rem; grid-row: span 2; align-self: start; }
+    p { grid-column: 2; }
+    .tag { display: none; }
+  }
+</style>

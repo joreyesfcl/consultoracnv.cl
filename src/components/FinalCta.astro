@@ -1,0 +1,46 @@
+---
+// Cierre "Conversemos" (mesa 17): tarjeta navy con la imagen de marca.
+import { Image } from 'astro:assets';
+import fondo from '../assets/main.png';
+import Icon from './Icon.astro';
+import { SITE } from '../data/site';
+---
+<section class="cta-wrap" aria-labelledby="cta-title">
+  <div class="container">
+    <div class="cta on-dark reveal">
+      <Image src={fondo} alt="" widths={[640, 960, 1254]} sizes="(max-width: 900px) 100vw, 1280px" class="img" loading="lazy" />
+      <div class="text">
+        <p class="eyebrow">Conversemos</p>
+        <h2 id="cta-title">Cuéntenos cuál es su desafío <em>más complejo.</em></h2>
+        <p class="lead">Buena parte de nuestros encargos empieza con una conversación en la que el desafío se cuenta en los términos de quien lo tiene. La traducción a servicios la hacemos nosotros.</p>
+      </div>
+      <div class="actions">
+        <a href="/contacto/" class="btn magnetic">Escribirnos <Icon name="arrow-right" /></a>
+        <a href={SITE.agenda} class="btn btn-ghost" target="_blank" rel="noopener"><Icon name="calendar" /> Agendar una reunión</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-wrap { padding-bottom: var(--section); }
+  .cta {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    gap: 2rem clamp(1.5rem, 4vw, 4rem);
+    align-items: end;
+    padding: clamp(2rem, 5vw, 3.5rem);
+    border-radius: 28px;
+  }
+  .img, .cta :global(img.img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 90% 60%; opacity: 0.35; z-index: -1; }
+  .text { display: grid; gap: 1rem; }
+  h2 { font-size: var(--step-3); }
+  .lead { font-size: var(--step-0); }
+  .actions { display: grid; gap: 10px; }
+  .actions .btn { width: 100%; }
+  .actions .link { justify-self: center; font-size: 0.9rem; }
+  @media (max-width: 860px) { .cta { grid-template-columns: 1fr; } }
+</style>

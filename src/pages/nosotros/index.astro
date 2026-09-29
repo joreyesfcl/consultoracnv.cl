@@ -1,0 +1,102 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/Icon.astro';
+import { ENFOQUE, DIFERENCIADORES } from '../../data/nosotros';
+import { EQUIPO } from '../../data/equipo';
+
+const fotos = import.meta.glob<{ default: ImageMetadata }>('../../assets/socios/*.{jpeg,jpg,png}', { eager: true });
+const foto = (slug: string) => Object.entries(fotos).find(([k]) => k.includes(`/${slug}.`))![1].default;
+const corto = (n: string) => n.split(' ').slice(0, -1).join(' ');
+---
+<Base title="Nosotros" description="CNV fue fundada por economistas e ingenieros que trabajaron dentro del Sistema Nacional de Inversiones y del Sistema de Monitoreo y Evaluación." tone="dark">
+  <PageHero
+    tone="dark"
+    eyebrow="Nosotros"
+    title="Nacimos desde"
+    accent="adentro del sistema."
+    lead="Conocemos los sistemas de evaluación de programas e inversiones públicas porque trabajamos en las instituciones que los administran."
+    crumbs={[{ label: 'Nosotros' }]}
+  >
+    <div class="origin">
+      <p>CNV fue fundada por economistas e ingenieros con experiencia directa en el Sistema Nacional de Inversiones y en el Sistema de Monitoreo y Evaluación de Programas Públicos.</p>
+      <p>Ponemos ese conocimiento al servicio de instituciones públicas, empresas y organizaciones que participan en estos procesos, y también de quienes, sin formar parte del sistema, necesitan entenderlo o aplicar su rigor en sus propias decisiones.</p>
+    </div>
+    <ul class="enfoque" role="list">
+      {ENFOQUE.map((e) => (
+        <li>
+          <p class="eyebrow">{e.etiqueta}</p>
+          <h2>{e.titulo}</h2>
+          <p>{e.texto}</p>
+        </li>
+      ))}
+    </ul>
+  </PageHero>
+
+  <section class="section" aria-labelledby="dif">
+    <div class="container">
+      <SectionHead id="dif" eyebrow="Qué nos distingue" title="Cinco razones" accent="para conversar con nosotros." lead="Varias consultoras ofrecen formulación, diseño de programas o asesoría en sostenibilidad. Lo que nos distingue es la suma de estos atributos." split />
+      <ol class="difs" role="list">
+        {DIFERENCIADORES.map((d, i) => (
+          <li class="dif reveal">
+            <span class="numeral">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{d.titulo}</h3>
+            <p>{d.texto}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="team-strip" aria-labelledby="equipo-t">
+    <div class="container strip">
+      <h2 id="equipo-t">El equipo</h2>
+      <ul role="list" class="people">
+        {EQUIPO.map((p) => (
+          <li>
+            <a href={`/nosotros/${p.slug}/`}>
+              <Image src={foto(p.slug)} alt="" widths={[112]} sizes="56px" style={`object-position:${p.fotoPosicion}`} />
+              <span><strong>{corto(p.nombre)}</strong><small>{p.cargo}</small></span>
+              <Icon name="arrow-right" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .origin { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; max-width: 1000px; color: var(--soft-blue); }
+  .enfoque { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin-top: 1.5rem; }
+  .enfoque li { display: grid; gap: 8px; align-content: start; padding-top: 18px; border-top: 2px solid var(--cyan); }
+  .enfoque h2 { font-size: 1.4rem; font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; }
+  .enfoque p:not(.eyebrow) { font-size: 0.92rem; color: var(--soft-blue); }
+  .difs { list-style: none; padding: 0; border-top: 1px solid var(--line); }
+  .dif { display: grid; grid-template-columns: 90px minmax(0, 420px) minmax(0, 1fr); gap: 24px; align-items: baseline; padding: 22px 0; border-bottom: 1px solid var(--line); }
+  .dif .numeral { font-size: 2.8rem; color: var(--accent); }
+  .dif h3 { font-size: 1.45rem; }
+  .dif p { color: var(--text-muted); }
+  .team-strip { padding-bottom: var(--section); }
+  .strip { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .strip h2 { font-size: 1.8rem; font-weight: 400; white-space: nowrap; }
+  .people { flex: 1; list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; min-width: min(100%, 600px); }
+  .people a { display: flex; align-items: center; gap: 14px; padding: 10px 18px 10px 10px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); color: var(--text); text-decoration: none; }
+  .people a:hover { border-color: var(--accent); }
+  .people :global(img) { width: 56px; height: 56px; border-radius: 999px; object-fit: cover; }
+  .people span { display: grid; }
+  .people strong { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; }
+  .people small { font-size: 0.8rem; color: var(--text-muted); }
+  .people :global(svg) { margin-left: auto; color: var(--accent); width: 18px; }
+  @media (max-width: 900px) {
+    .origin, .enfoque { grid-template-columns: 1fr; }
+    .dif { grid-template-columns: 60px minmax(0, 1fr); }
+    .dif p { grid-column: 2; }
+    .people { grid-template-columns: 1fr; }
+  }
+</style>

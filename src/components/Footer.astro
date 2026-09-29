@@ -1,0 +1,85 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo-cnv.png';
+import { SITE, NAV } from '../data/site';
+import { PILARES } from '../data/servicios';
+
+const year = new Date().getFullYear();
+const sectores = NAV.find((n) => n.children)?.children ?? [];
+const corto = ['Diagnóstico', 'Diseño', 'Gestión y financiamiento', 'Estrategia integral', 'Capacidades'];
+---
+<footer class="site-footer on-dark">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <Image src={logo} alt={SITE.nombre} height={44} />
+      <p class="eyebrow">{SITE.lema}</p>
+    </div>
+
+    <nav aria-label="Servicios">
+      <h2 class="footer-title">Servicios</h2>
+      <ul role="list">
+        {PILARES.map((p, i) => <li><a href={`/servicios/${p.slug}/`}><span class="mono">{p.numero}</span> {corto[i]}</a></li>)}
+      </ul>
+    </nav>
+
+    <nav aria-label="Sitio">
+      <h2 class="footer-title">Sitio</h2>
+      <ul role="list">
+        <li><a href="/como-trabajamos/">Cómo trabajamos</a></li>
+        {sectores.map((s) => <li><a href={s.href}>{s.label}</a></li>)}
+        <li><a href="/nosotros/">Nosotros</a></li>
+      </ul>
+    </nav>
+
+    <div>
+      <h2 class="footer-title">Contacto</h2>
+      <ul role="list">
+        <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+        <li><span>{SITE.ciudad}</span></li>
+        <li><a href={SITE.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <p>© {year} {SITE.nombre}</p>
+    <a href="/privacidad/">Política de privacidad</a>
+    <p class="mono coords">33°27′S · 70°40′O</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    --bg: var(--navy-deep);
+    padding-block: clamp(3rem, 6vw, 4.5rem) 1.8rem;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr 1fr;
+    gap: clamp(2rem, 4vw, 3rem);
+    padding-bottom: 2.5rem;
+  }
+  .footer-brand { display: grid; gap: 1rem; align-content: start; justify-items: start; }
+  .footer-brand :global(img) { height: 38px; width: auto; }
+  .footer-brand .eyebrow { color: var(--soft-blue); }
+  .footer-title { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cyan); margin-bottom: 1rem; }
+  ul { list-style: none; padding: 0; display: grid; gap: 0.6rem; }
+  li { font-size: 0.93rem; }
+  a { color: var(--snow); text-decoration: none; }
+  a:hover { color: var(--cyan); text-decoration: underline; text-underline-offset: 4px; }
+  .mono { font-size: 0.75rem; color: var(--soft-blue); }
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.8rem 2rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid rgba(185, 206, 232, 0.16);
+    font-size: 0.82rem;
+    color: var(--soft-blue);
+  }
+  .footer-bottom a { color: var(--soft-blue); }
+  .coords { letter-spacing: 0.08em; }
+  @media (max-width: 860px) { .footer-grid { grid-template-columns: 1fr 1fr; } .footer-brand { grid-column: 1 / -1; } }
+  @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } }
+</style>

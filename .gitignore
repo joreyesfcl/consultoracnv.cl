@@ -1,3 +1,8 @@
 # Archivos locales
 *.pptx
 *.ppt
+
+# Dependencias y build
+node_modules/
+dist/
+.astro/

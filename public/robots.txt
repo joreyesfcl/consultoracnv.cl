@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Resumen del sitio para asistentes de IA (estándar llms.txt)
+# https://consultoracnv.cl/llms.txt
+
+Sitemap: https://consultoracnv.cl/sitemap-index.xml

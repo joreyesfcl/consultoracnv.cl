@@ -1,0 +1,44 @@
+---
+import Icon from './Icon.astro';
+---
+<button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false" aria-label="Activar tema oscuro" title="Cambiar tema">
+  <Icon name="moon" size={19} class="i-moon" />
+  <Icon name="sun" size={19} class="i-sun" />
+</button>
+
+<style>
+  .theme-toggle {
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text);
+    transition: background-color 0.2s, border-color 0.2s, transform 0.3s var(--ease);
+  }
+  .theme-toggle:hover { background: var(--accent-soft); border-color: var(--accent); }
+  .theme-toggle:active { transform: rotate(-20deg); }
+  .theme-toggle :global(.i-sun) { display: none; }
+  :global([data-theme='dark']) .theme-toggle :global(.i-sun) { display: block; }
+  :global([data-theme='dark']) .theme-toggle :global(.i-moon) { display: none; }
+</style>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-theme-toggle]')!;
+  const root = document.documentElement;
+  const sync = () => {
+    const dark = root.dataset.theme === 'dark';
+    btn.setAttribute('aria-pressed', String(dark));
+    btn.setAttribute('aria-label', dark ? 'Activar tema claro' : 'Activar tema oscuro');
+  };
+  sync();
+  btn.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem('cnv-theme', next); } catch {}
+    sync();
+  });
+</script>

@@ -1,0 +1,118 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/Icon.astro';
+import { EQUIPO } from '../../data/equipo';
+import { SITE } from '../../data/site';
+
+export function getStaticPaths() {
+  return EQUIPO.map((p) => ({ params: { slug: p.slug } }));
+}
+const i = EQUIPO.findIndex((x) => x.slug === Astro.params.slug);
+const p = EQUIPO[i];
+const next = EQUIPO[(i + 1) % EQUIPO.length];
+const prev = EQUIPO[(i + EQUIPO.length - 1) % EQUIPO.length];
+const partes = p.nombre.split(' ');
+const nombre = partes.slice(0, -1).join(' ');
+const apellido = partes[partes.length - 1];
+const corto = (n: string) => n.split(' ').slice(0, -1).join(' ');
+const fotos = import.meta.glob<{ default: ImageMetadata }>('../../assets/socios/*.{jpeg,jpg,png}', { eager: true });
+const foto = Object.entries(fotos).find(([k]) => k.includes(`/${p.slug}.`))![1].default;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: p.nombre,
+  jobTitle: `${p.cargo}, ${SITE.nombre}`,
+  email: p.email,
+  url: `${SITE.url}/nosotros/${p.slug}/`,
+  sameAs: [p.linkedin],
+  worksFor: { '@type': 'ProfessionalService', name: SITE.nombre, url: SITE.url },
+  knowsAbout: p.especialidades,
+};
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE.url}/` },
+    { '@type': 'ListItem', position: 2, name: 'Nosotros', item: `${SITE.url}/nosotros/` },
+    { '@type': 'ListItem', position: 3, name: p.nombre, item: `${SITE.url}/nosotros/${p.slug}/` },
+  ],
+};
+---
+<Base title={p.nombre} description={`${p.nombre}, ${p.cargo.toLowerCase()} de ${SITE.nombre}. ${p.hito}`} jsonLd={[schema, breadcrumb]}>
+  <section class="section profile-wrap">
+    <div class="container profile">
+      <aside class="side">
+        <div class="photo">
+          <Image src={foto} alt={p.nombre} widths={[400, 640, 900]} sizes="(max-width: 900px) 90vw, 480px" style={`object-position:${p.fotoPosicion}`} loading="eager" />
+          <p class="hito">{p.hito}</p>
+        </div>
+        <div class="contact">
+          <a href={`mailto:${p.email}`} class="btn">{p.email}</a>
+          <a href={p.linkedin} target="_blank" rel="noopener" class="btn btn-ghost">LinkedIn ↗</a>
+        </div>
+      </aside>
+
+      <div class="main">
+        <nav aria-label="Ruta de navegación" class="crumbs">
+          <ol role="list"><li><a href="/">Inicio</a></li><li><a href="/nosotros/">Nosotros</a></li><li><span aria-current="page">{corto(p.nombre)}</span></li></ol>
+        </nav>
+        <div class="head">
+          <p class="eyebrow">{p.cargo}</p>
+          <h1>{nombre} <em>{apellido}</em></h1>
+        </div>
+        <ul role="list" class="tags">
+          {p.especialidades.map((e) => <li>{e}</li>)}
+        </ul>
+        <div class="bio">
+          {p.bio.map((t) => <p>{t}</p>)}
+        </div>
+        <div class="form">
+          <p class="mono lbl">Formación</p>
+          <ul role="list">
+            {p.formacionDetalle.map((f) => <li>{f}</li>)}
+          </ul>
+        </div>
+        <nav class="pager" aria-label="Otros socios">
+          <a href={`/nosotros/${prev.slug}/`}><Icon name="arrow-left" /> {corto(prev.nombre)}</a>
+          <a href={`/nosotros/${next.slug}/`}>{corto(next.nombre)} <Icon name="arrow-right" /></a>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .profile-wrap { padding-top: clamp(1.5rem, 3vw, 2.5rem); }
+  .profile { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; row-gap: 2rem; }
+  .side { grid-column: span 5; display: grid; gap: 16px; align-self: start; position: sticky; top: calc(var(--header-h) + 1.5rem); }
+  .photo { position: relative; aspect-ratio: 4 / 4.6; border-radius: 28px; overflow: hidden; background: var(--cobalt); }
+  .photo :global(img) { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.1); mix-blend-mode: luminosity; opacity: 0.9; transition: filter 0.6s var(--ease), opacity 0.6s, mix-blend-mode 0.6s; }
+  .photo:hover :global(img) { filter: none; mix-blend-mode: normal; opacity: 1; }
+  .hito { position: absolute; left: 0; right: 0; bottom: 0; padding: 60px 24px 24px; background: linear-gradient(180deg, rgba(7, 28, 56, 0) 0%, rgba(7, 28, 56, 0.92) 55%); color: var(--snow); font-family: var(--font-display); font-size: 1.2rem; line-height: 1.35; }
+  .contact { display: flex; gap: 10px; flex-wrap: wrap; }
+  .contact .btn:first-child { flex: 1; }
+  .main { grid-column: 7 / span 6; display: grid; gap: 22px; align-content: start; }
+  .head { display: grid; gap: 6px; }
+  h1 { font-size: clamp(2.6rem, 1.8rem + 3vw, 4.8rem); }
+  .tags { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .tags li { padding: 7px 14px; border-radius: 999px; background: var(--surface-2); font-size: 0.82rem; color: var(--heading); }
+  .bio { display: grid; gap: 14px; }
+  .bio p { font-size: 1.02rem; line-height: 1.7; }
+  .form { display: grid; gap: 10px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .lbl { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+  .form ul { list-style: none; padding: 0; display: grid; gap: 8px; font-size: 0.95rem; }
+  .pager { display: flex; justify-content: space-between; gap: 1rem; padding-top: 18px; border-top: 1px solid var(--line); }
+  .pager a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+  .pager a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .pager :global(svg) { width: 16px; }
+  @media (max-width: 900px) {
+    .side, .main { grid-column: 1 / -1; }
+    .side { position: static; max-width: 480px; }
+    .main { order: -1; }
+  }
+</style>

@@ -1,0 +1,91 @@
+---
+// Qué cambia en la práctica (mesa 03): cuatro estratos que una línea cian recorre al
+// desplazarse, convirtiendo el punto de partida en lo que queda instalado.
+import SectionHead from './SectionHead.astro';
+import { CAMBIOS } from '../data/inicio';
+---
+<section class="section ba" id="que-cambia" aria-labelledby="ba-title">
+  <div class="container">
+    <SectionHead
+      id="ba-title"
+      eyebrow="Qué cambia en la práctica"
+      title="Del punto de partida habitual"
+      accent="a lo que queda instalado."
+      lead="Cuatro cambios concretos que resultan de nuestro trabajo. Al avanzar, la línea recorre cada estrato."
+      split
+    />
+    <div class="legend mono" aria-hidden="true"><span></span><span>Punto de partida habitual</span><span>Cómo queda</span></div>
+    <ol class="rows" role="list">
+      {CAMBIOS.map((c, i) => (
+        <li class="row" data-sweep>
+          <div class="ambito">
+            <span class="mono">ESTRATO {String(i + 1).padStart(2, '0')}</span>
+            <h3>{c.ambito}</h3>
+          </div>
+          <div class="track">
+            <p class="antes"><span class="sr-only">Punto de partida: </span>{c.antes}</p>
+            <p class="despues"><span class="sr-only">Cómo queda: </span>{c.despues}</p>
+            <span class="line" aria-hidden="true"></span>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .legend { display: grid; grid-template-columns: 230px 1fr 1fr; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); padding-bottom: 0.6rem; }
+  .legend span:nth-child(2), .legend span:nth-child(3) { padding-left: 1.5rem; }
+  .rows { list-style: none; padding: 0; display: grid; gap: 10px; }
+  .row {
+    --p: 1;
+    display: grid;
+    grid-template-columns: 230px 1fr;
+    min-height: 110px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .ambito { display: grid; align-content: center; gap: 0.3rem; padding: 1.4rem 1.5rem; background: var(--surface-2); }
+  .ambito .mono { font-size: 0.7rem; color: var(--text-muted); }
+  .ambito h3 { font-size: 1.6rem; font-weight: 600; }
+  .track { position: relative; display: grid; grid-template-columns: 1fr 1fr; }
+  .antes, .despues { display: flex; align-items: center; padding: 1.4rem 1.5rem; }
+  .antes {
+    color: var(--text-muted);
+    text-decoration: line-through;
+    text-decoration-color: var(--soft-blue);
+  }
+  .despues {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--white);
+    background: linear-gradient(90deg, var(--cobalt) calc((var(--p) * 2 - 1) * 100%), transparent 0);
+    transition: color 0.3s;
+  }
+  .row.partial .despues { color: var(--text); }
+  .row.partial:not(.struck) .antes { text-decoration-color: transparent; }
+  .line {
+    position: absolute;
+    top: -1px;
+    bottom: -1px;
+    left: calc(var(--p) * 100%);
+    width: 3px;
+    margin-left: -1.5px;
+    background: var(--cyan);
+    box-shadow: 0 0 18px var(--cyan);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .row.partial .line { opacity: 1; }
+  @media (max-width: 860px) {
+    .legend { display: none; }
+    .row { grid-template-columns: 1fr; }
+    .track { grid-template-columns: 1fr; }
+    .ambito { padding: 1rem 1.2rem; }
+    .antes, .despues { padding: 1rem 1.2rem; }
+    .despues { background: var(--cobalt) !important; color: var(--white) !important; }
+    .line { display: none; }
+  }
+</style>
