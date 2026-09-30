@@ -112,13 +112,13 @@ function bindTracker(scope: ParentNode) {
     const svg = panel.querySelector<SVGSVGElement>('svg')!;
     const g = panel.querySelector<SVGGElement>('[data-tracker-dot]')!;
     const label = panel.querySelector<SVGTextElement>('[data-tracker-label]')!;
-    let x = 518, y = 370, tx = x, ty = y, raf = 0, on = false;
+    let x = 1094, y = 337, tx = x, ty = y, raf = 0, on = false;
     const render = () => {
       g.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
-      const flip = x > 430;
-      label.setAttribute('x', flip ? '-16' : '16');
+      const flip = x > 1120;
+      label.setAttribute('x', flip ? '-14' : '14');
       label.setAttribute('text-anchor', flip ? 'end' : 'start');
-      label.textContent = `${dms(17.5 + (y - 95) / 17.27, 'S')} · ${dms(70.67 + (518 - x) / 20, 'O')}`;
+      label.textContent = `${dms(17.5 + (y - 86.6) / 15.73, 'S')} · ${dms(70.67 + (1094.4 - x) / 18.22, 'O')}`;
     };
     const step = () => {
       x += (tx - x) * 0.16;
@@ -128,10 +128,18 @@ function bindTracker(scope: ParentNode) {
       render();
       raf = done ? 0 : requestAnimationFrame(step);
     };
+    const leave = () => {
+      on = false;
+      g.classList.remove('on');
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
     panel.addEventListener('pointermove', (e) => {
       const ctm = svg.getScreenCTM();
       if (!ctm) return;
       const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(ctm.inverse());
+      // Solo sobre la zona del mapa, a la derecha del texto
+      if (p.x < 700) return leave();
       tx = p.x;
       ty = p.y;
       if (!on || reduce) {
@@ -146,12 +154,7 @@ function bindTracker(scope: ParentNode) {
       }
       if (!raf) raf = requestAnimationFrame(step);
     });
-    panel.addEventListener('pointerleave', () => {
-      on = false;
-      g.classList.remove('on');
-      cancelAnimationFrame(raf);
-      raf = 0;
-    });
+    panel.addEventListener('pointerleave', leave);
   });
 }
 

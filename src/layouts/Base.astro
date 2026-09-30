@@ -20,9 +20,11 @@ interface Props {
   jsonLd?: object | object[];
   /** Tono de la cabecera: 'dark' cuando la página abre con una cabecera navy */
   tone?: 'light' | 'dark';
+  /** Cabecera transparente sobre la portada hasta que se desplaza la página */
+  overlay?: boolean;
 }
 
-const { title, description = SITE.descripcion, image = '/og-image.png', noindex = false, jsonLd, tone = 'light' } = Astro.props;
+const { title, description = SITE.descripcion, image = '/og-image.png', noindex = false, jsonLd, tone = 'light', overlay = false } = Astro.props;
 const fullTitle = title ? `${title} · ${SITE.nombre}` : `${SITE.nombre} · ${SITE.lema}`;
 const canonical = new URL(Astro.url.pathname, SITE.url).href;
 const ogImage = new URL(image, SITE.url).href;
@@ -79,7 +81,7 @@ const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
   </head>
   <body>
     <a href="#contenido" class="skip-link">Saltar al contenido</a>
-    <Header tone={tone} />
+    <Header tone={tone} overlay={overlay} />
     <main id="contenido">
       <slot />
     </main>
