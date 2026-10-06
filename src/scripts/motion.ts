@@ -93,71 +93,6 @@ function bindPointer(scope: ParentNode) {
 }
 
 
-// ---------- Punto que sigue al cursor sobre el mapa de la portada ----------
-// Sin suavizado si el usuario pidió reducir movimiento. Coordenadas aproximadas según la
-// misma escala de la retícula del componente Hero (lienzo de 600×900).
-const bound = new WeakSet<Element>();
-function dms(v: number, h: string) {
-  const a = Math.abs(v);
-  let d = Math.floor(a);
-  let m = Math.round((a - d) * 60);
-  if (m === 60) { d += 1; m = 0; }
-  return `${d}°${String(m).padStart(2, '0')}′${h}`;
-}
-function bindTracker(scope: ParentNode) {
-  if (!fine) return;
-  scope.querySelectorAll<HTMLElement>('[data-tracker]').forEach((panel) => {
-    if (bound.has(panel)) return;
-    bound.add(panel);
-    const svg = panel.querySelector<SVGSVGElement>('svg')!;
-    const g = panel.querySelector<SVGGElement>('[data-tracker-dot]')!;
-    const label = panel.querySelector<SVGTextElement>('[data-tracker-label]')!;
-    let x = 1094, y = 337, tx = x, ty = y, raf = 0, on = false;
-    const render = () => {
-      g.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
-      const flip = x > 1120;
-      label.setAttribute('x', flip ? '-14' : '14');
-      label.setAttribute('text-anchor', flip ? 'end' : 'start');
-      label.textContent = `${dms(17.5 + (y - 86.6) / 15.73, 'S')} · ${dms(70.67 + (1094.4 - x) / 18.22, 'O')}`;
-    };
-    const step = () => {
-      x += (tx - x) * 0.16;
-      y += (ty - y) * 0.16;
-      const done = Math.abs(tx - x) < 0.3 && Math.abs(ty - y) < 0.3;
-      if (done) { x = tx; y = ty; }
-      render();
-      raf = done ? 0 : requestAnimationFrame(step);
-    };
-    const leave = () => {
-      on = false;
-      g.classList.remove('on');
-      cancelAnimationFrame(raf);
-      raf = 0;
-    };
-    panel.addEventListener('pointermove', (e) => {
-      const ctm = svg.getScreenCTM();
-      if (!ctm) return;
-      const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(ctm.inverse());
-      // Solo sobre la zona del mapa, a la derecha del texto
-      if (p.x < 700) return leave();
-      tx = p.x;
-      ty = p.y;
-      if (!on || reduce) {
-        cancelAnimationFrame(raf);
-        raf = 0;
-        x = tx;
-        y = ty;
-        render();
-        g.classList.add('on');
-        on = true;
-        return;
-      }
-      if (!raf) raf = requestAnimationFrame(step);
-    });
-    panel.addEventListener('pointerleave', leave);
-  });
-}
-
 function initPage() {
   const main = document.getElementById('contenido') ?? document.body;
   main.querySelectorAll<HTMLElement>('.stagger').forEach((g) =>
@@ -165,7 +100,6 @@ function initPage() {
   );
   main.querySelectorAll('.reveal, .stagger, [data-count]').forEach((el) => io.observe(el));
   bindPointer(main);
-  bindTracker(main);
 }
 
 // ---------- Barra de progreso y parallax (una sola vez) ----------

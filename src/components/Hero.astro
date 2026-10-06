@@ -1,8 +1,7 @@
 ---
 // Portada (mesa 01 del lienzo "Estratos"): la imagen de marca ocupa toda la portada, ajustada
 // al alto para que Chile se vea completo, con el texto encima a la izquierda. Sobre la imagen,
-// una retícula geográfica calibrada, Santiago referenciado y un punto que sigue al cursor
-// (lógica en src/scripts/motion.ts).
+// partículas de luz que se desplazan libremente (solo CSS; quietas con movimiento reducido).
 import { Picture } from 'astro:assets';
 import fondo from '../assets/main.png';
 import Icon from './Icon.astro';
@@ -17,56 +16,32 @@ const indice = [
   ['sectores', 'Sectores'],
   ['equipo', 'Equipo'],
 ];
-// Escala de la retícula en coordenadas de la imagen (1254×820): latitud → y, longitud → x.
-// Calibrada sobre la silueta de Chile de main.png; Santiago (33°27′S · 70°40′O) queda en (1094.4, 337.1).
-const lat = (l: number) => 86.6 + (l - 17.5) * 15.73;
-const lon = (o: number) => 1094.4 + (70.67 - o) * 18.22;
-const paralelos = [20, 30, 40, 50];
-const meridianos = [76, 72, 68];
-const flujos = [
-  'M760 660 C 880 610, 1005 510, 1094.4 337.1',
-  'M820 720 C 950 674, 1051 510, 1094.4 337.1',
-  'M1254 380 C 1190 390, 1133 364, 1094.4 337.1',
-  'M1254 560 C 1187 547, 1119 437, 1094.4 337.1',
-  'M600 301 C 786 292, 950 351, 1094.4 337.1',
-];
+// Partículas en coordenadas de la imagen (1254×820), generadas con una semilla fija para que
+// el resultado sea estable entre compilaciones. Se concentran sobre Chile y el mar al oeste.
+let seed = 7;
+const rnd = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+const between = (a: number, b: number) => a + (b - a) * rnd();
+const particulas = Array.from({ length: 48 }, () => {
+  const y = between(60, 790);
+  const x = between(820, 1250);
+  const ang = between(0, Math.PI * 2), dist = between(24, 70);
+  return {
+    x: x.toFixed(1),
+    y: y.toFixed(1),
+    r: between(1, 2.6).toFixed(2),
+    style: `--dx:${(Math.cos(ang) * dist).toFixed(1)}px;--dy:${(Math.sin(ang) * dist).toFixed(1)}px;--o:${between(0.35, 0.9).toFixed(2)};--t:${between(9, 20).toFixed(1)}s;--d:${(-between(0, 20)).toFixed(1)}s`,
+  };
+});
 ---
-<section class="hero on-dark" aria-labelledby="hero-title" data-tracker>
+<section class="hero on-dark" aria-labelledby="hero-title">
   <div class="map" aria-hidden="true">
     <Picture src={fondo} alt="" formats={['avif', 'webp']} widths={[768, 1254]} sizes="(max-width: 900px) 900px, 1400px" loading="eager" fetchpriority="high" class="img" />
     <svg viewBox="0 0 1254 820" class="overlay">
       <defs>
         <radialGradient id="hGlow"><stop offset="0%" stop-color="#3FD7FF" stop-opacity="0.9" /><stop offset="100%" stop-color="#3FD7FF" stop-opacity="0" /></radialGradient>
       </defs>
-      <g class="grid">
-        {paralelos.map((l) => <line x1="700" y1={lat(l)} x2="1254" y2={lat(l)} />)}
-        {meridianos.map((o) => <line x1={lon(o)} y1="0" x2={lon(o)} y2="820" />)}
-      </g>
-      <g class="labels">
-        {paralelos.map((l) => <text x="712" y={lat(l) - 6}>{l}°S</text>)}
-        {meridianos.map((o) => <text x={lon(o) + 5} y="806">{o}°O</text>)}
-      </g>
-      <g class="flows">
-        {flujos.map((d, i) => <path d={d} style={`--d:${-i * 1.4}s`} />)}
-      </g>
-      <g class="santiago">
-        <g class="scale">
-          <line x1="760" y1="337.1" x2="1080" y2="337.1" class="guide" />
-          <line x1="712" y1="337.1" x2="750" y2="337.1" class="tick" />
-          <text x="712" y="329" class="lat">33°27′S</text>
-        </g>
-        <circle cx="1094.4" cy="337.1" r="15" fill="url(#hGlow)" opacity="0.55" />
-        <circle cx="1094.4" cy="337.1" r="11" class="ring" />
-        <circle cx="1094.4" cy="337.1" r="6.5" class="ring-static" />
-        <circle cx="1094.4" cy="337.1" r="2.4" class="dot" />
-        <text x="1081" y="315" text-anchor="end" class="name">SANTIAGO</text>
-        <text x="1081" y="328" text-anchor="end" class="coords">33°27′S · 70°40′O</text>
-      </g>
-      <g class="tracker" data-tracker-dot>
-        <circle r="16" fill="url(#hGlow)" opacity="0.7" />
-        <circle r="8" class="t-ring" />
-        <circle r="3.2" class="t-dot" />
-        <text x="14" y="3" data-tracker-label></text>
+      <g class="particles">
+        {particulas.map((p) => <circle cx={p.x} cy={p.y} r={p.r} style={p.style} />)}
       </g>
     </svg>
   </div>
@@ -136,39 +111,24 @@ const flujos = [
   .scroll { display: inline-flex; align-items: center; gap: 0.6rem; color: inherit; text-decoration: none; }
   .scroll span { display: inline-block; width: 1px; height: 22px; background: var(--accent); }
 
-  .grid line { stroke: #EAF6FF; stroke-opacity: 0.14; }
-  .labels text, .santiago text, .tracker text { font-family: var(--font-mono); letter-spacing: 1px; }
-  .labels text { font-size: 10px; fill: var(--soft-blue); }
-  .flows path { fill: none; stroke: #3FD7FF; stroke-width: 1.2; stroke-opacity: 0.6; stroke-linecap: round; stroke-dasharray: 6 220; }
-  .guide { stroke: #3FD7FF; stroke-opacity: 0.55; stroke-dasharray: 2 5; }
-  .tick { stroke: #3FD7FF; stroke-width: 1.5; }
-  .lat { font-size: 10px; fill: #3FD7FF; }
-  .ring, .ring-static { fill: none; stroke: #3FD7FF; }
-  .ring { stroke-width: 1.5; transform-box: fill-box; transform-origin: center; }
-  .dot { fill: var(--snow); }
-  .name { font-size: 11px; font-weight: 500; fill: var(--snow); letter-spacing: 1.5px; }
-  .coords { font-size: 9px; fill: var(--soft-blue); }
-  .tracker { opacity: 0; transition: opacity 0.35s var(--ease); pointer-events: none; }
-  .tracker.on { opacity: 1; }
-  .t-ring { fill: none; stroke: #3FD7FF; stroke-opacity: 0.6; }
-  .t-dot { fill: #3FD7FF; }
-  .tracker text { font-size: 9px; fill: var(--snow); }
-  @media (prefers-reduced-motion: no-preference) {
-    .flows path { animation: flow 7s linear infinite var(--d); }
-    .ring { animation: ring 2.4s ease-out infinite; }
+  .particles circle {
+    fill: #9FEAFF;
+    opacity: var(--o);
+    filter: drop-shadow(0 0 3px rgba(63, 215, 255, 0.9));
+    transform-box: fill-box;
+    transform-origin: center;
   }
-  @keyframes flow { to { stroke-dashoffset: -452; } }
-  @keyframes ring { 0% { opacity: 0.8; transform: scale(0.6); } 100% { opacity: 0; transform: scale(2.2); } }
+  @media (prefers-reduced-motion: no-preference) {
+    .particles circle { animation: drift var(--t) ease-in-out var(--d) infinite alternate, twinkle calc(var(--t) / 2.5) ease-in-out var(--d) infinite alternate; }
+  }
+  @keyframes drift { to { transform: translate(var(--dx), var(--dy)); } }
+  @keyframes twinkle { from { opacity: calc(var(--o) * 0.3); } to { opacity: var(--o); } }
 
   :global(.motion) .rise { animation: rise 0.9s var(--ease) both; }
   :global(.motion) h1.rise { animation-delay: 0.1s; }
   :global(.motion) .bottom.rise { animation-delay: 0.3s; }
   @keyframes rise { from { opacity: 0; transform: translateY(24px); } }
 
-  /* Con menos ancho, la escala de latitud quedaría bajo el texto */
-  @media (max-width: 1180px) {
-    .labels, .scale { display: none; }
-  }
   @media (max-width: 1080px) {
     .bottom { grid-template-columns: 1fr; gap: 1.4rem; }
   }
