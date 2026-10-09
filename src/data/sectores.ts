@@ -3,7 +3,7 @@
 export const SECTORES = [
   {
     slug: 'publico',
-    servicios: ['01.1', '02.3', '03.1', '03.6', '03.7', '05.1'],
+    servicios: ['01.1', '02.3', '03.1', '03.6', '03.7', '03.8', '05.1'],
     escenarios: ['Institución pública', 'Gobierno regional', 'Gobierno regional + empresa'],
     nombre: 'Sector público',
     icono: 'landmark',

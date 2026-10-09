@@ -7,8 +7,8 @@ export const ESCENARIOS = [
     titulo: 'Cartera de proyectos con observaciones pendientes en el sistema de evaluación',
     situacion: 'Proyectos estancados con observaciones de distinta naturaleza y un equipo técnico desbordado por responsabilidades simultáneas.',
     ruta: ['Subsanación de observaciones', 'Pre-evaluación de nuevas postulaciones', 'Cartera priorizada'],
-    servicios: ['03.7', '02.3', '02.4'],
-    resultado: 'Los proyectos retoman su avance hacia la recomendación favorable y las nuevas formulaciones ingresan con mayor solidez.',
+    servicios: ['03.8', '02.3', '02.4'],
+    resultado: 'Los proyectos retoman su avance hacia la recomendación satisfactoria y las nuevas formulaciones ingresan con mayor solidez.',
   },
   {
     tipo: 'Gobierno regional',

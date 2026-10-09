@@ -1,4 +1,4 @@
-// Catálogo de servicios CNV: 5 pilares y 27 servicios (fuente: brochure CNV).
+// Catálogo de servicios CNV: 5 pilares y 28 servicios (fuente: brochure CNV).
 // Para editar un servicio, cambie su nombre o descripción; el código (01.1, 01.2…) ordena la lista.
 
 export type Servicio = { codigo: string; nombre: string; descripcion: string };
@@ -33,7 +33,7 @@ export const PILARES: Pilar[] = [
     pregunta: 'Cómo se convierte el diagnóstico en una cartera de acciones interrelacionadas y cuáles son sus resultados esperados.',
     bajada: 'Las decisiones de diseño condicionan todo lo que viene después. Se toman una vez, de manera deliberada, y quedan documentadas.',
     servicios: [
-      { codigo: '02.1', nombre: 'Diseño o rediseño de programas de inversión social', descripcion: 'Teoría de cambio explícita, población definida e indicadores con medio de verificación.' },
+      { codigo: '02.1', nombre: 'Diseño o rediseño de programas públicos y de inversión social', descripcion: 'Teoría de cambio explícita, población definida e indicadores con medio de verificación.' },
       { codigo: '02.2', nombre: 'Diseño de mecanismos de focalización y acceso', descripcion: 'Quién entra al programa, con qué instrumento y bajo qué regla.' },
       { codigo: '02.3', nombre: 'Formulación y evaluación de iniciativas de inversión', descripcion: 'Expediente y evaluación social cuando el proyecto tiene componente público o va a un financiador exigente.' },
       { codigo: '02.4', nombre: 'Formulación de carteras integrales de programas e inversión', descripcion: 'El conjunto ordenado en una secuencia, en vez de resolver las acciones de manera individual.' },
@@ -53,6 +53,7 @@ export const PILARES: Pilar[] = [
       { codigo: '03.5', nombre: 'Análisis de contribución al desarrollo territorial', descripcion: 'Efectos respecto de un escenario de comparación declarado.' },
       { codigo: '03.6', nombre: 'Bases de licitación y contraparte técnica de estudios', descripcion: 'Revisión de términos de referencia, control metodológico y validación de resultados.' },
       { codigo: '03.7', nombre: 'Vinculación y gestión institucional ante el sector público', descripcion: 'Acompaña la interlocución con los organismos que deben pronunciarse.' },
+      { codigo: '03.8', nombre: 'Resolución de observaciones en los sistemas de evaluación', descripcion: 'Clasifica las observaciones por su causa, corrige el expediente una sola vez y responde con trazabilidad, observación por observación.' },
     ],
   },
   {

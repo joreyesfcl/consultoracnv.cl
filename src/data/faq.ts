@@ -11,7 +11,7 @@ export const FAQ = [
   },
   {
     pregunta: '¿Se puede contratar un solo servicio?',
-    respuesta: 'Sí. Cada uno de los 27 servicios se puede contratar por separado o encadenado con otros en una asesoría integral. La modalidad se ajusta al encargo y a lo que su equipo puede asumir.',
+    respuesta: 'Sí. Cada uno de los 28 servicios se puede contratar por separado o encadenado con otros en una asesoría integral. La modalidad se ajusta al encargo y a lo que su equipo puede asumir.',
   },
   {
     pregunta: '¿Cómo empieza un trabajo con CNV?',

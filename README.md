@@ -19,7 +19,7 @@ npm run build      # genera el sitio final en dist/
 | Qué | Archivo |
 |---|---|
 | Email, ciudad, LinkedIn, formulario, agenda, analítica | `src/data/site.ts` |
-| Servicios (5 pilares, 27 servicios) | `src/data/servicios.ts` |
+| Servicios (5 pilares, 28 servicios) | `src/data/servicios.ts` |
 | Sectores, situaciones tipo (con el código de servicio de cada paso), equipo, preguntas frecuentes | `src/data/sectores.ts`, `escenarios.ts`, `equipo.ts`, `faq.ts` |
 | Textos de las secciones de Inicio | `src/data/inicio.ts` |
 | Menú de navegación | `src/data/site.ts` (`NAV`) |
