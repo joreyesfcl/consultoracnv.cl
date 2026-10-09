@@ -1,4 +1,4 @@
-// Catálogo de servicios CNV: 5 pilares y 27 servicios (fuente: brochure CNV).
+// Catálogo de servicios CNV: 5 pilares y 28 servicios (fuente: brochure CNV).
 // Para editar un servicio, cambie su nombre o descripción; el código (01.1, 01.2…) ordena la lista.
 
 export type Servicio = { codigo: string; nombre: string; descripcion: string };
@@ -53,6 +53,7 @@ export const PILARES: Pilar[] = [
       { codigo: '03.5', nombre: 'Análisis de contribución al desarrollo territorial', descripcion: 'Efectos respecto de un escenario de comparación declarado.' },
       { codigo: '03.6', nombre: 'Bases de licitación y contraparte técnica de estudios', descripcion: 'Revisión de términos de referencia, control metodológico y validación de resultados.' },
       { codigo: '03.7', nombre: 'Vinculación y gestión institucional ante el sector público', descripcion: 'Acompaña la interlocución con los organismos que deben pronunciarse.' },
+      { codigo: '03.8', nombre: 'Resolución de observaciones en los sistemas de evaluación', descripcion: 'Clasifica las observaciones por su causa, corrige el expediente una sola vez y responde con trazabilidad, observación por observación.' },
     ],
   },
   {
