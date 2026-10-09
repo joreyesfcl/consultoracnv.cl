@@ -33,7 +33,7 @@ export const PILARES: Pilar[] = [
     pregunta: 'Cómo se convierte el diagnóstico en una cartera de acciones interrelacionadas y cuáles son sus resultados esperados.',
     bajada: 'Las decisiones de diseño condicionan todo lo que viene después. Se toman una vez, de manera deliberada, y quedan documentadas.',
     servicios: [
-      { codigo: '02.1', nombre: 'Diseño o rediseño de programas de inversión social', descripcion: 'Teoría de cambio explícita, población definida e indicadores con medio de verificación.' },
+      { codigo: '02.1', nombre: 'Diseño o rediseño de programas públicos y de inversión social', descripcion: 'Teoría de cambio explícita, población definida e indicadores con medio de verificación.' },
       { codigo: '02.2', nombre: 'Diseño de mecanismos de focalización y acceso', descripcion: 'Quién entra al programa, con qué instrumento y bajo qué regla.' },
       { codigo: '02.3', nombre: 'Formulación y evaluación de iniciativas de inversión', descripcion: 'Expediente y evaluación social cuando el proyecto tiene componente público o va a un financiador exigente.' },
       { codigo: '02.4', nombre: 'Formulación de carteras integrales de programas e inversión', descripcion: 'El conjunto ordenado en una secuencia, en vez de resolver las acciones de manera individual.' },
