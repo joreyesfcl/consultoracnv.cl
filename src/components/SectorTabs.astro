@@ -36,7 +36,7 @@ const escenario = (tipo: string) => ESCENARIOS.find((e) => e.tipo === tipo);
               ))}
             </ul>
           </div>
-          <aside class="side on-dark">
+          <div class="side on-dark">
             <p class="eyebrow">Servicios más pedidos</p>
             <ul role="list" class="svcs">
               {s.servicios.map((c) => {
@@ -46,7 +46,7 @@ const escenario = (tipo: string) => ESCENARIOS.find((e) => e.tipo === tipo);
             </ul>
             {e && <p class="esc">Situación tipo: {e.titulo}</p>}
             <a href={`/sectores/${s.slug}/`} class="btn">Ver la página del sector <Icon name="arrow-right" /></a>
-          </aside>
+          </div>
         </div>
       );
     })}

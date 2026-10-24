@@ -1,0 +1,78 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { PILARES } from '../data/servicios';
+import { SECTORES } from '../data/sectores';
+import { EQUIPO } from '../data/equipo';
+
+const ancla = (codigo: string) => `s-${codigo.replace('.', '-')}`;
+---
+<Base title="Mapa del sitio" description="Todas las páginas del sitio de Consultora CNV en una sola lista.">
+  <PageHero eyebrow="Mapa del sitio" title="Todas las páginas," accent="en una lista." crumbs={[{ label: 'Mapa del sitio' }]} />
+  <section class="section doc-wrap">
+    <div class="container doc">
+      <div class="prose map">
+        <section class="sec" aria-labelledby="m-principal">
+          <h2 id="m-principal"><span class="mono">01</span>Páginas principales</h2>
+          <ul>
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/como-trabajamos/">Cómo trabajamos</a></li>
+            <li><a href="/contacto/">Contacto</a></li>
+          </ul>
+        </section>
+        <section class="sec" aria-labelledby="m-servicios">
+          <h2 id="m-servicios"><span class="mono">02</span>Servicios</h2>
+          <ul>
+            <li>
+              <a href="/servicios/">Todos los servicios</a>
+              <ul>
+                {PILARES.map((p) => (
+                  <li>
+                    <a href={`/servicios/${p.slug}/`}>Pilar {p.numero}: {p.nombre}</a>
+                    <ul>
+                      {p.servicios.map((s) => <li><a href={`/servicios/${p.slug}/#${ancla(s.codigo)}`}>{s.codigo} {s.nombre}</a></li>)}
+                    </ul>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          </ul>
+        </section>
+        <section class="sec" aria-labelledby="m-sectores">
+          <h2 id="m-sectores"><span class="mono">03</span>Sectores</h2>
+          <ul>
+            {SECTORES.map((s) => <li><a href={`/sectores/${s.slug}/`}>{s.nombre}</a></li>)}
+          </ul>
+        </section>
+        <section class="sec" aria-labelledby="m-nosotros">
+          <h2 id="m-nosotros"><span class="mono">04</span>Nosotros</h2>
+          <ul>
+            <li>
+              <a href="/nosotros/">Quiénes somos</a>
+              <ul>
+                {EQUIPO.map((p) => <li><a href={`/nosotros/${p.slug}/`}>Perfil de {p.nombre}</a></li>)}
+              </ul>
+            </li>
+          </ul>
+        </section>
+        <section class="sec" aria-labelledby="m-ayuda">
+          <h2 id="m-ayuda"><span class="mono">05</span>Ayuda e información</h2>
+          <ul>
+            <li><a href="/glosario/">Glosario</a></li>
+            <li><a href="/accesibilidad/">Declaración de accesibilidad</a></li>
+            <li><a href="/privacidad/">Política de privacidad</a></li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .map { grid-column: 1 / span 9; }
+  .map :global(ul ul) { font-size: 0.95rem; }
+  /* Enlaces de 44 px de alto (WCAG 2.5.5) */
+  .map :global(.sec ul) { gap: 0; }
+  .map :global(li > a) { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
+  @media (max-width: 900px) { .map { grid-column: 1 / -1; } }
+</style>

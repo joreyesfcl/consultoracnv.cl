@@ -36,14 +36,21 @@ const corto = ['Diagnóstico', 'Diseño', 'Gestión y financiamiento', 'Estrateg
       <ul role="list">
         <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
         <li><span>{SITE.ciudad}</span></li>
-        <li><a href={SITE.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a></li>
+        <li><a href={SITE.linkedin} target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span><span class="sr-only"> (se abre en una pestaña nueva)</span></a></li>
       </ul>
     </div>
   </div>
 
   <div class="container footer-bottom">
     <p>© {year} {SITE.nombre}</p>
-    <a href="/privacidad/">Política de privacidad</a>
+    <nav aria-label="Información legal y ayuda">
+      <ul role="list" class="legal">
+        <li><a href="/accesibilidad/">Accesibilidad</a></li>
+        <li><a href="/mapa-del-sitio/">Mapa del sitio</a></li>
+        <li><a href="/glosario/">Glosario</a></li>
+        <li><a href="/privacidad/">Política de privacidad</a></li>
+      </ul>
+    </nav>
     <p class="mono coords">33°27′S · 70°40′O</p>
   </div>
 </footer>
@@ -68,6 +75,7 @@ const corto = ['Diagnóstico', 'Diseño', 'Gestión y financiamiento', 'Estrateg
   a { color: var(--snow); text-decoration: none; }
   a:hover { color: var(--cyan); text-decoration: underline; text-underline-offset: 4px; }
   .mono { font-size: 0.75rem; color: var(--soft-blue); }
+  .legal { display: flex; flex-wrap: wrap; gap: 0 1.4rem; }
   .footer-bottom {
     display: flex;
     flex-wrap: wrap;

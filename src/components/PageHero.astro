@@ -30,7 +30,6 @@ const breadcrumb = crumbs.length
       })),
     }
   : null;
-const aria = accent ? `${title} ${accent}` : title;
 ---
 <section
   class:list={['page-hero', 'grat', `tone-${tone}`, { 'on-dark': tone === 'dark' }]}
@@ -55,7 +54,7 @@ const aria = accent ? `${title} ${accent}` : title;
       {numeral && <span class="numeral big-num rise" aria-hidden="true">{numeral}</span>}
       <div class="head-text">
         {eyebrow && <p class="eyebrow rise">{eyebrow}</p>}
-        <h1 class="rise" aria-label={aria}>{title}{accent && <> <em>{accent}</em></>}</h1>
+        <h1 class="rise">{title}{accent && <> <em>{accent}</em></>}</h1>
         {lead && <p class="lead rise">{lead}</p>}
       </div>
     </div>

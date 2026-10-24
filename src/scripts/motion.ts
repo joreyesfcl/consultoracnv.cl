@@ -101,6 +101,7 @@ function initPage() {
   main.querySelectorAll('.reveal, .stagger, [data-count]').forEach((el) => io.observe(el));
   bindPointer(main);
   bindMotionToggle(main);
+  bindIndexTips(main);
 }
 
 // ---------- Pausa de la animación de la portada (WCAG 2.2.2) ----------
@@ -122,6 +123,22 @@ function bindMotionToggle(scope: ParentNode) {
       const paused = !hero.classList.contains('paused');
       set(paused);
       try { localStorage.setItem('cnv-motion', paused ? 'paused' : 'on'); } catch { /* sin almacenamiento */ }
+    });
+  });
+}
+
+// ---------- Rótulos del índice lateral de la portada (WCAG 1.4.13) ----------
+// Escape oculta el rótulo visible; vuelve a mostrarse al cambiar de foco o al salir el cursor.
+function bindIndexTips(scope: ParentNode) {
+  scope.querySelectorAll<HTMLElement>('[data-index-tips]').forEach((list) => {
+    if (list.dataset.ready) return;
+    list.dataset.ready = '1';
+    const reset = () => list.classList.remove('tips-off');
+    list.addEventListener('keydown', (e) => { if (e.key === 'Escape') list.classList.add('tips-off'); });
+    list.addEventListener('pointerleave', reset);
+    list.addEventListener('focusin', reset);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && list.matches(':hover')) list.classList.add('tips-off');
     });
   });
 }

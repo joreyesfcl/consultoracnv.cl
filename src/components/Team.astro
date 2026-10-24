@@ -36,7 +36,7 @@ const foto = (slug: string) => Object.entries(fotos).find(([k]) => k.includes(`/
             </ul>
             <div class="actions">
               <a class="link" href={`/nosotros/${p.slug}/`}>Ver perfil <Icon name="arrow-right" /></a>
-              <a class="li" href={p.linkedin} target="_blank" rel="noopener" aria-label={`LinkedIn de ${p.nombre}`}><Icon name="linkedin" size={18} /></a>
+              <a class="li" href={p.linkedin} target="_blank" rel="noopener" aria-label={`LinkedIn de ${p.nombre} (se abre en una pestaña nueva)`}><Icon name="linkedin" size={18} /></a>
             </div>
           </div>
         </li>

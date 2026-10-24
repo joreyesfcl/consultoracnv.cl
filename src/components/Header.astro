@@ -27,6 +27,7 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
             {item.children ? (
               <>
                 <button
+                  type="button"
                   class:list={['nav-link', { active: isActive(item.href) }]}
                   aria-expanded="false"
                   aria-controls="sub-sectores"
@@ -65,7 +66,7 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
     <div class="header-actions">
       <ThemeToggle />
       <a href={CTA.href} class="btn btn-cta magnetic">{CTA.label} <Icon name="arrow-right" /></a>
-      <button class="menu-btn" aria-expanded="false" aria-controls="menu-movil" aria-label="Abrir menú" data-menu-toggle>
+      <button type="button" class="menu-btn" aria-expanded="false" aria-controls="menu-movil" aria-label="Abrir menú" data-menu-toggle>
         <svg class="i-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h10"></path></svg>
         <Icon name="x" size={22} class="i-close" />
       </button>
@@ -234,7 +235,13 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
     li.addEventListener('mouseenter', () => matchMedia('(hover: hover)').matches && set(true));
     li.addEventListener('mouseleave', () => matchMedia('(hover: hover)').matches && set(false));
     li.addEventListener('focusout', (e) => { if (!li.contains(e.relatedTarget as Node)) set(false); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { set(false); } });
+    // Escape cierra el submenú; si el foco estaba dentro, vuelve al botón (WCAG 2.4.3)
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' || subBtn.getAttribute('aria-expanded') !== 'true') return;
+      const inside = li.contains(document.activeElement);
+      set(false);
+      if (inside) subBtn.focus();
+    });
   }
 
   // Menú móvil

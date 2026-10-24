@@ -63,21 +63,3 @@ const actualizada = '27 de septiembre de 2026';
     </div>
   </section>
 </Base>
-
-<style>
-  .doc-wrap { padding-top: 1rem; }
-  .doc { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; row-gap: 2rem; }
-  .toc { grid-column: span 3; align-self: start; position: sticky; top: calc(var(--header-h) + 1.5rem); padding-left: 16px; border-left: 2px solid var(--line); }
-  .toc .eyebrow { color: var(--text-muted); margin-bottom: 0.6rem; }
-  .toc ol { list-style: none; padding: 0; display: grid; gap: 4px; }
-  .toc a { display: flex; gap: 10px; padding: 5px 0; font-size: 0.88rem; color: var(--text-muted); text-decoration: none; }
-  .toc a:hover { color: var(--accent); }
-  .toc .mono { font-size: 0.72rem; padding-top: 2px; }
-  .prose { grid-column: 5 / span 8; }
-  .sec { display: grid; gap: 10px; padding: 22px 0; border-top: 1px solid var(--line); scroll-margin-top: calc(var(--header-h) + 1rem); }
-  .sec h2 { display: flex; gap: 12px; align-items: baseline; font-size: 1.6rem; font-weight: 500; letter-spacing: -0.01em; }
-  .sec h2 .mono { font-size: 0.78rem; color: var(--accent); }
-  .sec p { max-width: 720px; line-height: 1.7; }
-  .sec strong { user-select: all; }
-  @media (max-width: 900px) { .toc { display: none; } .prose { grid-column: 1 / -1; } }
-</style>
