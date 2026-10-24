@@ -100,6 +100,30 @@ function initPage() {
   );
   main.querySelectorAll('.reveal, .stagger, [data-count]').forEach((el) => io.observe(el));
   bindPointer(main);
+  bindMotionToggle(main);
+}
+
+// ---------- Pausa de la animación de la portada (WCAG 2.2.2) ----------
+// El botón detiene las partículas; la elección se guarda en el navegador y se aplica al volver.
+function bindMotionToggle(scope: ParentNode) {
+  scope.querySelectorAll<HTMLButtonElement>('[data-motion-toggle]').forEach((btn) => {
+    if (btn.dataset.ready) return;
+    btn.dataset.ready = '1';
+    const hero = btn.closest<HTMLElement>('.hero');
+    if (!hero) return;
+    const set = (paused: boolean) => {
+      hero.classList.toggle('paused', paused);
+      btn.textContent = paused ? 'Reanudar animación' : 'Pausar animación';
+    };
+    let saved = false;
+    try { saved = localStorage.getItem('cnv-motion') === 'paused'; } catch { /* sin almacenamiento */ }
+    set(saved);
+    btn.addEventListener('click', () => {
+      const paused = !hero.classList.contains('paused');
+      set(paused);
+      try { localStorage.setItem('cnv-motion', paused ? 'paused' : 'on'); } catch { /* sin almacenamiento */ }
+    });
+  });
 }
 
 // ---------- Barra de progreso y parallax (una sola vez) ----------

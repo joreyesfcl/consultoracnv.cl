@@ -240,14 +240,20 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
   // Menú móvil
   const menuBtn = header.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
   const menu = header.querySelector<HTMLElement>('[data-menu]')!;
-  const setMenu = (open: boolean) => {
+  // Con el menú abierto, el contenido de fondo queda inactivo (inert) para que el foco del teclado
+  // no salga del menú hacia elementos tapados; al cerrarlo, el foco vuelve al botón.
+  const behind = () => document.querySelectorAll<HTMLElement>('#contenido, .site-footer, .skip-link');
+  const setMenu = (open: boolean, returnFocus = false) => {
     menuBtn.setAttribute('aria-expanded', String(open));
     menuBtn.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
     menu.hidden = !open;
     header.classList.toggle('menu-open', open);
     document.documentElement.style.overflow = open ? 'hidden' : '';
+    behind().forEach((el) => (el.inert = open));
+    if (open) menu.querySelector<HTMLElement>('a')?.focus();
+    else if (returnFocus) menuBtn.focus();
   };
-  menuBtn.addEventListener('click', () => setMenu(menuBtn.getAttribute('aria-expanded') !== 'true'));
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden) { setMenu(false); menuBtn.focus(); } });
+  menuBtn.addEventListener('click', () => setMenu(menuBtn.getAttribute('aria-expanded') !== 'true', true));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.hidden) setMenu(false, true); });
   matchMedia('(min-width: 1081px)').addEventListener('change', (e) => e.matches && setMenu(false));
 </script>

@@ -34,14 +34,15 @@ const breadcrumb = {
 
       <div class="form-card" id="formulario">
         <h2 class="h">Escríbanos</h2>
+        <p class="note">Los campos marcados como obligatorios son necesarios para responderle.</p>
         <form data-contact action={SITE.formspree} method="POST" novalidate>
           <div class="row">
-            <label for="nombre">Nombre<input id="nombre" name="nombre" autocomplete="name" required /></label>
-            <label for="cargo">Cargo<input id="cargo" name="cargo" autocomplete="organization-title" /></label>
+            <div class="field"><label for="nombre"><span>Nombre <span class="req">(obligatorio)</span></span><input id="nombre" name="nombre" type="text" autocomplete="name" required /></label><p class="field-error" id="err-nombre" hidden></p></div>
+            <label for="cargo">Cargo<input id="cargo" name="cargo" type="text" autocomplete="organization-title" /></label>
           </div>
           <div class="row">
-            <label for="organizacion">Organización<input id="organizacion" name="organizacion" autocomplete="organization" /></label>
-            <label for="email">Correo electrónico<input id="email" name="email" type="email" autocomplete="email" required /></label>
+            <label for="organizacion">Organización<input id="organizacion" name="organizacion" type="text" autocomplete="organization" /></label>
+            <div class="field"><label for="email"><span>Correo electrónico <span class="req">(obligatorio)</span></span><input id="email" name="email" type="email" autocomplete="email" required /></label><p class="field-error" id="err-email" hidden></p></div>
           </div>
           <label for="tipo">Tipo de organización
             <select id="tipo" name="tipo">
@@ -49,14 +50,20 @@ const breadcrumb = {
               {tipos.map((t) => <option>{t}</option>)}
             </select>
           </label>
-          <label for="mensaje">¿Cuál es su desafío?
-            <textarea id="mensaje" name="mensaje" rows="7" required placeholder="Describa brevemente la situación, su organización y los plazos, si los hay."></textarea>
-          </label>
+          <div class="field">
+            <label for="mensaje"><span>¿Cuál es su desafío? <span class="req">(obligatorio)</span></span>
+              <textarea id="mensaje" name="mensaje" rows="7" required placeholder="Describa brevemente la situación, su organización y los plazos, si los hay."></textarea>
+            </label>
+            <p class="field-error" id="err-mensaje" hidden></p>
+          </div>
           <label class="hp" aria-hidden="true">No completar<input name="_gotcha" tabindex="-1" autocomplete="off" /></label>
-          <label class="check" for="consentimiento">
-            <input type="checkbox" id="consentimiento" name="consentimiento" required />
-            <span>Acepto que Consultora CNV use estos datos solo para responder mi mensaje, según la <a href="/privacidad/">política de privacidad</a>.</span>
-          </label>
+          <div class="field">
+            <label class="check" for="consentimiento">
+              <input type="checkbox" id="consentimiento" name="consentimiento" required />
+              <span>Acepto que Consultora CNV use estos datos solo para responder mi mensaje, según la <a href="/privacidad/">política de privacidad</a>. <span class="req">(obligatorio)</span></span>
+            </label>
+            <p class="field-error" id="err-consentimiento" hidden></p>
+          </div>
           <button type="submit" class="btn">Enviar mensaje <Icon name="arrow-right" /></button>
           <p class="status" role="status" aria-live="polite" data-status></p>
         </form>
@@ -80,8 +87,13 @@ const breadcrumb = {
   .form-card { grid-column: 7 / span 6; padding: clamp(1.5rem, 4vw, 2.3rem); border-radius: 28px; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-lg); scroll-margin-top: calc(var(--header-h) + 1rem); }
   .h { font-size: 1.9rem; font-weight: 400; margin-bottom: 1rem; }
   form { display: grid; gap: 1rem; }
-  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  form > label, .row label { display: grid; gap: 0.4rem; font-size: 0.85rem; font-weight: 600; color: var(--heading); }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: start; }
+  form label:not(.check):not(.hp) { display: grid; gap: 0.4rem; font-size: 0.85rem; font-weight: 600; color: var(--heading); }
+  .note { font-size: 0.85rem; color: var(--text-muted); margin: -0.4rem 0 0.4rem; }
+  .req { font-weight: 400; color: var(--text-muted); }
+  .field { display: grid; gap: 0.35rem; }
+  .field-error { font-size: 0.85rem; font-weight: 600; color: #C0392B; }
+  :global(:root[data-theme='dark']) .field-error { color: #FF8A80; }
   input:not([type='checkbox']):not([type='radio']), select, textarea {
     width: 100%;
     min-height: 50px;
@@ -94,10 +106,13 @@ const breadcrumb = {
     font-size: 1rem;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
-  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  /* El foco usa el contorno global de 2 px (:focus-visible en global.css) más el cambio de borde */
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
   textarea { resize: vertical; }
   [aria-invalid='true'] { border-color: #C0392B !important; }
-  .check input[aria-invalid='true'] { outline: 2px solid #C0392B; outline-offset: 2px; }
+  /* El error de la casilla usa un anillo (box-shadow) para no tapar el contorno de foco */
+  .check input[aria-invalid='true'] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px #C0392B; }
+  :global(:root[data-theme='dark']) .check input[aria-invalid='true'] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px #FF8A80; }
   .hp { position: absolute; left: -9999px; }
   .check { display: flex !important; gap: 0.7rem; align-items: flex-start; font-size: 0.85rem; font-weight: 400 !important; color: var(--text-muted) !important; }
   .check input { margin-top: 0.15rem; width: 20px; height: 20px; accent-color: var(--cobalt); flex-shrink: 0; }
