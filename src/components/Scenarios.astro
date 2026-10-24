@@ -33,13 +33,13 @@ const slug = (i: number) => `esc-${i}`;
     )}
     {lista.map((e, i) => (
       <div class="panel" role={lista.length > 1 ? 'tabpanel' : undefined} id={slug(i)} aria-labelledby={lista.length > 1 ? `t-${slug(i)}` : undefined} hidden={i !== 0}>
-        <section class="card before" aria-label="Antes">
+        <div class="card before">
           <Image src={fondo} alt="" widths={[480, 720]} sizes="(max-width: 960px) 100vw, 30vw" class="img" loading="lazy" />
           <span class="mono lbl">Antes · {e.tipo}</span>
           <h3>{e.titulo}</h3>
           <p>{e.situacion}</p>
-        </section>
-        <section class="file" aria-label="Expediente de trabajo">
+        </div>
+        <div class="file">
           <span class="mono lbl">Expediente de trabajo</span>
           <ol role="list">
             {e.ruta.map((paso, k) => (
@@ -53,13 +53,13 @@ const slug = (i: number) => `esc-${i}`;
               </li>
             ))}
           </ol>
-        </section>
-        <section class="card after on-dark" aria-label="Después">
+        </div>
+        <div class="card after on-dark">
           <Image src={fondo} alt="" widths={[480, 720]} sizes="(max-width: 960px) 100vw, 30vw" class="img" loading="lazy" />
           <span class="mono lbl">Después</span>
           <p class="res">{e.resultado}</p>
           <a href="/contacto/" class="btn">Conversemos sobre su caso <Icon name="arrow-right" /></a>
-        </section>
+        </div>
       </div>
     ))}
   </div>

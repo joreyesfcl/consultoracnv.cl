@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { GLOSARIO } from '../data/glosario';
+import { conSiglas } from '../data/siglas';
+
+const id = (t: string) =>
+  't-' + t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+---
+<Base title="Glosario" description="Definiciones breves de los términos técnicos que usa Consultora CNV: cartera, línea base, evaluación social, teoría de cambio y otros.">
+  <PageHero eyebrow="Glosario" title="Los términos técnicos," accent="en palabras simples." lead={`${GLOSARIO.length} términos que usamos en este sitio, explicados en una o dos oraciones.`} crumbs={[{ label: 'Glosario' }]} />
+  <section class="section doc-wrap">
+    <div class="container doc">
+      <nav class="toc" aria-label="Términos">
+        <p class="eyebrow">Términos</p>
+        <ol role="list">
+          {GLOSARIO.map((g) => <li><a href={`#${id(g.termino)}`}>{g.termino}</a></li>)}
+        </ol>
+      </nav>
+      <div class="prose">
+        <dl class="terms">
+          {GLOSARIO.map((g) => (
+            <div class="sec" id={id(g.termino)}>
+              <dt set:html={conSiglas(g.termino)} />
+              <dd set:html={conSiglas(g.definicion)} />
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .terms { margin: 0; }
+  dt { font-family: var(--font-display); font-size: 1.45rem; font-weight: 500; letter-spacing: -0.01em; color: var(--heading); }
+  dd { margin: 0; max-width: 720px; line-height: 1.7; }
+</style>

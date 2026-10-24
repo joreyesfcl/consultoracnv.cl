@@ -157,12 +157,12 @@ const pilares = PILARES.map((p, i) => {
   .cap { margin-top: 0.8rem; font-size: 0.72rem; color: var(--soft-blue); }
   .coarse { display: none; }
   @media (hover: none) { .fine { display: none; } .coarse { display: inline; } }
-  .search { display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 16px; border-radius: 999px; border: 1px solid rgba(185, 206, 232, 0.3); background: rgba(248, 251, 255, 0.04); color: var(--soft-blue); }
-  .search input { flex: 1; min-width: 0; border: 0; background: transparent; color: var(--snow); font-size: 0.95rem; outline: none; }
-  .search:focus-within { border-color: var(--cyan); }
+  .search { display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--field-border); background: rgba(248, 251, 255, 0.04); color: var(--soft-blue); }
+  .search input { flex: 1; align-self: stretch; min-width: 0; border: 0; background: transparent; color: var(--snow); font-size: 0.95rem; outline: none; }
+  .search:focus-within { border-color: var(--cyan); outline: 2px solid var(--cyan); outline-offset: 2px; }
   .count { font-size: 0.72rem; white-space: nowrap; }
   .legend { list-style: none; padding: 0; border-top: 1px solid var(--line); }
-  .legend a { display: grid; grid-template-columns: 28px 1fr auto; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); color: var(--snow); text-decoration: none; font-size: 0.95rem; }
+  .legend a { display: grid; grid-template-columns: 28px 1fr auto; gap: 12px; align-items: center; min-height: 44px; padding: 12px 0; border-bottom: 1px solid var(--line); color: var(--snow); text-decoration: none; font-size: 0.95rem; }
   .legend a:hover { color: var(--cyan); }
   .sw { width: 14px; height: 14px; border-radius: 4px; background: var(--c); }
   .legend .n { font-size: 0.72rem; color: var(--soft-blue); }

@@ -1,5 +1,6 @@
 ---
 // Sectores en pestañas (mesa 15): bajada, perfiles y servicios más pedidos por sector.
+import { conSiglas } from '../data/siglas';
 import Icon from './Icon.astro';
 import { SECTORES } from '../data/sectores';
 import { ESCENARIOS } from '../data/escenarios';
@@ -29,14 +30,14 @@ const escenario = (tipo: string) => ESCENARIOS.find((e) => e.tipo === tipo);
       return (
         <div class="panel" role="tabpanel" id={`panel-${s.slug}`} aria-labelledby={`tab-${s.slug}`} hidden={i !== 0}>
           <div class="main">
-            <p class="bajada">{s.bajada}</p>
+            <p class="bajada" set:html={conSiglas(s.bajada)} />
             <ul class="perfiles" role="list">
               {s.perfiles.map((p) => (
-                <li><h3>{p.titulo}</h3><p>{p.texto}</p></li>
+                <li><h3 set:html={conSiglas(p.titulo)} /><p set:html={conSiglas(p.texto)} /></li>
               ))}
             </ul>
           </div>
-          <aside class="side on-dark">
+          <div class="side on-dark">
             <p class="eyebrow">Servicios más pedidos</p>
             <ul role="list" class="svcs">
               {s.servicios.map((c) => {
@@ -45,8 +46,8 @@ const escenario = (tipo: string) => ESCENARIOS.find((e) => e.tipo === tipo);
               })}
             </ul>
             {e && <p class="esc">Situación tipo: {e.titulo}</p>}
-            <a href={`/sectores/${s.slug}/`} class="btn">Ver la página del sector <Icon name="arrow-right" /></a>
-          </aside>
+            <a href={`/sectores/${s.slug}/`} class="btn">Ver la página del sector<span class="sr-only"> {s.nombre}</span> <Icon name="arrow-right" /></a>
+          </div>
         </div>
       );
     })}
@@ -70,7 +71,7 @@ const escenario = (tipo: string) => ESCENARIOS.find((e) => e.tipo === tipo);
   .perfiles p { font-size: 0.9rem; color: var(--text-muted); }
   .side { grid-column: 9 / span 4; display: grid; gap: 14px; align-content: start; padding: 26px; border-radius: 22px; }
   .svcs { list-style: none; padding: 0; }
-  .svcs a { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); color: var(--snow); text-decoration: none; font-size: 0.9rem; line-height: 1.35; }
+  .svcs a { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 10px; align-items: center; min-height: 44px; padding: 10px 0; border-bottom: 1px solid var(--line); color: var(--snow); text-decoration: none; font-size: 0.9rem; line-height: 1.35; }
   .svcs a:hover { color: var(--cyan); }
   .svcs .mono { font-size: 0.75rem; color: var(--cyan); }
   .esc { font-size: 0.85rem; color: var(--soft-blue); }

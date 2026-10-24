@@ -5,8 +5,8 @@ import { SITE } from '../data/site';
 
 const tipos = [
   'Gobierno regional', 'Municipio o corporación municipal', 'Servicio público', 'Asociación de municipios',
-  'Asociación de Gobiernos Regionales', 'Empresa', 'Área de sostenibilidad o RSE', 'Fundación corporativa',
-  'Fundación, corporación u ONG', 'Organismo multilateral', 'Otro',
+  'Asociación de Gobiernos Regionales', 'Empresa', 'Área de sostenibilidad o responsabilidad social empresarial (RSE)', 'Fundación corporativa',
+  'Fundación, corporación u organización no gubernamental (ONG)', 'Organismo multilateral', 'Otro',
 ];
 const breadcrumb = {
   '@context': 'https://schema.org',
@@ -27,9 +27,9 @@ const breadcrumb = {
         <dl class="info">
           <dt class="mono">Correo</dt><dd><a href={`mailto:${SITE.email}`}>{SITE.email}</a></dd>
           <dt class="mono">Ciudad</dt><dd>{SITE.ciudad}</dd>
-          <dt class="mono">LinkedIn</dt><dd><a href={SITE.linkedin} target="_blank" rel="noopener">Consultora CNV ↗</a></dd>
+          <dt class="mono">LinkedIn</dt><dd><a href={SITE.linkedin} target="_blank" rel="noopener">Consultora CNV <span aria-hidden="true">↗</span><span class="sr-only"> (se abre en una pestaña nueva)</span></a></dd>
         </dl>
-        <a href={SITE.agenda} target="_blank" rel="noopener" class="btn btn-ghost agenda"><Icon name="calendar" /> Agendar una reunión</a>
+        <a href={SITE.agenda} target="_blank" rel="noopener" class="btn btn-ghost agenda"><Icon name="calendar" /> Agendar una reunión<span class="sr-only"> (se abre en una pestaña nueva)</span></a>
       </div>
 
       <div class="form-card" id="formulario">
@@ -56,7 +56,7 @@ const breadcrumb = {
             </label>
             <p class="field-error" id="err-mensaje" hidden></p>
           </div>
-          <label class="hp" aria-hidden="true">No completar<input name="_gotcha" tabindex="-1" autocomplete="off" /></label>
+          <label class="hp" aria-hidden="true">No completar<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" /></label>
           <div class="field">
             <label class="check" for="consentimiento">
               <input type="checkbox" id="consentimiento" name="consentimiento" required />
@@ -81,7 +81,9 @@ const breadcrumb = {
   .info { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 12px 16px; margin: 0; }
   .info dt { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); padding-top: 3px; }
   .info dd { margin: 0; font-weight: 600; }
-  .info a { text-decoration: none; }
+  .info a { display: inline-flex; align-items: center; gap: 0.3em; min-height: 44px; text-decoration: none; overflow-wrap: anywhere; }
+  .info dd { display: flex; align-items: center; }
+  .info dt { align-self: center; padding-top: 0; }
   .info a:hover { color: var(--accent); text-decoration: underline; }
 
   .form-card { grid-column: 7 / span 6; padding: clamp(1.5rem, 4vw, 2.3rem); border-radius: 28px; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-lg); scroll-margin-top: calc(var(--header-h) + 1rem); }
@@ -99,7 +101,7 @@ const breadcrumb = {
     min-height: 50px;
     padding: 0.75rem 1rem;
     border-radius: 12px;
-    border: 1px solid var(--line);
+    border: 1px solid var(--field-border);
     background: var(--bg);
     color: var(--text);
     font-weight: 400;
@@ -115,7 +117,7 @@ const breadcrumb = {
   :global(:root[data-theme='dark']) .check input[aria-invalid='true'] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px #FF8A80; }
   .hp { position: absolute; left: -9999px; }
   .check { display: flex !important; gap: 0.7rem; align-items: flex-start; font-size: 0.85rem; font-weight: 400 !important; color: var(--text-muted) !important; }
-  .check input { margin-top: 0.15rem; width: 20px; height: 20px; accent-color: var(--cobalt); flex-shrink: 0; }
+  .check input { margin-top: 0; width: 24px; height: 24px; accent-color: var(--cobalt); flex-shrink: 0; }
   form .btn { justify-self: start; }
   .status { font-size: 0.95rem; }
   .status.ok { color: var(--accent); font-weight: 600; }

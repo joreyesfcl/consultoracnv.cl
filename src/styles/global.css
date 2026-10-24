@@ -42,6 +42,8 @@
   --accent-contrast: var(--white);
   --accent-soft: rgba(22, 93, 255, 0.08);
   --line: var(--soft-blue);
+  /* Borde de campos y buscadores: 3:1 o más sobre la superficie (WCAG 1.4.11) */
+  --field-border: #6E86A8;
   --border: rgba(22, 93, 255, 0.14);
   --border-strong: rgba(22, 93, 255, 0.3);
   --grid-line: rgba(7, 28, 56, 0.07);
@@ -87,6 +89,7 @@
   --accent-contrast: var(--navy);
   --accent-soft: rgba(63, 215, 255, 0.1);
   --line: rgba(185, 206, 232, 0.2);
+  --field-border: #7690B4;
   --border: rgba(185, 206, 232, 0.14);
   --border-strong: rgba(63, 215, 255, 0.35);
   --grid-line: rgba(234, 246, 255, 0.06);
@@ -116,6 +119,8 @@ body {
   transition: background-color 0.3s var(--ease), color 0.3s var(--ease);
 }
 main { flex: 1; }
+/* Destino de "Saltar al contenido" (tabindex=-1): sin marco al recibir el foco */
+main:focus { outline: none; }
 [hidden] { display: none !important; }
 img, svg, video { display: block; max-width: 100%; }
 img { height: auto; }
@@ -219,6 +224,7 @@ p { text-wrap: pretty; }
   --accent-contrast: var(--navy);
   --accent-soft: rgba(63, 215, 255, 0.1);
   --line: rgba(185, 206, 232, 0.18);
+  --field-border: #7690B4;
   --border: rgba(185, 206, 232, 0.16);
   --border-strong: rgba(63, 215, 255, 0.4);
   --grid-line: rgba(234, 246, 255, 0.08);
@@ -270,6 +276,7 @@ p { text-wrap: pretty; }
   text-decoration: none;
   display: inline-flex;
   align-items: center;
+  min-height: 44px;
   gap: 0.4rem;
 }
 .link svg { width: 16px; height: 16px; transition: transform 0.25s var(--ease); }
@@ -279,7 +286,7 @@ p { text-wrap: pretty; }
 /* Migas de pan en mono */
 .crumbs ol { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); }
 .crumbs li + li::before { content: '/'; margin-right: 0.5rem; opacity: 0.6; }
-.crumbs a { color: inherit; text-decoration: none; }
+.crumbs a { color: inherit; text-decoration: none; display: inline-block; min-width: 44px; padding-block: 14px; margin-block: -14px; } /* objetivo de 44 px sin mover el diseño */
 .crumbs a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 .crumbs [aria-current] { color: var(--text); }
 
@@ -389,3 +396,26 @@ p { text-wrap: pretty; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------- Páginas de texto largo (Privacidad, Accesibilidad, Glosario, Mapa del sitio) ---------- */
+.doc-wrap { padding-top: 1rem; }
+.doc { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; row-gap: 2rem; }
+.doc .toc { grid-column: span 3; align-self: start; position: sticky; top: calc(var(--header-h) + 1.5rem); max-height: calc(100vh - var(--header-h) - 3rem); overflow-y: auto; padding-left: 16px; border-left: 2px solid var(--line); }
+.doc .toc .eyebrow { color: var(--text-muted); margin-bottom: 0.6rem; }
+.doc .toc ol { list-style: none; padding: 0; display: grid; gap: 0; }
+.doc .toc a { display: flex; align-items: center; min-height: 44px; gap: 10px; padding: 4px 0; font-size: 0.88rem; color: var(--text-muted); text-decoration: none; }
+.doc .toc a:hover { color: var(--accent); }
+.doc .toc .mono { font-size: 0.72rem; }
+.doc .prose { grid-column: 5 / span 8; }
+.doc .sec { display: grid; gap: 10px; padding: 22px 0; border-top: 1px solid var(--line); scroll-margin-top: calc(var(--header-h) + 1rem); }
+.doc .sec h2 { display: flex; gap: 12px; align-items: baseline; font-size: 1.6rem; font-weight: 500; letter-spacing: -0.01em; }
+.doc .sec h2 .mono { font-size: 0.78rem; color: var(--accent); }
+.doc .sec p { max-width: 720px; line-height: 1.7; }
+.doc .sec strong { user-select: all; }
+@media (max-width: 900px) { .doc .toc { display: none; } .doc .prose { grid-column: 1 / -1; } }
+.doc .sec ul { display: grid; gap: 0.5rem; max-width: 720px; padding-left: 1.2rem; line-height: 1.6; }
+.doc .sec ul ul { margin-top: 0.5rem; }
+.doc .sec a { color: var(--accent); text-underline-offset: 3px; }
+.doc .sec abbr[title] { text-decoration: none; }
+/* Objetivos táctiles de 44 px en los chips que son enlaces (WCAG 2.5.5) */
+a.chip { min-height: 44px; }

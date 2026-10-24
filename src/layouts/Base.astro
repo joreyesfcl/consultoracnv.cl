@@ -82,7 +82,7 @@ const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
   <body>
     <a href="#contenido" class="skip-link">Saltar al contenido</a>
     <Header tone={tone} overlay={overlay} />
-    <main id="contenido">
+    <main id="contenido" tabindex="-1">
       <slot />
     </main>
     <Footer />

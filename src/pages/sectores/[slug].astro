@@ -1,10 +1,12 @@
 ---
+import { conSiglas } from '../../data/siglas';
 import Base from '../../layouts/Base.astro';
 import PageHero from '../../components/PageHero.astro';
 import SectionHead from '../../components/SectionHead.astro';
 import Scenarios from '../../components/Scenarios.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import Icon from '../../components/Icon.astro';
+import PlainSummary from '../../components/PlainSummary.astro';
 import { SECTORES } from '../../data/sectores';
 import { PILARES } from '../../data/servicios';
 
@@ -36,13 +38,14 @@ const perfilesTitulo = s.perfiles.length === 2 ? 'Dos perfiles' : s.perfiles.len
 
   <section class="section" aria-labelledby="perfiles">
     <div class="container">
+      <PlainSummary text={s.resumen} />
       <SectionHead id="perfiles" eyebrow="Con quién trabajamos" title={perfilesTitulo} accent="que acompañamos." />
       <ul class="perfiles stagger" role="list">
         {s.perfiles.map((p, i) => (
           <li class="spotlight">
             <span class="mono">{String(i + 1).padStart(2, '0')}</span>
-            <h3>{p.titulo}</h3>
-            <p>{p.texto}</p>
+            <h3 set:html={conSiglas(p.titulo)} />
+            <p set:html={conSiglas(p.texto)} />
           </li>
         ))}
       </ul>

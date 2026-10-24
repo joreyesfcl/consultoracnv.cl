@@ -1,0 +1,85 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { SITE } from '../data/site';
+
+// Actualice estas fechas cada vez que se revise el sitio.
+const evaluada = '24 de octubre de 2026';
+const plazo = '5 días hábiles';
+
+const secciones = [
+  ['a1', 'Nuestro compromiso'],
+  ['a2', 'Nivel alcanzado'],
+  ['a3', 'Cómo lo evaluamos'],
+  ['a4', 'Ayudas disponibles'],
+  ['a5', 'Limitaciones conocidas'],
+  ['a6', 'Cómo reportar una barrera'],
+  ['a7', 'Revisión de esta declaración'],
+];
+const n = (i: number) => String(i + 1).padStart(2, '0');
+---
+<Base title="Accesibilidad" description="Declaración de accesibilidad de Consultora CNV: nivel alcanzado, ayudas disponibles, limitaciones conocidas y cómo reportar una barrera.">
+  <PageHero eyebrow="Accesibilidad" title="Declaración de accesibilidad" lead={`Última evaluación: ${evaluada}.`} crumbs={[{ label: 'Accesibilidad' }]} />
+  <section class="section doc-wrap">
+    <div class="container doc">
+      <nav class="toc" aria-label="En esta página">
+        <p class="eyebrow">En esta página</p>
+        <ol role="list">
+          {secciones.map(([id, t], i) => <li><a href={`#${id}`}><span class="mono">{n(i)}</span>{t}</a></li>)}
+        </ol>
+      </nav>
+      <div class="prose">
+        <section id="a1" class="sec">
+          <h2><span class="mono">01</span>Nuestro compromiso</h2>
+          <p>Queremos que cualquier persona pueda leer este sitio, recorrerlo y escribirnos, use o no tecnologías de apoyo. Por eso lo diseñamos y lo revisamos con criterios de accesibilidad desde su construcción.</p>
+        </section>
+        <section id="a2" class="sec">
+          <h2><span class="mono">02</span>Nivel alcanzado</h2>
+          <p>Este sitio cumple el nivel AA de las Pautas de Accesibilidad para el Contenido Web (<abbr title="Web Content Accessibility Guidelines">WCAG</abbr>) 2.2 del W3C. También sigue las recomendaciones de la guía «Accesibilidad Web en Chile» del Servicio Nacional de la Discapacidad (<abbr title="Servicio Nacional de la Discapacidad">SENADIS</abbr>), de 2022.</p>
+          <p>Además cumple varios criterios del nivel AAA: enlaces con texto que se entiende por sí solo, enlaces y botones de 44 píxeles, un glosario y resúmenes en lenguaje sencillo.</p>
+        </section>
+        <section id="a3" class="sec">
+          <h2><span class="mono">03</span>Cómo lo evaluamos</h2>
+          <p>La última evaluación es del {evaluada}. Revisamos todas las páginas en tema claro y oscuro, en escritorio y en celular, y con la opción de reducir movimiento.</p>
+          <ul>
+            <li>Pruebas automáticas con axe-core sobre los criterios A y AA.</li>
+            <li>Medición del contraste de cada texto y de los bordes de los controles.</li>
+            <li>Recorrido completo con teclado, con revisión del foco visible.</li>
+            <li>Zoom al 200 % y al 400 %, pantallas de 320 píxeles y espaciado de texto aumentado.</li>
+            <li>Revisión de la estructura, de los nombres de enlaces y botones, y del lenguaje.</li>
+          </ul>
+        </section>
+        <section id="a4" class="sec">
+          <h2><span class="mono">04</span>Ayudas disponibles</h2>
+          <ul>
+            <li>Enlace «Saltar al contenido» al inicio de cada página.</li>
+            <li>Tema claro u oscuro, con el botón de la cabecera.</li>
+            <li>Botón «Pausar animación» en la portada. El sitio también respeta la opción de reducir movimiento del sistema.</li>
+            <li>El texto se puede ampliar hasta un 400 % con el zoom del navegador sin perder contenido.</li>
+            <li>Todo se puede usar con teclado.</li>
+            <li><a href="/mapa-del-sitio/">Mapa del sitio</a> y <a href="/glosario/">glosario</a> de términos técnicos.</li>
+          </ul>
+        </section>
+        <section id="a5" class="sec">
+          <h2><span class="mono">05</span>Limitaciones conocidas</h2>
+          <ul>
+            <li>La agenda de reuniones (Google Calendar) y LinkedIn son servicios externos. Su accesibilidad depende de esas empresas.</li>
+            <li>El formulario de contacto se envía a través de Formspree. El formulario y sus mensajes están en este sitio y fueron evaluados.</li>
+            <li>En el tema claro, algunos textos pequeños tienen un contraste de entre 4,5:1 y 7:1. Cumplen el nivel AA, pero no el AAA. El tema oscuro sí llega al nivel AAA.</li>
+            <li>Los segmentos de la rueda de servicios y la casilla de aceptación del formulario miden menos de 44 píxeles. Cumplen el mínimo de 24 píxeles del nivel AA, y cada servicio de la rueda también tiene su enlace en el <a href="/servicios/">catálogo de servicios</a>.</li>
+            <li>Todavía no hemos hecho pruebas con personas que usan lectores de pantalla. Están planificadas.</li>
+          </ul>
+        </section>
+        <section id="a6" class="sec">
+          <h2><span class="mono">06</span>Cómo reportar una barrera</h2>
+          <p>Si algo de este sitio le impide leer, navegar o escribirnos, avísenos a <a href={`mailto:${SITE.email}?subject=Accesibilidad`}>{SITE.email}<span class="sr-only"> (mensaje con el asunto Accesibilidad)</span></a> con el asunto «Accesibilidad».</p>
+          <p>Para ayudarnos a corregirlo, cuéntenos en qué página ocurrió, qué intentaba hacer y, si puede, qué navegador o tecnología de apoyo usa. Le responderemos en un plazo máximo de {plazo}.</p>
+        </section>
+        <section id="a7" class="sec">
+          <h2><span class="mono">07</span>Revisión de esta declaración</h2>
+          <p>Revisamos el sitio y esta declaración al menos una vez al año y cada vez que hacemos un cambio importante.</p>
+        </section>
+      </div>
+    </div>
+  </section>
+</Base>
