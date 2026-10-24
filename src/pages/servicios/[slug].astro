@@ -4,6 +4,7 @@ import PageHero from '../../components/PageHero.astro';
 import SectionHead from '../../components/SectionHead.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import Icon from '../../components/Icon.astro';
+import PlainSummary from '../../components/PlainSummary.astro';
 import { PILARES } from '../../data/servicios';
 import { NECESIDADES } from '../../data/inicio';
 import { SITE } from '../../data/site';
@@ -56,7 +57,7 @@ const schema = {
           <p class="eyebrow muted-eyebrow">{p.servicios.length} servicios</p>
           <ol role="list">
             {p.servicios.map((s, k) => (
-              <li><a href={`#${id(s.codigo)}`} class:list={{ on: k === 0 }}><span class="mono">{s.codigo}</span> {s.nombre}</a></li>
+              <li><a href={`#${id(s.codigo)}`} class:list={{ on: k === 0 }}><span><span class="mono">{s.codigo}</span> {s.nombre}</span></a></li>
             ))}
           </ol>
         </nav>
@@ -64,6 +65,7 @@ const schema = {
       </aside>
 
       <div class="content">
+        <PlainSummary text={p.resumen} />
         <div class="question reveal">
           <p class="eyebrow">La pregunta que responde</p>
           <p class="q">{p.pregunta}</p>
@@ -113,7 +115,7 @@ const schema = {
   .aside { grid-column: span 3; align-self: start; position: sticky; top: calc(var(--header-h) + 1.5rem); display: grid; gap: 1.5rem; justify-items: start; }
   .muted-eyebrow { color: var(--text-muted); margin-bottom: 0.8rem; }
   .toc ol { list-style: none; padding: 0 0 0 16px; display: grid; gap: 12px; border-left: 2px solid var(--line); }
-  .toc a { display: block; margin-left: -18px; padding-left: 16px; border-left: 2px solid transparent; font-size: 0.88rem; line-height: 1.35; color: var(--text-muted); text-decoration: none; transition: color 0.2s, border-color 0.2s; }
+  .toc a { display: flex; align-items: center; min-height: 44px; margin-left: -18px; padding-left: 16px; border-left: 2px solid transparent; font-size: 0.88rem; line-height: 1.35; color: var(--text-muted); text-decoration: none; transition: color 0.2s, border-color 0.2s; }
   .toc a .mono { font-size: 0.75rem; }
   .toc a:hover { color: var(--text); }
   .toc a.on { color: var(--accent); font-weight: 600; border-left-color: var(--accent); }

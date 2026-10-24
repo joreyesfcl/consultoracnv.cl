@@ -1,6 +1,7 @@
 ---
 // Equipo en duotono (mesa 06): fotos en cobalto que recuperan su color al pasar el cursor.
 // Cada socio se presenta con su hito de trayectoria (sin cifras de años).
+import { conSiglas } from '../data/siglas';
 import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
 import { EQUIPO } from '../data/equipo';
@@ -30,12 +31,12 @@ const foto = (slug: string) => Object.entries(fotos).find(([k]) => k.includes(`/
           <div class="info">
             <p class="mono cargo">{p.cargo}</p>
             <h3><a href={`/nosotros/${p.slug}/`}>{p.nombre}</a></h3>
-            <p class="hito">{p.hito}</p>
+            <p class="hito" set:html={conSiglas(p.hito)} />
             <ul class="tags" role="list">
               {p.especialidades.map((e) => <li>{e}</li>)}
             </ul>
             <div class="actions">
-              <a class="link" href={`/nosotros/${p.slug}/`}>Ver perfil <Icon name="arrow-right" /></a>
+              <a class="link" href={`/nosotros/${p.slug}/`}>Ver perfil<span class="sr-only"> de {p.nombre}</span> <Icon name="arrow-right" /></a>
               <a class="li" href={p.linkedin} target="_blank" rel="noopener" aria-label={`LinkedIn de ${p.nombre} (se abre en una pestaña nueva)`}><Icon name="linkedin" size={18} /></a>
             </div>
           </div>
@@ -79,7 +80,7 @@ const foto = (slug: string) => Object.entries(fotos).find(([k]) => k.includes(`/
   .tags { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.35rem; }
   .tags li { padding: 0.25rem 0.65rem; border-radius: 999px; border: 1px solid var(--line); font-size: 0.78rem; color: var(--soft-blue); }
   .actions { display: flex; justify-content: space-between; align-items: center; margin-top: 0.4rem; padding-top: 1rem; border-top: 1px solid var(--line); }
-  .li { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 10px; color: var(--soft-blue); background: rgba(255, 255, 255, 0.06); transition: background-color 0.2s, color 0.2s; }
+  .li { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 10px; color: var(--soft-blue); background: rgba(255, 255, 255, 0.06); transition: background-color 0.2s, color 0.2s; }
   .li:hover { background: var(--cyan); color: var(--navy); }
   @media (max-width: 960px) { .grid { grid-template-columns: 1fr 1fr; } }
   @media (max-width: 640px) { .grid { grid-template-columns: 1fr; max-width: 440px; } }

@@ -1,0 +1,16 @@
+---
+// Resumen en lenguaje sencillo al inicio de una página (WCAG 3.1.5, nivel AAA).
+import { conSiglas } from '../data/siglas';
+interface Props { text: string }
+const { text } = Astro.props;
+---
+<div class="plain">
+  <p class="mono lbl">En pocas palabras</p>
+  <p class="txt" set:html={conSiglas(text)} />
+</div>
+
+<style>
+  .plain { display: grid; gap: 0.4rem; max-width: 760px; padding: 0.2rem 0 0.2rem 1.2rem; border-left: 3px solid var(--accent); margin-bottom: clamp(2rem, 4vw, 3rem); }
+  .lbl { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+  .txt { font-size: var(--step-1); line-height: 1.5; color: var(--heading); }
+</style>

@@ -26,6 +26,9 @@ npm run build      # genera el sitio final en dist/
 | Colores, tipografías (Source Serif 4, IBM Plex Sans e IBM Plex Mono) y estilos generales | `src/styles/global.css` |
 | Páginas | `src/pages/` (cada archivo `.astro` es una URL) |
 | Imágenes | `src/assets/` (se optimizan solas) · `public/` (se copian tal cual) |
+| Glosario (página `/glosario/`) | `src/data/glosario.ts` |
+| Siglas y su forma completa (se marcan solas con `<abbr>`) | `src/data/siglas.ts` |
+| Declaración de accesibilidad (fecha de evaluación y plazo de respuesta) | `src/pages/accesibilidad.astro` |
 
 Los íconos del navegador se regeneran desde `src/assets/logo-original.png` con `node tools/generar-iconos.mjs`.
 
@@ -35,6 +38,17 @@ Los íconos del navegador se regeneran desde `src/assets/logo-original.png` con 
 
 1. Una sola vez: GitHub → *Settings* → *Pages* → *Source*: **GitHub Actions**.
 2. Cada cambio que llega a `main` se publica solo (`.github/workflows/deploy.yml`).
+
+## Accesibilidad
+
+El sitio cumple el nivel AA de WCAG 2.2 y la guía de SENADIS (2022). Al editar textos:
+
+- Escriba oraciones de menos de 25 palabras.
+- Si usa una sigla nueva, agréguela en `src/data/siglas.ts`.
+- Si usa un término técnico nuevo, agréguelo al glosario.
+- Cada sector (`sectores.ts`) y cada pilar (`servicios.ts`) tiene un `resumen` en lenguaje sencillo; actualícelo si cambia el contenido.
+- Los enlaces que abren otra pestaña deben avisarlo con el texto oculto "(se abre en una pestaña nueva)".
+- Actualice la fecha de `src/pages/accesibilidad.astro` cada vez que se revise el sitio.
 
 ## Guía de estilo: uso de "intervención"
 

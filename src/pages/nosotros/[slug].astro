@@ -1,4 +1,5 @@
 ---
+import { conSiglas } from '../../data/siglas';
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import CtaBand from '../../components/CtaBand.astro';
@@ -47,11 +48,11 @@ const breadcrumb = {
       <aside class="side">
         <div class="photo">
           <Image src={foto} alt={p.nombre} widths={[400, 640, 900]} sizes="(max-width: 900px) 90vw, 480px" style={`object-position:${p.fotoPosicion}`} loading="eager" />
-          <p class="hito">{p.hito}</p>
+          <p class="hito" set:html={conSiglas(p.hito)} />
         </div>
         <div class="contact">
           <a href={`mailto:${p.email}`} class="btn">{p.email}</a>
-          <a href={p.linkedin} target="_blank" rel="noopener" class="btn btn-ghost">LinkedIn <span aria-hidden="true">↗</span><span class="sr-only"> (se abre en una pestaña nueva)</span></a>
+          <a href={p.linkedin} target="_blank" rel="noopener" class="btn btn-ghost">LinkedIn<span class="sr-only"> de {p.nombre}</span> <span aria-hidden="true">↗</span><span class="sr-only"> (se abre en una pestaña nueva)</span></a>
         </div>
       </aside>
 
@@ -67,12 +68,12 @@ const breadcrumb = {
           {p.especialidades.map((e) => <li>{e}</li>)}
         </ul>
         <div class="bio">
-          {p.bio.map((t) => <p>{t}</p>)}
+          {p.bio.map((t) => <p set:html={conSiglas(t)} />)}
         </div>
         <div class="form">
           <p class="mono lbl">Formación</p>
           <ul role="list">
-            {p.formacionDetalle.map((f) => <li>{f}</li>)}
+            {p.formacionDetalle.map((f) => <li set:html={conSiglas(f)} />)}
           </ul>
         </div>
         <nav class="pager" aria-label="Otros socios">
@@ -107,7 +108,7 @@ const breadcrumb = {
   .lbl { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
   .form ul { list-style: none; padding: 0; display: grid; gap: 8px; font-size: 0.95rem; }
   .pager { display: flex; justify-content: space-between; gap: 1rem; padding-top: 18px; border-top: 1px solid var(--line); }
-  .pager a { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+  .pager a { display: inline-flex; align-items: center; min-height: 44px; gap: 0.4rem; color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.95rem; }
   .pager a:hover { text-decoration: underline; text-underline-offset: 4px; }
   .pager :global(svg) { width: 16px; }
   @media (max-width: 900px) {

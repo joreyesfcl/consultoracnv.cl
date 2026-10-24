@@ -36,7 +36,7 @@ const corto = ['Diagnóstico', 'Diseño', 'Gestión y financiamiento', 'Estrateg
       <ul role="list">
         <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
         <li><span>{SITE.ciudad}</span></li>
-        <li><a href={SITE.linkedin} target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span><span class="sr-only"> (se abre en una pestaña nueva)</span></a></li>
+        <li><a href={SITE.linkedin} target="_blank" rel="noopener">LinkedIn<span class="sr-only"> de Consultora CNV</span> <span aria-hidden="true">↗</span><span class="sr-only"> (se abre en una pestaña nueva)</span></a></li>
       </ul>
     </div>
   </div>
@@ -70,12 +70,14 @@ const corto = ['Diagnóstico', 'Diseño', 'Gestión y financiamiento', 'Estrateg
   .footer-brand :global(img) { height: 38px; width: auto; }
   .footer-brand .eyebrow { color: var(--soft-blue); }
   .footer-title { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cyan); margin-bottom: 1rem; }
-  ul { list-style: none; padding: 0; display: grid; gap: 0.6rem; }
+  ul { list-style: none; padding: 0; display: grid; gap: 0; }
   li { font-size: 0.93rem; }
-  a { color: var(--snow); text-decoration: none; }
+  /* Enlaces de 44 px de alto (WCAG 2.5.5) */
+  a { display: inline-flex; align-items: center; gap: 0.4em; min-height: 44px; color: var(--snow); text-decoration: none; }
   a:hover { color: var(--cyan); text-decoration: underline; text-underline-offset: 4px; }
   .mono { font-size: 0.75rem; color: var(--soft-blue); }
   .legal { display: flex; flex-wrap: wrap; gap: 0 1.4rem; }
+  .footer-bottom { align-items: center; }
   .footer-bottom {
     display: flex;
     flex-wrap: wrap;

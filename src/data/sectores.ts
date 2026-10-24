@@ -8,6 +8,7 @@ export const SECTORES = [
     nombre: 'Sector público',
     icono: 'landmark',
     bajada: 'Gobiernos regionales, municipios y servicios que deben formular, evaluar y justificar su inversión ante el sistema público.',
+    resumen: 'Ayudamos a gobiernos regionales, municipios y servicios públicos a preparar, evaluar y justificar sus proyectos y programas. Así pueden conseguir financiamiento y mostrar lo que logran con él.',
     perfiles: [
       { titulo: 'Gobiernos regionales', texto: 'Carteras de inversión, programas regionales y articulación de múltiples fuentes de financiamiento.' },
       { titulo: 'Municipios y corporaciones', texto: 'Necesidades sociales crecientes con recursos limitados: diagnóstico, formulación y gestión.' },
@@ -22,6 +23,7 @@ export const SECTORES = [
     nombre: 'Empresas',
     icono: 'building',
     bajada: 'Empresas con operación territorial que invierten en su entorno y deben demostrar lo que logran ante directorios, reguladores y comunidades.',
+    resumen: 'Ayudamos a empresas que operan en un territorio a decidir en qué invertir en su entorno. También les ayudamos a medir lo que logran y explicarlo a su directorio, a las autoridades y a las comunidades.',
     perfiles: [
       { titulo: 'Empresas con compromisos ambientales y sociales', texto: 'Minería, energía, inmobiliario, agroindustria y otros sectores con efectos territoriales que necesitan identificarse y gestionarse con rigor.' },
       { titulo: 'Áreas de gobierno, sostenibilidad y RSE', texto: 'Diagnósticos, evaluaciones y sistemas de monitoreo para programas de inversión social y ambiental.' },
@@ -34,7 +36,8 @@ export const SECTORES = [
     escenarios: ['Fundación u ONG'],
     nombre: 'Tercer sector',
     icono: 'hand-heart',
-    bajada: 'Fundaciones, corporaciones y ONG que ejecutan programas con distintas fuentes y deben rendir cuentas ante quienes los financian.',
+    bajada: 'Fundaciones, corporaciones y organizaciones no gubernamentales (ONG) que ejecutan programas con distintas fuentes y deben rendir cuentas ante quienes los financian.',
+    resumen: 'Ayudamos a fundaciones, corporaciones y ONG a diseñar programas que se puedan evaluar, a conseguir financiamiento y a rendir cuentas a quienes los apoyan.',
     perfiles: [
       { titulo: 'Fundaciones corporativas', texto: 'Brazos de inversión social que rinden cuentas ante el directorio, la comunidad y sus propios aportantes.' },
       { titulo: 'Fundaciones, corporaciones y ONG', texto: 'Programas que necesitan diseño evaluable, monitoreo y respaldo técnico ante financiadores.' },

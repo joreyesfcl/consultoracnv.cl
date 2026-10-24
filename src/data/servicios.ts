@@ -8,6 +8,8 @@ export type Pilar = {
   nombre: string;
   pregunta: string;
   bajada: string;
+  /** Resumen en lenguaje sencillo (2 o 3 líneas) al inicio de la página del pilar */
+  resumen: string;
   transversal?: string;
   servicios: Servicio[];
 };
@@ -19,6 +21,7 @@ export const PILARES: Pilar[] = [
     nombre: 'Diagnóstico e identificación de brechas',
     pregunta: 'Qué pasa en el territorio, el área de influencia y dónde resulta pertinente y conveniente actuar.',
     bajada: 'Dónde actuar, con quiénes y por qué. El análisis baja a la unidad territorial que corresponde, no al promedio comunal.',
+    resumen: 'Antes de actuar, conviene saber qué pasa y dónde. Estudiamos el territorio, ordenamos sus problemas por importancia y le mostramos dónde conviene actuar primero.',
     servicios: [
       { codigo: '01.1', nombre: 'Diagnóstico socioterritorial de problemas, brechas y oportunidades', descripcion: 'Jerarquiza los problemas del área de influencia con evidencia y deja instalada la línea base.' },
       { codigo: '01.2', nombre: 'Desarrollo de carteras desde el diagnóstico', descripcion: 'Convierte cada brecha priorizada en acciones formulables, con criterios y secuencia.' },
@@ -32,6 +35,7 @@ export const PILARES: Pilar[] = [
     nombre: 'Diseño óptimo de soluciones',
     pregunta: 'Cómo se convierte el diagnóstico en una cartera de acciones interrelacionadas y cuáles son sus resultados esperados.',
     bajada: 'Las decisiones de diseño condicionan todo lo que viene después. Se toman una vez, de manera deliberada, y quedan documentadas.',
+    resumen: 'Convertimos el diagnóstico en un plan concreto. Definimos qué programas o proyectos hacer, cómo se relacionan entre sí y qué resultado se espera de cada uno.',
     servicios: [
       { codigo: '02.1', nombre: 'Diseño o rediseño de programas públicos y de inversión social', descripcion: 'Teoría de cambio explícita, población definida e indicadores con medio de verificación.' },
       { codigo: '02.2', nombre: 'Diseño de mecanismos de focalización y acceso', descripcion: 'Quién entra al programa, con qué instrumento y bajo qué regla.' },
@@ -43,8 +47,9 @@ export const PILARES: Pilar[] = [
     numero: '03',
     slug: 'gestion-evaluacion-financiamiento',
     nombre: 'Gestión, evaluación y financiamiento',
-    pregunta: 'Cómo se gestiona, bajo qué mecanismos es posible financiar y cómo se demuestra el valor de lo que se hace, con sus efectos directos, indirectos y externalidades.',
+    pregunta: 'Cómo se gestiona, bajo qué mecanismos es posible financiar y cómo se demuestra el valor de lo que se hace: sus efectos directos, indirectos y externalidades.',
     bajada: 'Entre la decisión de actuar y el resultado hay ejecución, postulaciones, reportes y rendiciones.',
+    resumen: 'Le ayudamos a llevar el plan a la práctica. Buscamos fondos, preparamos postulaciones, medimos resultados y le ayudamos a demostrar el valor de lo que hace.',
     servicios: [
       { codigo: '03.1', nombre: 'Evaluación de programas y proyectos', descripcion: 'Diseños de evaluación proporcionales a lo que el programa permite medir y a lo que la institución necesita para avanzar.' },
       { codigo: '03.2', nombre: 'Mapeo de fondos y fuentes de financiamiento', descripcion: 'Catastro de fondos públicos, privados y multilaterales, con requisitos, montos y plazos.' },
@@ -62,6 +67,7 @@ export const PILARES: Pilar[] = [
     nombre: 'Estrategia de desarrollo integral',
     pregunta: 'Con qué estructura y con qué fuentes de recursos se sostiene la ejecución ordenada de la cartera.',
     bajada: 'No es un servicio aislado: es una capa que se activa desde el diagnóstico y cambia lo que cada pilar entrega.',
+    resumen: 'Buscamos cómo financiar y sostener un conjunto de proyectos en el tiempo. Definimos qué fuentes usar, quién aporta, quién opera y quién asume cada riesgo.',
     transversal: 'Atraviesa los pilares 01, 02 y 03',
     servicios: [
       { codigo: '04.1', nombre: 'Lectura territorial de oportunidades y espacio admisible', descripcion: 'Sobre el pilar 01: el diagnóstico pasa de listar brechas a identificar oportunidades que alguien puede financiar.' },
@@ -79,6 +85,7 @@ export const PILARES: Pilar[] = [
     nombre: 'Fortalecimiento de capacidades',
     pregunta: 'Cómo queda instalado el conocimiento en el equipo cuando nuestro acompañamiento termina.',
     bajada: 'Las instancias no tienen currículo cerrado: se estructuran sobre los casos que su equipo tiene en preparación.',
+    resumen: 'Formamos a su equipo para que pueda hacer por su cuenta lo que trabajamos juntos: diagnosticar, diseñar programas, medir resultados y buscar financiamiento.',
     transversal: 'Atraviesa los cuatro pilares',
     servicios: [
       { codigo: '05.1', nombre: 'Formación en diseño de programas evaluables y teoría de cambio', descripcion: 'Llevar lo que el equipo sabe de su iniciativa al formato que un financiador o un directorio exige.' },
