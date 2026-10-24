@@ -255,20 +255,44 @@ document.querySelectorAll<HTMLElement>('[data-filter]').forEach((box) => {
 document.querySelectorAll<HTMLFormElement>('form[data-contact]').forEach((form) => {
   const status = form.querySelector<HTMLElement>('[data-status]')!;
   const btn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+  // Un mensaje por campo, ligado con aria-describedby; se borra cuando la persona corrige el campo
+  const message = (f: HTMLInputElement): string => {
+    if (f.type === 'checkbox') return f.checked ? '' : 'Para enviar, acepte el uso de sus datos según la política de privacidad.';
+    const v = f.value.trim();
+    if (f.type === 'email') {
+      if (!v) return 'Escriba su correo electrónico.';
+      return f.checkValidity() ? '' : 'Revise el correo: debe tener el formato nombre@dominio.cl.';
+    }
+    if (v) return '';
+    return f.id === 'nombre' ? 'Escriba su nombre.' : f.id === 'mensaje' ? 'Cuéntenos brevemente su desafío.' : 'Complete este campo.';
+  };
+  const show = (f: HTMLInputElement, msg: string) => {
+    const err = form.querySelector<HTMLElement>(`#err-${f.id}`);
+    f.setAttribute('aria-invalid', String(!!msg));
+    if (!err) return;
+    err.textContent = msg;
+    err.hidden = !msg;
+    if (msg) f.setAttribute('aria-describedby', err.id);
+    else f.removeAttribute('aria-describedby');
+  };
+  const required = Array.from(form.querySelectorAll<HTMLInputElement>('[required]'));
+  required.forEach((f) =>
+    f.addEventListener(f.type === 'checkbox' ? 'change' : 'input', () => {
+      if (f.getAttribute('aria-invalid') === 'true') show(f, message(f));
+    })
+  );
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     status.className = 'status';
-    const required = Array.from(form.querySelectorAll<HTMLInputElement>('[required]'));
-    let firstBad: HTMLElement | null = null;
-    required.forEach((f) => {
-      const bad = f.type === 'checkbox' ? !f.checked : !f.value.trim() || (f.type === 'email' && !f.checkValidity());
-      f.setAttribute('aria-invalid', String(bad));
-      if (bad && !firstBad) firstBad = f;
+    const bad = required.filter((f) => {
+      const msg = message(f);
+      show(f, msg);
+      return !!msg;
     });
-    if (firstBad) {
+    if (bad.length) {
       status.classList.add('err');
-      status.textContent = 'Revise los campos marcados: nombre, correo válido, mensaje y la aceptación de la política de privacidad.';
-      (firstBad as HTMLElement).focus();
+      status.textContent = bad.length === 1 ? 'Hay 1 campo por revisar.' : `Hay ${bad.length} campos por revisar.`;
+      bad[0].focus();
       return;
     }
     btn.disabled = true;
@@ -281,6 +305,7 @@ document.querySelectorAll<HTMLFormElement>('form[data-contact]').forEach((form) 
         if (!r.ok) throw new Error();
       }
       form.reset();
+      required.forEach((f) => show(f, ''));
       status.classList.add('ok');
       status.textContent = (window as any).CNV_PREVIEW
         ? 'Vista previa: el envío está desactivado, pero así se verá la confirmación. Gracias por escribirnos; le responderemos a la brevedad.'

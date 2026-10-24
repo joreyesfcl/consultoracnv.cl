@@ -69,6 +69,7 @@ const particulas = Array.from({ length: 48 }, () => {
       <a href="#contribuir" class="scroll">Desplácese <span aria-hidden="true"></span></a>
     </div>
   </div>
+  <button type="button" class="motion-toggle mono" data-motion-toggle>Pausar animación</button>
 </section>
 
 <style>
@@ -122,6 +123,24 @@ const particulas = Array.from({ length: 48 }, () => {
     .particles circle { animation: drift var(--t) ease-in-out var(--d) infinite alternate, twinkle calc(var(--t) / 2.5) ease-in-out var(--d) infinite alternate; }
   }
   @keyframes drift { to { transform: translate(var(--dx), var(--dy)); } }
+  /* Control de pausa de las partículas (WCAG 2.2.2); la elección se recuerda en el navegador */
+  .hero.paused .particles circle { animation-play-state: paused; }
+  .motion-toggle {
+    position: absolute;
+    right: var(--gutter);
+    bottom: 1.4rem;
+    z-index: 1;
+    min-height: 36px;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid rgba(185, 206, 232, 0.5);
+    border-radius: 999px;
+    background: rgba(1, 11, 52, 0.55);
+    color: var(--snow);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+  }
+  .motion-toggle:hover { border-color: var(--cyan); }
+  @media (prefers-reduced-motion: reduce) { .motion-toggle { display: none; } }
   @keyframes twinkle { from { opacity: calc(var(--o) * 0.3); } to { opacity: var(--o); } }
 
   :global(.motion) .rise { animation: rise 0.9s var(--ease) both; }
