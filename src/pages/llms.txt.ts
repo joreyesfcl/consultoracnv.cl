@@ -15,7 +15,7 @@ export const GET: APIRoute = () => {
     '',
     `> ${SITE.descripcion}`,
     '',
-    `${SITE.nombre} (lema: "${SITE.lema}") fue fundada en ${SITE.ciudad} por economistas e ingenieros con experiencia directa en el Sistema Nacional de Inversiones (SNI) y en el Sistema de Monitoreo y Evaluación de Programas Públicos de Chile. Llama "intervención" a todo programa, proyecto o inversión con que una organización busca cambiar algo en un territorio.`,
+    `${SITE.nombre} (lema: "${SITE.lema}") es una consultora nueva, fundada en ${SITE.ciudad} por economistas e ingenieros. Sus socios trabajaron en el Sistema Nacional de Inversiones (SNI) y en el Sistema de Monitoreo y Evaluación de Programas Públicos de Chile. Llama "intervención" a todo programa, proyecto o inversión con que una organización busca cambiar algo en un territorio.`,
     '',
     `- Sitio: ${SITE.url}`,
     `- Correo: ${SITE.email}`,
@@ -25,7 +25,7 @@ export const GET: APIRoute = () => {
     '',
     `## Servicios: ${PILARES.length} pilares, ${total} servicios`,
     '',
-    'Se contratan por separado o encadenados en una asesoría integral, para instituciones públicas, empresas y organizaciones del tercer sector.',
+    'Se contratan por separado o encadenados en una asesoría integral, para instituciones públicas, empresas y organizaciones sociales.',
     '',
   ];
   for (const p of PILARES) {
@@ -37,11 +37,11 @@ export const GET: APIRoute = () => {
   lines.push('## Sectores', '');
   for (const s of SECTORES) lines.push(`- [${s.nombre}](${u(`/sectores/${s.slug}/`)}): ${s.bajada}`);
   lines.push('', '## Equipo', '');
-  for (const p of EQUIPO) lines.push(`- [${p.nombre}](${u(`/nosotros/${p.slug}/`)}), ${p.cargo.toLowerCase()}. ${p.hito} Formación: ${p.formacionDetalle.join('; ')}.`);
+  for (const p of EQUIPO) lines.push(`- [${p.nombre}](${u(`/equipo/${p.slug}/`)}), ${p.cargo.toLowerCase()}. ${p.hito} Formación: ${p.formacionDetalle.join('; ')}.`);
   lines.push('', '## Preguntas frecuentes', '');
   for (const f of FAQ) lines.push(`- ${f.pregunta} ${f.respuesta}`);
   lines.push('', '## Páginas principales', '');
-  [['Inicio', '/'], ['Servicios', '/servicios/'], ['Cómo trabajamos', '/como-trabajamos/'], ['Nosotros', '/nosotros/'], ['Contacto', '/contacto/'], ['Glosario', '/glosario/'], ['Mapa del sitio', '/mapa-del-sitio/'], ['Accesibilidad', '/accesibilidad/']].forEach(([n, p]) =>
+  [['Inicio', '/'], ['Servicios', '/servicios/'], ['Cómo trabajamos', '/como-trabajamos/'], ['Sectores', '/sectores/'], ['Equipo', '/equipo/'], ['Contacto', '/contacto/'], ['Glosario', '/glosario/'], ['Mapa del sitio', '/mapa-del-sitio/'], ['Accesibilidad', '/accesibilidad/']].forEach(([n, p]) =>
     lines.push(`- [${n}](${u(p)})`)
   );
   return new Response(lines.join('\n') + '\n', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });

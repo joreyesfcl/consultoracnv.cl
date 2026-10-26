@@ -16,21 +16,14 @@ export const SITE = {
   cloudflareAnalyticsToken: 'c33fc95d89ee4c55b313200f516479b3',
 };
 
-export type NavItem = { label: string; href: string; children?: { label: string; href: string; desc?: string }[] };
+export type NavItem = { label: string; href: string };
 
+// Menú principal: todos los ítems son enlaces directos (sin listas desplegables).
 export const NAV: NavItem[] = [
-  { label: 'Servicios', href: '/servicios/' },
+  { label: 'Soluciones', href: '/servicios/' },
   { label: 'Cómo trabajamos', href: '/como-trabajamos/' },
-  {
-    label: 'Sectores',
-    href: '/sectores/publico/',
-    children: [
-      { label: 'Sector público', href: '/sectores/publico/', desc: 'Gobiernos regionales, municipios y servicios' },
-      { label: 'Empresas', href: '/sectores/empresas/', desc: 'Operación territorial, sostenibilidad y RSE' },
-      { label: 'Tercer sector', href: '/sectores/tercer-sector/', desc: 'Fundaciones, corporaciones y ONG' },
-    ],
-  },
-  { label: 'Nosotros', href: '/nosotros/' },
+  { label: 'Sectores', href: '/sectores/' },
+  { label: 'Equipo', href: '/equipo/' },
 ];
 
 export const CTA = { label: 'Conversemos', href: '/contacto/' };

@@ -16,27 +16,27 @@ const foto = (slug: string) => Object.entries(fotos).find(([k]) => k.includes(`/
     {head && (
       <div class="top">
         <header class="section-head reveal">
-          <p class="eyebrow">Quiénes somos</p>
-          <h2 id="team-title">Nacimos desde <em>adentro del sistema.</em></h2>
+          <p class="eyebrow">Equipo</p>
+          <h2 id="team-title">Quiénes somos y <em>cómo abordamos los desafíos.</em></h2>
         </header>
-        <a href="/nosotros/" class="link reveal">Conocer al equipo <Icon name="arrow-right" /></a>
+        <a href="/equipo/" class="link reveal">Conocer al equipo <Icon name="arrow-right" /></a>
       </div>
     )}
     <ul class="grid stagger" role="list">
       {EQUIPO.map((p) => (
         <li class="person">
-          <a class="photo" href={`/nosotros/${p.slug}/`} tabindex="-1" aria-hidden="true">
+          <a class="photo" href={`/equipo/${p.slug}/`} tabindex="-1" aria-hidden="true">
             <Image src={foto(p.slug)} alt="" widths={[360, 540, 720]} sizes="(max-width: 700px) 90vw, 400px" style={`object-position:${p.fotoPosicion}`} />
           </a>
           <div class="info">
             <p class="mono cargo">{p.cargo}</p>
-            <h3><a href={`/nosotros/${p.slug}/`}>{p.nombre}</a></h3>
+            <h3><a href={`/equipo/${p.slug}/`}>{p.nombre}</a></h3>
             <p class="hito" set:html={conSiglas(p.hito)} />
             <ul class="tags" role="list">
               {p.especialidades.map((e) => <li>{e}</li>)}
             </ul>
             <div class="actions">
-              <a class="link" href={`/nosotros/${p.slug}/`}>Ver perfil<span class="sr-only"> de {p.nombre}</span> <Icon name="arrow-right" /></a>
+              <a class="link" href={`/equipo/${p.slug}/`}>Ver perfil<span class="sr-only"> de {p.nombre}</span> <Icon name="arrow-right" /></a>
               <a class="li" href={p.linkedin} target="_blank" rel="noopener" aria-label={`LinkedIn de ${p.nombre} (se abre en una pestaña nueva)`}><Icon name="linkedin" size={18} /></a>
             </div>
           </div>

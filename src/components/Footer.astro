@@ -1,11 +1,11 @@
 ---
 import { Image } from 'astro:assets';
 import logo from '../assets/logo-cnv.png';
-import { SITE, NAV } from '../data/site';
+import { SITE } from '../data/site';
+import { SECTORES } from '../data/sectores';
 import { PILARES } from '../data/servicios';
 
 const year = new Date().getFullYear();
-const sectores = NAV.find((n) => n.children)?.children ?? [];
 const corto = ['Diagnóstico', 'Diseño', 'Gestión y financiamiento', 'Estrategia integral', 'Capacidades'];
 ---
 <footer class="site-footer on-dark">
@@ -15,8 +15,8 @@ const corto = ['Diagnóstico', 'Diseño', 'Gestión y financiamiento', 'Estrateg
       <p class="eyebrow">{SITE.lema}</p>
     </div>
 
-    <nav aria-label="Servicios">
-      <h2 class="footer-title">Servicios</h2>
+    <nav aria-label="Soluciones">
+      <h2 class="footer-title">Soluciones</h2>
       <ul role="list">
         {PILARES.map((p, i) => <li><a href={`/servicios/${p.slug}/`}><span class="mono">{p.numero}</span> {corto[i]}</a></li>)}
       </ul>
@@ -26,8 +26,9 @@ const corto = ['Diagnóstico', 'Diseño', 'Gestión y financiamiento', 'Estrateg
       <h2 class="footer-title">Sitio</h2>
       <ul role="list">
         <li><a href="/como-trabajamos/">Cómo trabajamos</a></li>
-        {sectores.map((s) => <li><a href={s.href}>{s.label}</a></li>)}
-        <li><a href="/nosotros/">Nosotros</a></li>
+        <li><a href="/sectores/">Sectores</a></li>
+        {SECTORES.map((s) => <li><a href={`/sectores/${s.slug}/`}>{s.nombre}</a></li>)}
+        <li><a href="/equipo/">Equipo</a></li>
       </ul>
     </nav>
 

@@ -9,7 +9,7 @@ export const ENFOQUE = [
 export const DIFERENCIADORES = [
   {
     titulo: 'Conocimiento del sistema desde adentro',
-    texto: 'Hemos operado el Sistema Nacional de Inversiones y el Sistema de Monitoreo y Evaluación. Sabemos qué se exige, por qué se exige y cómo cumplirlo con solidez técnica. Eso también sirve a empresas que necesitan entender la lógica pública y aplicar sus estándares.',
+    texto: 'Nuestros socios trabajaron en el Sistema Nacional de Inversiones y en el Sistema de Monitoreo y Evaluación. Sabemos qué se exige, por qué se exige y cómo cumplirlo con solidez técnica. Eso también sirve a empresas que necesitan entender la lógica pública y aplicar sus estándares.',
   },
   {
     titulo: 'Programas, inversión y cartera como un sistema',

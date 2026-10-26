@@ -7,11 +7,11 @@ export const FAQ = [
   },
   {
     pregunta: '¿Trabajan solo con el sector público?',
-    respuesta: 'No. Trabajamos con instituciones públicas, empresas con operación territorial y organizaciones del tercer sector. La experiencia en el sistema público es una ventaja también para quienes no forman parte de él y necesitan aplicar sus estándares.',
+    respuesta: 'No. Trabajamos con instituciones públicas, empresas con operación territorial y organizaciones sociales. La experiencia de nuestros socios en el sistema público es una ventaja también para quienes no forman parte de él y necesitan aplicar sus estándares.',
   },
   {
     pregunta: '¿Se puede contratar un solo servicio?',
-    respuesta: 'Sí. Cada uno de los 28 servicios se puede contratar por separado o encadenado con otros en una asesoría integral. La modalidad se ajusta al encargo y a lo que su equipo puede asumir.',
+    respuesta: 'Sí. Cada servicio se puede contratar por separado o encadenado con otros en una asesoría integral. La modalidad se ajusta al encargo y a lo que su equipo puede asumir.',
   },
   {
     pregunta: '¿Cómo empieza un trabajo con CNV?',
