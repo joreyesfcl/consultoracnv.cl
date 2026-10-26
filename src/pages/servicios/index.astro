@@ -1,108 +1,27 @@
 ---
-import Base from '../../layouts/Base.astro';
-import PageHero from '../../components/PageHero.astro';
-import PillarDiagram from '../../components/PillarDiagram.astro';
-import ServiceCard from '../../components/ServiceCard.astro';
-import SectionHead from '../../components/SectionHead.astro';
-import CtaBand from '../../components/CtaBand.astro';
-import Icon from '../../components/Icon.astro';
-import { PILARES } from '../../data/servicios';
+// Redirección del antiguo catálogo (/servicios/) a Soluciones. Las anclas de servicio (#s-03-8)
+// se llevan al servicio nuevo en su área.
+import { AREAS, ancla } from '../../data/servicios';
 import { SITE } from '../../data/site';
 
-const total = PILARES.reduce((n, p) => n + p.servicios.length, 0);
-const schema = {
-  '@context': 'https://schema.org',
-  '@type': 'ItemList',
-  name: 'Servicios de Consultora CNV',
-  itemListElement: PILARES.map((p, i) => ({
-    '@type': 'ListItem',
-    position: i + 1,
-    url: `${SITE.url}/servicios/${p.slug}/`,
-    name: p.nombre,
-  })),
-};
+const destino = '/soluciones/';
+const mapa: Record<string, string> = {};
+for (const a of AREAS) for (const s of a.servicios) mapa[ancla(s.antes)] = `/soluciones/${a.slug}/#${ancla(s.codigo)}`;
 ---
-<Base title="Soluciones" description="Diagnóstico, diseño, evaluación, financiamiento, estrategia y fortalecimiento de capacidades: el catálogo completo de Consultora CNV." jsonLd={schema}>
-  <PageHero
-    eyebrow="Soluciones"
-    title="Del diagnóstico"
-    accent="a los resultados."
-    lead="Todo lo que hacemos, en un solo lugar. Cada servicio se contrata por separado o encadenado con otros en una asesoría integral, para instituciones públicas, empresas y organizaciones sociales."
-    crumbs={[{ label: 'Soluciones' }]}
-  />
-
-  <PillarDiagram
-    id="mapa"
-    eyebrow="El modelo"
-    title="Todo lo que hacemos,"
-    accent="en un solo mapa."
-    lead="Los pilares 01 a 03 siguen el ciclo de una decisión. El 04 es una capa que cambia lo que cada uno entrega, y el 05 los atraviesa a todos. Cada segmento es un servicio."
-  />
-
-  <section class="section" aria-labelledby="catalogo">
-    <div class="container">
-      <SectionHead id="catalogo" eyebrow="Catálogo" title="El catálogo completo," accent="uno por uno." />
-      <div class="filters reveal" data-filter>
-        <div class="chips" role="group" aria-label="Filtrar por pilar">
-          <button type="button" aria-pressed="true" data-f="todos">Todos</button>
-          {PILARES.map((p) => <button type="button" aria-pressed="false" data-f={p.numero}>{p.numero} · {p.nombre}</button>)}
-        </div>
-        <label class="search">
-          <Icon name="search" size={18} />
-          <span class="sr-only">Buscar un servicio</span>
-          <input type="search" id="buscar-servicio" placeholder="Buscar: evaluación, financiamiento, indicadores…" data-q />
-        </label>
-      </div>
-      <p class="count muted" aria-live="polite" data-count-label>{total} servicios</p>
-      <ul class="grid" role="list" data-list>
-        {PILARES.flatMap((p) =>
-          p.servicios.map((s) => (
-            <li data-item data-pilar={p.numero}>
-              <ServiceCard servicio={s} href={`/servicios/${p.slug}/#s-${s.codigo.replace('.', '-')}`} />
-            </li>
-          ))
-        )}
-      </ul>
-      <p class="empty muted" data-empty hidden>No encontramos servicios con esa búsqueda. Pruebe con otra palabra o escríbanos.</p>
-    </div>
-  </section>
-
-  <CtaBand />
-</Base>
-
-<style>
-  .filters { display: grid; gap: 1rem; margin-bottom: 1rem; }
-  .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-  .chips button {
-    min-height: 44px;
-    padding: 0.5rem 0.95rem;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: transparent;
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    font-weight: 500;
-    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-  }
-  .chips button:hover { border-color: var(--accent); }
-  .chips button[aria-pressed='true'] { background: var(--heading); border-color: var(--heading); color: var(--bg); }
-  .search {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    max-width: 520px;
-    padding: 0 1rem;
-    border-radius: 999px;
-    border: 1px solid var(--field-border);
-    background: var(--surface);
-    color: var(--text-muted);
-  }
-  .search:focus-within { border-color: var(--accent); outline: 2px solid var(--accent); outline-offset: 2px; }
-  .search input { flex: 1; min-width: 0; min-height: 44px; padding: 0.8rem 0; border: 0; background: none; outline: none; color: var(--text); }
-  .count { font-size: 0.9rem; margin-bottom: 1.2rem; }
-  .grid { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
-  .grid li[hidden] { display: none; }
-  :global(.motion) .grid li:not([hidden]) { animation: pop 0.4s var(--ease); }
-  @keyframes pop { from { opacity: 0; transform: scale(0.97); } }
-</style>
+<!doctype html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<title>Página trasladada · {SITE.nombre}</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href={`${SITE.url}${destino}`}>
+<script is:inline define:vars={{ mapa, destino }}>
+  var h = location.hash.slice(1);
+  location.replace(mapa[h] || destino);
+</script>
+<meta http-equiv="refresh" content={`0; url=${destino}`}>
+</head>
+<body>
+<p>Esta página se trasladó a <a href={destino}>{SITE.url.replace('https://', '')}{destino}</a>.</p>
+</body>
+</html>

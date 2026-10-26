@@ -1,0 +1,63 @@
+---
+// Así transformamos un desafío en una decisión (lienzo, artboards 26 y 30): cuatro pasos, un ejemplo
+// ficticio por paso (opcional) y los tres formatos de trabajo. Se usa en Inicio y en Cómo trabajamos.
+import Icon from './Icon.astro';
+import SectionHead from './SectionHead.astro';
+import { METODO } from '../data/inicio';
+import { FORMATOS } from '../data/nosotros';
+
+interface Props { ejemplo?: boolean; detalle?: boolean; enlace?: boolean; id?: string }
+const { ejemplo = true, detalle = false, enlace = true, id = 'metodo' } = Astro.props;
+const COLORS = ['var(--p01)', 'var(--p02)', 'var(--p03)', 'var(--p04)'];
+---
+<section class="section metodo on-dark" id={id} aria-labelledby={`${id}-title`}>
+  <div class="container">
+    <SectionHead id={`${id}-title`} eyebrow="Cómo trabajamos" title="Así transformamos un desafío" accent="en una decisión." lead={ejemplo ? 'Cuatro pasos que se repiten en cada encargo. En cada uno, un ejemplo ficticio para mostrar el recorrido completo.' : 'Cuatro pasos que se repiten en cada encargo, sea cual sea el formato.'} split />
+    <ol class="pasos stagger" role="list">
+      {METODO.map((m, i) => (
+        <li style={`--c:${COLORS[i]}`}>
+          <span class="mono paso">Paso {String(i + 1).padStart(2, '0')}</span>
+          <h3>{m.titulo}</h3>
+          <p>{m.texto}</p>
+          {ejemplo && <p class="ej"><span class="sr-only">Ejemplo: </span>{m.ejemplo}</p>}
+        </li>
+      ))}
+    </ol>
+    {ejemplo && <p class="mono rotulo">Ejemplo ilustrativo · No corresponde a un municipio real.</p>}
+
+    <div class="formatos">
+      <h3 class="sr-only">Formatos de trabajo</h3>
+      <ul role="list">
+        {FORMATOS.map((f) => (
+          <li>
+            <h4>{f.titulo}</h4>
+            <p>{f.texto}</p>
+            {detalle && <p class="incluye">Incluye: {f.incluye.join(', ').toLowerCase()}.</p>}
+          </li>
+        ))}
+      </ul>
+      <p class="alcance">El alcance se define después de entender el problema.{enlace && <> <a href="/como-trabajamos/" class="link">Ver cómo trabajamos <Icon name="arrow-right" /></a></>}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pasos { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .pasos li { display: grid; gap: 0.7rem; align-content: start; padding: 1.5rem 1.3rem; border-radius: 20px; background: var(--navy-2); border-top: 4px solid var(--c); }
+  .paso { font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cyan); }
+  .pasos h3 { font-size: 1.7rem; font-weight: 400; }
+  .pasos p { color: var(--soft-blue); font-size: 0.97rem; }
+  .pasos .ej { padding: 0.9rem; border-radius: 12px; background: rgba(248, 251, 255, 0.06); color: var(--ice); font-size: 0.92rem; }
+  .rotulo { margin-top: 1.2rem; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--soft-blue); }
+  .formatos { display: grid; gap: 1.2rem; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--line); }
+  .formatos ul { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .formatos li { display: grid; gap: 0.5rem; align-content: start; }
+  .formatos h4 { font-family: var(--font-body); font-size: 1.12rem; font-weight: 600; color: var(--snow); }
+  .formatos p { color: var(--soft-blue); font-size: 0.97rem; }
+  .incluye { font-size: 0.9rem; }
+  .alcance { color: var(--soft-blue); }
+  .alcance .link { margin-left: 0.4rem; }
+  @media (max-width: 1080px) { .pasos { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 760px) { .formatos ul { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .pasos { grid-template-columns: 1fr; } }
+</style>

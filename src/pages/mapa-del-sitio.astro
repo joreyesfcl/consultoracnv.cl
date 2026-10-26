@@ -1,11 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
-import { PILARES } from '../data/servicios';
+import { AREAS, ancla } from '../data/servicios';
 import { SECTORES } from '../data/sectores';
 import { EQUIPO } from '../data/equipo';
 
-const ancla = (codigo: string) => `s-${codigo.replace('.', '-')}`;
 ---
 <Base title="Mapa del sitio" description="Todas las páginas del sitio de Consultora CNV en una sola lista.">
   <PageHero eyebrow="Mapa del sitio" title="Todas las páginas," accent="en una lista." crumbs={[{ label: 'Mapa del sitio' }]} />
@@ -21,16 +20,16 @@ const ancla = (codigo: string) => `s-${codigo.replace('.', '-')}`;
           </ul>
         </section>
         <section class="sec" aria-labelledby="m-servicios">
-          <h2 id="m-servicios"><span class="mono">02</span>Servicios</h2>
+          <h2 id="m-servicios"><span class="mono">02</span>Soluciones</h2>
           <ul>
             <li>
-              <a href="/servicios/">Todos los servicios</a>
+              <a href="/soluciones/">Todas las soluciones</a>
               <ul>
-                {PILARES.map((p) => (
+                {AREAS.map((p) => (
                   <li>
-                    <a href={`/servicios/${p.slug}/`}>Pilar {p.numero}: {p.nombre}</a>
+                    <a href={`/soluciones/${p.slug}/`}>Área {p.numero}: {p.nombre}</a>
                     <ul>
-                      {p.servicios.map((s) => <li><a href={`/servicios/${p.slug}/#${ancla(s.codigo)}`}>{s.codigo} {s.nombre}</a></li>)}
+                      {p.servicios.map((s) => <li><a href={`/soluciones/${p.slug}/#${ancla(s.codigo)}`}>{s.codigo} {s.nombre}</a></li>)}
                     </ul>
                   </li>
                 ))}

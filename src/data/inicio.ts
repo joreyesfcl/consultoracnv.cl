@@ -23,69 +23,53 @@ export const CAMBIOS = [
   },
 ];
 
-// Cada necesidad lleva al pilar que la resuelve (slug de src/data/servicios.ts)
+// ¿Qué necesita resolver? Cada necesidad lleva a un área (slug de src/data/servicios.ts),
+// con dos soluciones de ejemplo (códigos actuales) y un entregable posible.
 export const NECESIDADES = [
   {
-    icono: 'file-check',
-    texto: 'Tengo proyectos con observaciones en el Sistema Nacional de Inversiones.',
-    pilar: 'gestion-evaluacion-financiamiento',
+    texto: 'Necesitamos ordenar nuestros proyectos',
+    area: 'carteras-y-financiamiento',
+    servicios: ['04.1', '04.2'],
+    entregable: 'cartera priorizada',
   },
   {
-    icono: 'map',
-    texto: 'Necesito entender qué pasa en mi territorio o área de influencia.',
-    pilar: 'diagnostico',
+    texto: 'Queremos evaluar un programa',
+    area: 'evaluacion',
+    servicios: ['03.1', '03.2'],
+    entregable: 'modelo de evaluación',
   },
   {
-    icono: 'puzzle',
-    texto: 'Tengo muchas iniciativas sueltas y quiero ordenarlas en una cartera.',
-    pilar: 'diseno',
+    texto: 'Debemos entender mejor un territorio',
+    area: 'diagnostico',
+    servicios: ['01.1', '01.4'],
+    entregable: 'mapa de brechas priorizadas',
   },
   {
-    icono: 'chart-line',
-    texto: 'Debo demostrar resultados ante un directorio, un concejo o un financiador.',
-    pilar: 'gestion-evaluacion-financiamiento',
+    texto: 'Buscamos financiamiento',
+    area: 'carteras-y-financiamiento',
+    servicios: ['04.3', '04.4'],
+    entregable: 'estrategia de financiamiento',
   },
   {
-    icono: 'wallet',
-    texto: 'Busco financiamiento y no sé qué fuentes combinar ni cómo estructurarlo.',
-    pilar: 'estrategia-desarrollo-integral',
+    texto: 'Tenemos observaciones técnicas pendientes',
+    area: 'evaluacion',
+    servicios: ['03.5', '02.3'],
+    entregable: 'respuesta técnica a cada observación',
   },
-  {
-    icono: 'graduation-cap',
-    texto: 'Quiero que mi equipo formule y evalúe con más autonomía.',
-    pilar: 'capacidades',
-  },
-] as const;
+];
 
-export const DESAFIOS = [
-  {
-    titulo: 'Alta exigencia técnica',
-    texto: 'El sistema público exige metodologías rigurosas; el sector privado, estándares de sostenibilidad y compromisos regulatorios. En ambos casos la calidad técnica no es opcional.',
-    icono: 'scale',
-  },
-  {
-    titulo: 'Territorios poco comprendidos',
-    texto: 'Fuentes dispersas y dinámicas complejas dificultan diagnósticos sólidos.',
-    icono: 'map',
-  },
-  {
-    titulo: 'Iniciativas desarticuladas',
-    texto: 'Programas y proyectos gestionados por separado generan duplicidades y vacíos de atención.',
-    icono: 'puzzle',
-  },
-  {
-    titulo: 'Financiamiento sin estrategia',
-    texto: 'Sin visión de cartera, cada acción compite sola por recursos y el alcance se reduce.',
-    icono: 'wallet',
-  },
-  {
-    titulo: 'Resultados difíciles de demostrar',
-    texto: 'Sin indicadores ni evaluación, cuesta rendir cuentas ante concejos, directorios o financiadores.',
-    icono: 'chart-line',
-  },
-  {
-    titulo: 'Público y privado sin lenguaje común',
-    texto: 'Cuando ambos actúan sobre el mismo territorio sin coordinarse, el potencial de colaboración se pierde. Hace falta alguien que entienda las dos lógicas.',
-    icono: 'handshake',
-  },
-] as const;
+// Por qué conversar con nosotros: experiencia profesional de los socios (no de CNV como empresa).
+export const DIFERENCIAL = [
+  { titulo: 'Sistema Nacional de Inversiones', texto: 'Formulación y evaluación social de iniciativas de inversión pública.' },
+  { titulo: 'Monitoreo y evaluación de programas', texto: 'Diseño, seguimiento y evaluación de programas sociales.' },
+  { titulo: 'Políticas sociales y registros', texto: 'Focalización, registros administrativos y protección social.' },
+  { titulo: 'Modelamiento y datos', texto: 'Análisis cuantitativo aplicado a problemas sociales, productivos y territoriales.' },
+];
+
+// Así transformamos un desafío en una decisión: cuatro pasos y un ejemplo ficticio por paso.
+export const METODO = [
+  { titulo: 'Problema', texto: 'Entendemos el desafío en sus términos, sin exigirle un nombre técnico.', ejemplo: 'El municipio tiene muchas iniciativas sin priorizar y una postulación con observaciones.' },
+  { titulo: 'Evidencia', texto: 'Reunimos los datos que la decisión necesita, al nivel del territorio que corresponde.', ejemplo: 'Diagnóstico por unidad vecinal y línea base de las brechas principales.' },
+  { titulo: 'Alternativas', texto: 'Comparamos opciones con criterios explícitos: cobertura, costo, plazos y financiamiento.', ejemplo: 'Tres carteras posibles, comparadas por cobertura, costo y fuentes de financiamiento.' },
+  { titulo: 'Decisión y seguimiento', texto: 'La decisión queda documentada y con indicadores para seguirla en el tiempo.', ejemplo: 'Cartera priorizada para presentar al concejo, con un tablero de seguimiento.' },
+];

@@ -1,17 +1,18 @@
 ---
 // Situaciones tipo (mesa 16C): el mismo territorio antes y después, con los pasos de la
-// ruta como fichas de un expediente que llevan el código del servicio del catálogo.
+// ruta como fichas de un expediente que llevan el código de la solución del catálogo.
+// En las páginas de sector se muestra un solo ejemplo, rotulado como ilustrativo.
 import { Image } from 'astro:assets';
 import fondo from '../assets/main.png';
 import Icon from './Icon.astro';
 import { ESCENARIOS } from '../data/escenarios';
-import { PILARES } from '../data/servicios';
+import { AREAS } from '../data/servicios';
 
-interface Props { tipos?: readonly string[]; title?: string; accent?: string }
-const { tipos, title = 'El mismo territorio,', accent = 'antes y después.' } = Astro.props;
+interface Props { tipos?: readonly string[]; title?: string; accent?: string; eyebrow?: string }
+const { tipos, title = 'El mismo territorio,', accent = 'antes y después.', eyebrow = 'Ejemplo ilustrativo' } = Astro.props;
 const lista = tipos ? ESCENARIOS.filter((e) => tipos.includes(e.tipo)) : ESCENARIOS;
-const todos = PILARES.flatMap((p) => p.servicios);
-const nombre = (c: string) => todos.find((s) => s.codigo === c)?.nombre ?? '';
+const todos = AREAS.flatMap((p) => p.servicios);
+const nombre = (c: string) => todos.find((s) => s.codigo === c)?.corto ?? '';
 const rot = [-1.2, 0.8, -0.6, 1, -0.8];
 const slug = (i: number) => `esc-${i}`;
 ---
@@ -19,7 +20,7 @@ const slug = (i: number) => `esc-${i}`;
   <div class="container" data-tabs>
     <div class="top">
       <header class="section-head reveal">
-        <p class="eyebrow">Situaciones tipo</p>
+        <p class="eyebrow">{eyebrow}</p>
         <h2 id="esc-title">{title} <em>{accent}</em></h2>
       </header>
       <p class="note">Construidas a partir de patrones frecuentes en Chile. No corresponden a un cliente en particular.</p>

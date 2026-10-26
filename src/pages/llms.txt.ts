@@ -1,7 +1,7 @@
 // Genera /llms.txt a partir de los datos del sitio, para asistentes de IA.
 import type { APIRoute } from 'astro';
 import { SITE } from '../data/site';
-import { PILARES } from '../data/servicios';
+import { AREAS } from '../data/servicios';
 import { SECTORES } from '../data/sectores';
 import { EQUIPO } from '../data/equipo';
 import { MODALIDADES } from '../data/nosotros';
@@ -9,7 +9,7 @@ import { FAQ } from '../data/faq';
 
 export const GET: APIRoute = () => {
   const u = (p: string) => `${SITE.url}${p}`;
-  const total = PILARES.reduce((n, p) => n + p.servicios.length, 0);
+  const total = AREAS.reduce((n, p) => n + p.servicios.length, 0);
   const lines: string[] = [
     `# ${SITE.nombre}`,
     '',
@@ -23,13 +23,13 @@ export const GET: APIRoute = () => {
     `- Ciudad: ${SITE.ciudad}`,
     '- Idioma: español',
     '',
-    `## Servicios: ${PILARES.length} pilares, ${total} servicios`,
+    `## Soluciones: ${AREAS.length} áreas, ${total} servicios`,
     '',
-    'Se contratan por separado o encadenados en una asesoría integral, para instituciones públicas, empresas y organizaciones sociales.',
+    'Se contratan por separado o encadenados, para instituciones públicas, empresas y organizaciones sociales. Formatos: diagnóstico puntual, desarrollo integral y acompañamiento a equipos.',
     '',
   ];
-  for (const p of PILARES) {
-    lines.push(`### Pilar ${p.numero}: ${p.nombre}`, '', `${p.bajada}${p.transversal ? ` (${p.transversal}.)` : ''} Página: ${u(`/servicios/${p.slug}/`)}`, '');
+  for (const p of AREAS) {
+    lines.push(`### Área ${p.numero}: ${p.nombre}`, '', `${p.bajada} Página: ${u(`/soluciones/${p.slug}/`)}`, '');
     for (const s of p.servicios) lines.push(`- ${s.codigo} ${s.nombre}${s.descripcion ? `: ${s.descripcion}` : ''}`);
     lines.push('');
   }
@@ -41,7 +41,7 @@ export const GET: APIRoute = () => {
   lines.push('', '## Preguntas frecuentes', '');
   for (const f of FAQ) lines.push(`- ${f.pregunta} ${f.respuesta}`);
   lines.push('', '## Páginas principales', '');
-  [['Inicio', '/'], ['Servicios', '/servicios/'], ['Cómo trabajamos', '/como-trabajamos/'], ['Sectores', '/sectores/'], ['Equipo', '/equipo/'], ['Contacto', '/contacto/'], ['Glosario', '/glosario/'], ['Mapa del sitio', '/mapa-del-sitio/'], ['Accesibilidad', '/accesibilidad/']].forEach(([n, p]) =>
+  [['Inicio', '/'], ['Soluciones', '/soluciones/'], ['Cómo trabajamos', '/como-trabajamos/'], ['Sectores', '/sectores/'], ['Equipo', '/equipo/'], ['Contacto', '/contacto/'], ['Glosario', '/glosario/'], ['Mapa del sitio', '/mapa-del-sitio/'], ['Accesibilidad', '/accesibilidad/']].forEach(([n, p]) =>
     lines.push(`- [${n}](${u(p)})`)
   );
   return new Response(lines.join('\n') + '\n', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });

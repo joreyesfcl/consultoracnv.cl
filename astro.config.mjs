@@ -14,6 +14,7 @@ export default defineConfig({
     '/sectores/tercer-sector': '/sectores/organizaciones-sociales/',
   },
   integrations: [
-    sitemap(),
+    // Las páginas de redirección de /servicios/ no van al sitemap
+    sitemap({ filter: (page) => !page.includes('/servicios/') }),
   ],
 });

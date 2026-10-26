@@ -3,10 +3,10 @@ import { Image } from 'astro:assets';
 import logo from '../assets/logo-cnv.png';
 import { SITE } from '../data/site';
 import { SECTORES } from '../data/sectores';
-import { PILARES } from '../data/servicios';
+import { AREAS } from '../data/servicios';
 
 const year = new Date().getFullYear();
-const corto = ['Diagnóstico', 'Diseño', 'Gestión y financiamiento', 'Estrategia integral', 'Capacidades'];
+const corto = ['Diagnóstico y evidencia', 'Diseño de programas', 'Evaluación y seguimiento', 'Carteras y financiamiento', 'Estrategia y capacidades'];
 ---
 <footer class="site-footer on-dark">
   <div class="container footer-grid">
@@ -18,7 +18,7 @@ const corto = ['Diagnóstico', 'Diseño', 'Gestión y financiamiento', 'Estrateg
     <nav aria-label="Soluciones">
       <h2 class="footer-title">Soluciones</h2>
       <ul role="list">
-        {PILARES.map((p, i) => <li><a href={`/servicios/${p.slug}/`}><span class="mono">{p.numero}</span> {corto[i]}</a></li>)}
+        {AREAS.map((p, i) => <li><a href={`/soluciones/${p.slug}/`}><span class="mono">{p.numero}</span> {corto[i]}</a></li>)}
       </ul>
     </nav>
 
