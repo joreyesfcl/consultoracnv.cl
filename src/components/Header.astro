@@ -1,5 +1,4 @@
 ---
-import { conSiglas } from '../data/siglas';
 import { Image } from 'astro:assets';
 import logoWhite from '../assets/logo-cnv.png';
 import logoNavy from '../assets/logo-navy.png';
@@ -24,41 +23,14 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
     <nav class="nav-desktop" aria-label="Principal">
       <ul role="list">
         {NAV.map((item, i) => (
-          <li class={item.children ? 'has-sub' : undefined}>
-            {item.children ? (
-              <>
-                <button
-                  type="button"
-                  class:list={['nav-link', { active: isActive(item.href) }]}
-                  aria-expanded="false"
-                  aria-controls="sub-sectores"
-                  data-sub-toggle
-                >
-                  <span class="n">{num(i)}</span>{item.label}
-                  <Icon name="chevron-down" size={14} />
-                </button>
-                <div class="subnav" id="sub-sectores" data-sub>
-                  <ul role="list">
-                    {item.children.map((c) => (
-                      <li>
-                        <a href={c.href} aria-current={path === c.href ? 'page' : undefined}>
-                          <strong>{c.label}</strong>
-                          {c.desc && <span set:html={conSiglas(c.desc)} />}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </>
-            ) : (
-              <a
-                href={item.href}
-                class:list={['nav-link', { active: isActive(item.href) }]}
-                aria-current={path === item.href ? 'page' : undefined}
-              >
-                <span class="n">{num(i)}</span>{item.label}
-              </a>
-            )}
+          <li>
+            <a
+              href={item.href}
+              class:list={['nav-link', { active: isActive(item.href) }]}
+              aria-current={path === item.href ? 'page' : undefined}
+            >
+              <span class="n">{num(i)}</span>{item.label}
+            </a>
           </li>
         ))}
       </ul>
@@ -80,11 +52,6 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
         {NAV.map((item, i) => (
           <li>
             <a href={item.href}><span class="n">{num(i)}</span><span class="t">{item.label}</span></a>
-            {item.children && (
-              <ul role="list" class="m-sub">
-                {item.children.map((c) => <li><a href={c.href}>{c.label}</a></li>)}
-              </ul>
-            )}
           </li>
         ))}
         <li>
@@ -140,34 +107,10 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
     transition: color 0.2s, background-color 0.2s;
   }
   .n { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); margin-right: 0.15rem; }
-  .nav-link:hover, .nav-link[aria-expanded='true'] { background: var(--accent-soft); }
+  .nav-link:hover { background: var(--accent-soft); }
   .nav-link.active { color: var(--accent); }
   .nav-link.active .n { color: var(--accent); }
-  .nav-link :global(svg) { transition: transform 0.25s var(--ease); }
-  .nav-link[aria-expanded='true'] :global(svg) { transform: rotate(180deg); }
 
-  .has-sub { position: relative; }
-  .subnav {
-    position: absolute;
-    top: calc(100% + 0.6rem);
-    left: 50%;
-    width: 310px;
-    padding: 0.5rem;
-    border-radius: var(--radius);
-    background: var(--navy);
-    border: 1px solid rgba(185, 206, 232, 0.14);
-    box-shadow: 0 24px 48px rgba(7, 28, 56, 0.35);
-    opacity: 0;
-    visibility: hidden;
-    transform: translate(-50%, -6px);
-    transition: opacity 0.2s var(--ease), transform 0.2s var(--ease), visibility 0.2s;
-  }
-  .subnav.open { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
-  .subnav ul { list-style: none; padding: 0; }
-  .subnav a { display: grid; gap: 0.1rem; padding: 0.7rem 0.9rem; border-radius: var(--radius-sm); text-decoration: none; color: var(--snow); }
-  .subnav a:hover, .subnav a[aria-current='page'] { background: rgba(63, 215, 255, 0.1); }
-  .subnav strong { font-size: 0.93rem; font-weight: 600; }
-  .subnav span { font-size: 0.8rem; color: var(--soft-blue); }
 
   .header-actions { display: flex; align-items: center; gap: 0.6rem; }
   .btn-cta { min-height: 44px; padding: 0.55rem 1.2rem; font-size: 0.9rem; }
@@ -206,8 +149,6 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
   .m-list .n { color: var(--cyan); font-size: 0.75rem; }
   .m-list .t { font-family: var(--font-display); font-weight: 300; font-size: clamp(2rem, 9vw, 2.6rem); letter-spacing: -0.02em; line-height: 1.1; }
   .m-list .cta .t em { color: var(--cyan); }
-  .m-sub { list-style: none; padding: 0 0 1rem 2.1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
-  .m-sub a { display: inline-block; padding: 0.4rem 0.8rem; border: 1px solid rgba(185, 206, 232, 0.3); border-radius: 999px; font-size: 0.85rem; color: var(--soft-blue); text-decoration: none; }
   .m-meta { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font-family: var(--font-mono); font-size: 0.78rem; color: var(--soft-blue); }
   .m-meta a { color: var(--soft-blue); }
 
@@ -223,28 +164,6 @@ const num = (i: number) => String(i + 1).padStart(2, '0');
   const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
-
-  // Submenú Sectores
-  const subBtn = header.querySelector<HTMLButtonElement>('[data-sub-toggle]');
-  const sub = header.querySelector<HTMLElement>('[data-sub]');
-  if (subBtn && sub) {
-    const li = subBtn.closest('li')!;
-    const set = (open: boolean) => {
-      subBtn.setAttribute('aria-expanded', String(open));
-      sub.classList.toggle('open', open);
-    };
-    subBtn.addEventListener('click', () => set(subBtn.getAttribute('aria-expanded') !== 'true'));
-    li.addEventListener('mouseenter', () => matchMedia('(hover: hover)').matches && set(true));
-    li.addEventListener('mouseleave', () => matchMedia('(hover: hover)').matches && set(false));
-    li.addEventListener('focusout', (e) => { if (!li.contains(e.relatedTarget as Node)) set(false); });
-    // Escape cierra el submenú; si el foco estaba dentro, vuelve al botón (WCAG 2.4.3)
-    document.addEventListener('keydown', (e) => {
-      if (e.key !== 'Escape' || subBtn.getAttribute('aria-expanded') !== 'true') return;
-      const inside = li.contains(document.activeElement);
-      set(false);
-      if (inside) subBtn.focus();
-    });
-  }
 
   // Menú móvil
   const menuBtn = header.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;

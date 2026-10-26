@@ -30,7 +30,7 @@ const idx = (slug: string) => PILARES.findIndex((p) => p.slug === slug);
       </ul>
     </div>
     <aside class="panel on-dark grat" id="needs-panel" aria-live="polite" aria-label="Pilar que corresponde">
-      <p class="eyebrow">Cinco pilares, un recorrido</p>
+      <p class="eyebrow">Un recorrido completo</p>
       <ol role="list" class="strata">
         {PILARES.map((p, i) => (
           <li class:list={['stratum', { on: i === idx(NECESIDADES[0].pilar) }]} data-stratum={i}>

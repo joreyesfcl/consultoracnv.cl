@@ -27,7 +27,7 @@ const schema = {
   name: p.nombre,
   jobTitle: `${p.cargo}, ${SITE.nombre}`,
   email: p.email,
-  url: `${SITE.url}/nosotros/${p.slug}/`,
+  url: `${SITE.url}/equipo/${p.slug}/`,
   sameAs: [p.linkedin],
   worksFor: { '@type': 'ProfessionalService', name: SITE.nombre, url: SITE.url },
   knowsAbout: p.especialidades,
@@ -37,8 +37,8 @@ const breadcrumb = {
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${SITE.url}/` },
-    { '@type': 'ListItem', position: 2, name: 'Nosotros', item: `${SITE.url}/nosotros/` },
-    { '@type': 'ListItem', position: 3, name: p.nombre, item: `${SITE.url}/nosotros/${p.slug}/` },
+    { '@type': 'ListItem', position: 2, name: 'Equipo', item: `${SITE.url}/equipo/` },
+    { '@type': 'ListItem', position: 3, name: p.nombre, item: `${SITE.url}/equipo/${p.slug}/` },
   ],
 };
 ---
@@ -58,7 +58,7 @@ const breadcrumb = {
 
       <div class="main">
         <nav aria-label="Ruta de navegación" class="crumbs">
-          <ol role="list"><li><a href="/">Inicio</a></li><li><a href="/nosotros/">Nosotros</a></li><li><span aria-current="page">{corto(p.nombre)}</span></li></ol>
+          <ol role="list"><li><a href="/">Inicio</a></li><li><a href="/equipo/">Equipo</a></li><li><span aria-current="page">{corto(p.nombre)}</span></li></ol>
         </nav>
         <div class="head">
           <p class="eyebrow">{p.cargo}</p>
@@ -77,8 +77,8 @@ const breadcrumb = {
           </ul>
         </div>
         <nav class="pager" aria-label="Otros socios">
-          <a href={`/nosotros/${prev.slug}/`}><Icon name="arrow-left" /> {corto(prev.nombre)}</a>
-          <a href={`/nosotros/${next.slug}/`}>{corto(next.nombre)} <Icon name="arrow-right" /></a>
+          <a href={`/equipo/${prev.slug}/`}><Icon name="arrow-left" /> {corto(prev.nombre)}</a>
+          <a href={`/equipo/${next.slug}/`}>{corto(next.nombre)} <Icon name="arrow-right" /></a>
         </nav>
       </div>
     </div>

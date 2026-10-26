@@ -1,5 +1,5 @@
 ---
-// Sectores en pestañas (mesa 15): bajada, perfiles y servicios más pedidos por sector.
+// Sectores en pestañas (mesa 15): bajada, perfiles y soluciones pertinentes por sector.
 import { conSiglas } from '../data/siglas';
 import Icon from './Icon.astro';
 import { SECTORES } from '../data/sectores';
@@ -38,7 +38,7 @@ const escenario = (tipo: string) => ESCENARIOS.find((e) => e.tipo === tipo);
             </ul>
           </div>
           <div class="side on-dark">
-            <p class="eyebrow">Servicios más pedidos</p>
+            <p class="eyebrow">Cómo podemos contribuir</p>
             <ul role="list" class="svcs">
               {s.servicios.map((c) => {
                 const x = svc(c);

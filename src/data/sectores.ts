@@ -10,10 +10,10 @@ export const SECTORES = [
     bajada: 'Gobiernos regionales, municipios y servicios que deben formular, evaluar y justificar su inversión ante el sistema público.',
     resumen: 'Ayudamos a gobiernos regionales, municipios y servicios públicos a preparar, evaluar y justificar sus proyectos y programas. Así pueden conseguir financiamiento y mostrar lo que logran con él.',
     perfiles: [
-      { titulo: 'Gobiernos regionales', texto: 'Carteras de inversión, programas regionales y articulación de múltiples fuentes de financiamiento.' },
-      { titulo: 'Municipios y corporaciones', texto: 'Necesidades sociales crecientes con recursos limitados: diagnóstico, formulación y gestión.' },
-      { titulo: 'Servicios públicos y asociaciones de municipios', texto: 'Programas y proyectos sectoriales o supracomunales que requieren formulación, evaluación o articulación territorial.' },
-      { titulo: 'Asociación de Gobiernos Regionales', texto: 'Iniciativas suprarregionales y fortalecimiento técnico para el conjunto de los gobiernos regionales.' },
+      { titulo: 'Municipalidades y corporaciones municipales', texto: 'Gestión local, inversión y formulación de proyectos y programas, con necesidades crecientes y recursos limitados.' },
+      { titulo: 'Gobiernos regionales', texto: 'Planificación regional, carteras de inversión y programas de alcance regional con varias fuentes de financiamiento.' },
+      { titulo: 'Servicios públicos y ministerios', texto: 'Políticas y programas sectoriales: su evaluación, la información que los sustenta y su gestión.' },
+      { titulo: 'Asociaciones de gobiernos subnacionales', texto: 'Asociaciones de municipalidades y de gobiernos regionales: articulación entre territorios y capacidades comunes.' },
     ],
   },
   {
@@ -31,10 +31,10 @@ export const SECTORES = [
     ],
   },
   {
-    slug: 'tercer-sector',
+    slug: 'organizaciones-sociales',
     servicios: ['02.1', '03.1', '03.2', '03.3', '03.4', '05.1'],
     escenarios: ['Fundación u ONG'],
-    nombre: 'Tercer sector',
+    nombre: 'Organizaciones sociales',
     icono: 'hand-heart',
     bajada: 'Fundaciones, corporaciones y organizaciones no gubernamentales (ONG) que ejecutan programas con distintas fuentes y deben rendir cuentas ante quienes los financian.',
     resumen: 'Ayudamos a fundaciones, corporaciones y ONG a diseñar programas que se puedan evaluar, a conseguir financiamiento y a rendir cuentas a quienes los apoyan.',

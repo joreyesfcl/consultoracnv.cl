@@ -12,17 +12,17 @@ const fotos = import.meta.glob<{ default: ImageMetadata }>('../../assets/socios/
 const foto = (slug: string) => Object.entries(fotos).find(([k]) => k.includes(`/${slug}.`))![1].default;
 const corto = (n: string) => n.split(' ').slice(0, -1).join(' ');
 ---
-<Base title="Nosotros" description="CNV fue fundada por economistas e ingenieros que trabajaron dentro del Sistema Nacional de Inversiones y del Sistema de Monitoreo y Evaluación." tone="dark">
+<Base title="Equipo" description="CNV es una consultora nueva. Sus socios trabajaron dentro del Sistema Nacional de Inversiones y del Sistema de Monitoreo y Evaluación." tone="dark">
   <PageHero
     tone="dark"
-    eyebrow="Nosotros"
-    title="Nacimos desde"
-    accent="adentro del sistema."
-    lead="Conocemos los sistemas de evaluación de programas e inversiones públicas porque trabajamos en las instituciones que los administran."
-    crumbs={[{ label: 'Nosotros' }]}
+    eyebrow="Equipo"
+    title="Un equipo que conoce"
+    accent="el sistema desde adentro."
+    lead="Nuestros socios conocen los sistemas de evaluación de programas e inversiones públicas porque trabajaron en las instituciones que los administran."
+    crumbs={[{ label: 'Equipo' }]}
   >
     <div class="origin">
-      <p>CNV fue fundada por economistas e ingenieros con experiencia directa en dos sistemas del Estado. Uno es el Sistema Nacional de Inversiones; el otro, el Sistema de Monitoreo y Evaluación de Programas Públicos.</p>
+      <p>CNV es una consultora nueva, fundada por economistas e ingenieros. Sus socios trabajaron en dos sistemas del Estado: el Sistema Nacional de Inversiones y el Sistema de Monitoreo y Evaluación de Programas Públicos.</p>
       <p>Ponemos ese conocimiento al servicio de instituciones públicas, empresas y organizaciones que participan en estos procesos. También lo ponemos al servicio de quienes no forman parte del sistema, pero necesitan entenderlo o aplicar su rigor en sus propias decisiones.</p>
     </div>
     <ul class="enfoque" role="list">
@@ -57,7 +57,7 @@ const corto = (n: string) => n.split(' ').slice(0, -1).join(' ');
       <ul role="list" class="people">
         {EQUIPO.map((p) => (
           <li>
-            <a href={`/nosotros/${p.slug}/`}>
+            <a href={`/equipo/${p.slug}/`}>
               <Image src={foto(p.slug)} alt="" widths={[112]} sizes="56px" style={`object-position:${p.fotoPosicion}`} />
               <span><strong>{corto(p.nombre)}</strong><small>{p.cargo}</small></span>
               <Icon name="arrow-right" />

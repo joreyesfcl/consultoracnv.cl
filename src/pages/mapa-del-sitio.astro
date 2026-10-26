@@ -41,16 +41,21 @@ const ancla = (codigo: string) => `s-${codigo.replace('.', '-')}`;
         <section class="sec" aria-labelledby="m-sectores">
           <h2 id="m-sectores"><span class="mono">03</span>Sectores</h2>
           <ul>
-            {SECTORES.map((s) => <li><a href={`/sectores/${s.slug}/`}>{s.nombre}</a></li>)}
+            <li>
+              <a href="/sectores/">Todos los sectores</a>
+              <ul>
+                {SECTORES.map((s) => <li><a href={`/sectores/${s.slug}/`}>{s.nombre}</a></li>)}
+              </ul>
+            </li>
           </ul>
         </section>
         <section class="sec" aria-labelledby="m-nosotros">
-          <h2 id="m-nosotros"><span class="mono">04</span>Nosotros</h2>
+          <h2 id="m-nosotros"><span class="mono">04</span>Equipo</h2>
           <ul>
             <li>
-              <a href="/nosotros/">Quiénes somos</a>
+              <a href="/equipo/">Equipo</a>
               <ul>
-                {EQUIPO.map((p) => <li><a href={`/nosotros/${p.slug}/`}>Perfil de {p.nombre}</a></li>)}
+                {EQUIPO.map((p) => <li><a href={`/equipo/${p.slug}/`}>Perfil de {p.nombre}</a></li>)}
               </ul>
             </li>
           </ul>

@@ -1,0 +1,53 @@
+---
+// Visión general de los sectores: tres públicos, cada uno con su página.
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import Icon from '../../components/Icon.astro';
+import { SECTORES } from '../../data/sectores';
+import { conSiglas } from '../../data/siglas';
+---
+<Base title="Sectores" description="Consultora CNV trabaja con el sector público, empresas y organizaciones sociales. Conozca cómo podemos contribuir en cada caso." tone="dark">
+  <PageHero
+    tone="dark"
+    eyebrow="Sectores"
+    title="Tres públicos,"
+    accent="un mismo rigor."
+    lead="Trabajamos con instituciones públicas, empresas y organizaciones sociales. Elija su sector para ver cómo podemos contribuir."
+    crumbs={[{ label: 'Sectores' }]}
+  />
+
+  <section class="section" aria-label="Sectores">
+    <div class="container">
+      <ul class="cards stagger" role="list">
+        {SECTORES.map((s) => (
+          <li class="card spotlight">
+            <span class="ico" aria-hidden="true"><Icon name={s.icono} size={26} /></span>
+            <h2><a href={`/sectores/${s.slug}/`}>{s.nombre}</a></h2>
+            <p class="bajada" set:html={conSiglas(s.bajada)} />
+            <ul class="perfiles" role="list">
+              {s.perfiles.map((p) => <li set:html={conSiglas(p.titulo)} />)}
+            </ul>
+            <a href={`/sectores/${s.slug}/`} class="link">Ver cómo podemos contribuir<span class="sr-only"> en {s.nombre}</span> <Icon name="arrow-right" /></a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand />
+</Base>
+
+<style>
+  .cards { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 16px; }
+  .card { display: grid; gap: 14px; align-content: start; padding: clamp(1.4rem, 3vw, 2rem); border-radius: 20px; background: var(--surface); border: 1px solid var(--line); }
+  .ico { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 14px; background: var(--accent-soft); color: var(--accent); }
+  h2 { font-size: var(--step-2); }
+  h2 a { color: var(--heading); text-decoration: none; }
+  h2 a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
+  .bajada { color: var(--text-muted); }
+  .perfiles { list-style: none; padding: 0; display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 12px; font-size: 0.93rem; }
+  .perfiles li { padding-left: 14px; position: relative; }
+  .perfiles li::before { content: ''; position: absolute; left: 0; top: 0.65em; width: 6px; height: 1px; background: var(--accent); }
+  .card .link { margin-top: auto; }
+</style>
