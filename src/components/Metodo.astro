@@ -6,13 +6,13 @@ import SectionHead from './SectionHead.astro';
 import { METODO } from '../data/inicio';
 import { FORMATOS } from '../data/nosotros';
 
-interface Props { ejemplo?: boolean; detalle?: boolean; enlace?: boolean; id?: string }
-const { ejemplo = true, detalle = false, enlace = true, id = 'metodo' } = Astro.props;
+interface Props { ejemplo?: boolean; detalle?: boolean; enlace?: boolean; id?: string; eyebrow?: string }
+const { ejemplo = true, detalle = false, enlace = true, id = 'metodo', eyebrow = 'Cómo trabajamos' } = Astro.props;
 const COLORS = ['var(--p01)', 'var(--p02)', 'var(--p03)', 'var(--p04)'];
 ---
 <section class="section metodo on-dark" id={id} aria-labelledby={`${id}-title`}>
   <div class="container">
-    <SectionHead id={`${id}-title`} eyebrow="Cómo trabajamos" title="Así transformamos un desafío" accent="en una decisión." lead={ejemplo ? 'Cuatro pasos que se repiten en cada encargo. En cada uno, un ejemplo ficticio para mostrar el recorrido completo.' : 'Cuatro pasos que se repiten en cada encargo, sea cual sea el formato.'} split />
+    <SectionHead id={`${id}-title`} eyebrow={eyebrow} title="Así transformamos un desafío" accent="en una decisión." lead={ejemplo ? 'Cuatro pasos que se repiten en cada encargo. En cada uno, un ejemplo ficticio para mostrar el recorrido completo.' : 'Cuatro pasos que se repiten en cada encargo, sea cual sea el formato.'} split />
     <ol class="pasos stagger" role="list">
       {METODO.map((m, i) => (
         <li style={`--c:${COLORS[i]}`}>
@@ -32,7 +32,7 @@ const COLORS = ['var(--p01)', 'var(--p02)', 'var(--p03)', 'var(--p04)'];
           <li>
             <h4>{f.titulo}</h4>
             <p>{f.texto}</p>
-            {detalle && <p class="incluye">Incluye: {f.incluye.join(', ').toLowerCase()}.</p>}
+            {detalle && <p class="incluye">{f.incluye.length > 1 ? 'Modalidades' : 'Modalidad'}: {f.incluye.join(', ').toLowerCase()}.</p>}
           </li>
         ))}
       </ul>
