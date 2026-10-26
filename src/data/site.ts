@@ -13,7 +13,7 @@ export const SITE = {
   agenda:
     'https://calendar.google.com/calendar/appointments/schedules/AcZssZ0JeRaRk3viBLA3llembjLrlaj8BzzNP06K2vxMNocqTymuCixQg4oXuCfqvDlTb7k2JjWmGPiB?gv=true',
   // Token de Cloudflare Web Analytics (dejar vacío para desactivar)
-  cloudflareAnalyticsToken: '',
+  cloudflareAnalyticsToken: 'c33fc95d89ee4c55b313200f516479b3',
 };
 
 export type NavItem = { label: string; href: string; children?: { label: string; href: string; desc?: string }[] };
