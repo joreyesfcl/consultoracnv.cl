@@ -70,7 +70,8 @@ const rutas = NECESIDADES.map((n) => ({ ...n, a: area(n.area), svcs: n.servicios
   .need:hover { border-color: var(--accent); }
   .need[aria-pressed='true'] { background: var(--cobalt); border-color: var(--cobalt); color: var(--white); }
   :global(:root[data-theme='dark']) .need[aria-pressed='true'] { background: var(--cyan); border-color: var(--cyan); color: var(--navy); }
-  .num { font-size: 0.75rem; opacity: 0.8; }
+  .num { font-size: 0.75rem; color: var(--text-muted); }
+  .need[aria-pressed='true'] .num { color: inherit; }
   .ruta { display: grid; gap: 1rem; }
   .ruta:not([hidden]) { animation: swap-in 0.4s var(--ease) both; }
   .ruta h3 { font-size: var(--step-2); font-weight: 400; line-height: 1.15; }

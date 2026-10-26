@@ -23,7 +23,7 @@ export const GET: APIRoute = () => {
     `- Ciudad: ${SITE.ciudad}`,
     '- Idioma: español',
     '',
-    `## Soluciones: ${AREAS.length} áreas, ${total} servicios`,
+    `## Soluciones: ${AREAS.length} áreas, ${total} soluciones`,
     '',
     'Se contratan por separado o encadenados, para instituciones públicas, empresas y organizaciones sociales. Formatos: diagnóstico puntual, desarrollo integral y acompañamiento a equipos.',
     '',
