@@ -1,12 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
-import BeforeAfter from '../components/BeforeAfter.astro';
+import Diferencial from '../components/Diferencial.astro';
 import Needs from '../components/Needs.astro';
-import Challenges from '../components/Challenges.astro';
-import PillarDiagram from '../components/PillarDiagram.astro';
-import SectorTabs from '../components/SectorTabs.astro';
-import Scenarios from '../components/Scenarios.astro';
+import AreaCards from '../components/AreaCards.astro';
+import Metodo from '../components/Metodo.astro';
+import SectorCards from '../components/SectorCards.astro';
 import Team from '../components/Team.astro';
 import Faq from '../components/Faq.astro';
 import FinalCta from '../components/FinalCta.astro';
@@ -50,18 +49,17 @@ const faq = {
   <!-- Redirige las anclas del sitio anterior (p. ej. /#servicios) a sus nuevas páginas -->
   <script is:inline>
     (function () {
-      var m = { servicios: '/servicios/', 'porque-cnv': '/equipo/', nosotros: '/equipo/', conversemos: '/contacto/' };
+      var m = { servicios: '/soluciones/', 'porque-cnv': '/equipo/', nosotros: '/equipo/', conversemos: '/contacto/' };
       var h = location.hash.slice(1);
       if (m[h]) location.replace(m[h]);
     })();
   </script>
   <Hero />
+  <Diferencial />
   <Needs />
-  <BeforeAfter />
-  <Challenges />
-  <PillarDiagram />
-  <SectorTabs />
-  <Scenarios />
+  <AreaCards />
+  <Metodo />
+  <SectorCards />
   <Team />
   <Faq />
   <FinalCta />

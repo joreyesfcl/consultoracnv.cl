@@ -1,17 +1,17 @@
 ---
-// Mapa radial de los 28 servicios (mesa 02): los 5 pilares en el anillo interior y sus
-// servicios en el exterior. Al pasar el cursor, tocar o enfocar un segmento se muestra su ficha flotante,
-// con un enlace al pilar;
-// el buscador resalta los servicios que coinciden. Lógica en src/scripts/ui.ts ([data-smap]).
+// Mapa radial de las 28 soluciones (mesa 02): las 5 áreas en el anillo interior y sus
+// soluciones en el exterior. Al pasar el cursor, tocar o enfocar un segmento se muestra su ficha flotante,
+// con un enlace al área;
+// el buscador resalta las soluciones que coinciden. Lógica en src/scripts/ui.ts ([data-smap]).
 import Icon from './Icon.astro';
-import { PILARES } from '../data/servicios';
+import { AREAS, ancla } from '../data/servicios';
 
 interface Props { eyebrow?: string; title?: string; accent?: string; lead?: string; id?: string }
 const {
   eyebrow = 'Nuestro modelo',
   title = 'Todo lo que hacemos,',
   accent = 'en un solo mapa.',
-  lead = 'Cada servicio se contrata por separado o encadenado con otros en una asesoría integral. Cada segmento es un servicio: al pasar el cursor muestra su ficha.',
+  lead = 'Cada solución se contrata por separado o encadenada con otras. Cada segmento es una solución: al pasar el cursor muestra su ficha.',
   id = 'modelo',
 } = Astro.props;
 
@@ -27,10 +27,10 @@ const sector = (r0: number, r1: number, a0: number, a1: number) => {
   const large = a1 - a0 > 180 ? 1 : 0;
   return `M${f(x0)} ${f(y0)}A${r1} ${r1} 0 ${large} 1 ${f(x1)} ${f(y1)}L${f(x2)} ${f(y2)}A${r0} ${r0} 0 ${large} 0 ${f(x3)} ${f(y3)}Z`;
 };
-const total = PILARES.reduce((n, p) => n + p.servicios.length, 0);
+const total = AREAS.reduce((n, p) => n + p.servicios.length, 0);
 const step = 360 / total;
 let k = 0;
-const pilares = PILARES.map((p, i) => {
+const areas = AREAS.map((p, i) => {
   const a0 = k * step;
   const servicios = p.servicios.map((s) => {
     const b0 = k * step + 0.45, b1 = (k + 1) * step - 0.45;
@@ -46,24 +46,24 @@ const pilares = PILARES.map((p, i) => {
   <div class="container grid">
     <div class="figure reveal">
       <svg viewBox="0 0 600 600" role="group" aria-labelledby={`${id}-svg`}>
-        <title id={`${id}-svg`}>Mapa radial: los 5 pilares en el anillo interior y sus {total} servicios en el anillo exterior</title>
+        <title id={`${id}-svg`}>Mapa radial: las 5 áreas en el anillo interior y sus {total} soluciones en el anillo exterior</title>
         <circle cx={C} cy={C} r="286" class="orbit" />
-        {pilares.map((p) => (
-          <g class="pilar" style={`--c:${p.color}`}>
+        {areas.map((p) => (
+          <g class="area" style={`--c:${p.color}`}>
             <path d={p.d} class="p-seg" />
             <circle cx={f(p.lx)} cy={f(p.ly)} r="15" class="p-badge" />
             <text x={f(p.lx)} y={f(p.ly)} dy="0.35em" text-anchor="middle" class="p-num">{p.numero}</text>
             {p.servicios.map((s) => (
               <a
-                href={`/servicios/${p.slug}/#s-${s.codigo.replace('.', '-')}`}
+                href={`/soluciones/${p.slug}/#${ancla(s.codigo)}`}
                 class="svc"
                 data-svc
                 data-code={s.codigo}
-                data-name={s.nombre}
+                data-name={s.corto}
                 data-desc={s.descripcion}
-                data-pilar={p.numero}
-                data-href={`/servicios/${p.slug}/`}
-                aria-label={`${s.codigo} ${s.nombre}`}
+                data-area={p.numero}
+                data-href={`/soluciones/${p.slug}/`}
+                aria-label={`${s.codigo} ${s.corto}`}
               >
                 <path d={s.d} data-d={s.d} data-don={s.dOn} />
               </a>
@@ -72,15 +72,15 @@ const pilares = PILARES.map((p, i) => {
         ))}
         <circle cx={C} cy={C} r="84" class="hub" />
         <text x={C} y="292" text-anchor="middle" class="hub-n">{total}</text>
-        <text x={C} y="322" text-anchor="middle" class="hub-t">SERVICIOS</text>
+        <text x={C} y="322" text-anchor="middle" class="hub-t">SOLUCIONES</text>
       </svg>
       <div class="card" data-card hidden>
         <span class="mono code" data-c-code></span>
         <span class="c-name" data-c-name></span>
         <span class="c-desc" data-c-desc></span>
-        <a class="mono c-go" data-c-link href="#">Abrir el pilar <span data-c-pilar></span> →</a>
+        <a class="mono c-go" data-c-link href="#">Abrir el área <span data-c-area></span> →</a>
       </div>
-      <p class="mono cap"><span class="fine">Pase el cursor sobre la rueda; haga clic para abrir el pilar</span><span class="coarse">Toque un segmento para ver su ficha; toque otra vez para abrir el pilar</span></p>
+      <p class="mono cap"><span class="fine">Pase el cursor sobre la rueda; haga clic para abrir el área</span><span class="coarse">Toque un segmento para ver su ficha; toque otra vez para abrir el área</span></p>
     </div>
 
     <div class="text">
@@ -90,18 +90,18 @@ const pilares = PILARES.map((p, i) => {
         <p class="lead">{lead}</p>
       </header>
       <label class="search reveal">
-        <span class="sr-only">Buscar un servicio</span>
+        <span class="sr-only">Buscar una solución</span>
         <Icon name="search" size={18} />
         <input type="search" placeholder="Buscar: evaluación, fondos, indicadores…" data-smap-q autocomplete="off" />
         <span class="mono count" data-smap-count aria-live="polite"></span>
       </label>
       <ul class="legend reveal" role="list">
-        {pilares.map((p) => (
+        {areas.map((p) => (
           <li>
-            <a href={`/servicios/${p.slug}/`} style={`--c:${p.color}`}>
+            <a href={`/soluciones/${p.slug}/`} style={`--c:${p.color}`}>
               <span class="sw" aria-hidden="true"></span>
               <span>{p.numero} · {p.nombre}</span>
-              <span class="mono n">{p.servicios.length} servicios</span>
+              <span class="mono n">{p.servicios.length} soluciones</span>
             </a>
           </li>
         ))}
@@ -119,7 +119,7 @@ const pilares = PILARES.map((p, i) => {
   .text .section-head { margin: 0; }
   .orbit { fill: none; stroke: var(--soft-blue); stroke-opacity: 0.15; stroke-dasharray: 2 6; }
   .p-seg { fill: var(--c); }
-  /* Número del pilar sobre una pastilla navy: contraste suficiente sobre cualquier color de pilar y a cualquier tamaño */
+  /* Número del área sobre una pastilla navy: contraste suficiente sobre cualquier color y a cualquier tamaño */
   .p-badge { fill: var(--navy-deep); pointer-events: none; }
   .p-num { font-family: var(--font-body); font-size: 15px; font-weight: 600; fill: var(--snow); pointer-events: none; }
   .svc path { fill: var(--c); fill-opacity: 0.42; transition: fill-opacity 0.25s, opacity 0.25s; }

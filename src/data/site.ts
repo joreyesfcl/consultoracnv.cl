@@ -20,7 +20,7 @@ export type NavItem = { label: string; href: string };
 
 // Menú principal: todos los ítems son enlaces directos (sin listas desplegables).
 export const NAV: NavItem[] = [
-  { label: 'Soluciones', href: '/servicios/' },
+  { label: 'Soluciones', href: '/soluciones/' },
   { label: 'Cómo trabajamos', href: '/como-trabajamos/' },
   { label: 'Sectores', href: '/sectores/' },
   { label: 'Equipo', href: '/equipo/' },

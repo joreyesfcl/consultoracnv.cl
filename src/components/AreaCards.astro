@@ -1,0 +1,49 @@
+---
+// Las cinco áreas de solución en tarjetas (lienzo, artboards 26 y 27). Se usa en Inicio y en Soluciones.
+import Icon from './Icon.astro';
+import SectionHead from './SectionHead.astro';
+import { AREAS } from '../data/servicios';
+
+interface Props { head?: boolean; id?: string }
+const { head = true, id = 'soluciones' } = Astro.props;
+const COLORS = ['var(--p01)', 'var(--p02)', 'var(--p03)', 'var(--p04)', 'var(--p05)'];
+---
+<section class="section areas" id={id} aria-labelledby={head ? `${id}-title` : undefined} aria-label={head ? undefined : 'Áreas de solución'}>
+  <div class="container">
+    {head && (
+      <div class="top">
+        <SectionHead id={`${id}-title`} eyebrow="Soluciones" title="Cinco áreas," accent="un mismo método." />
+        <a href="/soluciones/" class="link reveal">Ver el catálogo completo <Icon name="arrow-right" /></a>
+      </div>
+    )}
+    <ul class="cards stagger" role="list">
+      {AREAS.map((a, i) => (
+        <li class="card" style={`--c:${COLORS[i]}`}>
+          <span class="mono num">{a.numero}</span>
+          <h3><a href={`/soluciones/${a.slug}/`}>{a.nombre}</a></h3>
+          <p>{a.bajada}</p>
+          <a href={`/soluciones/${a.slug}/`} class="link" aria-hidden="true" tabindex="-1">{a.servicios.length} soluciones <Icon name="arrow-right" /></a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 1rem 2rem; margin-bottom: 2rem; }
+  .top :global(.section-head) { margin-bottom: 0; }
+  .cards { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+  .card { position: relative; display: grid; grid-template-rows: auto auto 1fr auto; gap: 0.8rem; padding: 1.5rem 1.3rem; border-radius: 20px; background: var(--surface); border: 1px solid var(--line); border-top: 6px solid var(--c); transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease); }
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  .num { font-size: 0.8rem; color: var(--accent); }
+  h3 { font-size: 1.4rem; font-weight: 500; line-height: 1.15; }
+  h3 a { color: var(--heading); text-decoration: none; }
+  /* Toda la tarjeta es clicable a través del enlace del título */
+  h3 a::after { content: ''; position: absolute; inset: 0; border-radius: inherit; }
+  h3 a:focus-visible { outline: none; }
+  .card:has(h3 a:focus-visible) { outline: 2px solid var(--accent); outline-offset: 3px; }
+  p { font-size: 0.93rem; color: var(--text-muted); }
+  .card .link { font-size: 0.9rem; }
+  @media (max-width: 1080px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .cards { grid-template-columns: 1fr; } }
+</style>

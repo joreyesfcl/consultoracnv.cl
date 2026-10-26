@@ -1,0 +1,32 @@
+---
+// Por qué conversar con nosotros (lienzo, artboard 26, bloque 2): experiencia profesional de los
+// socios, sin cifras y sin atribuirla a CNV como empresa.
+import SectionHead from './SectionHead.astro';
+import { DIFERENCIAL } from '../data/inicio';
+
+const COLORS = ['var(--p01)', 'var(--p02)', 'var(--p03)', 'var(--p04)'];
+---
+<section class="section dif" id="diferencial" aria-labelledby="dif-title">
+  <div class="container">
+    <SectionHead id="dif-title" eyebrow="Por qué conversar con nosotros" title="La experiencia de nuestros socios," accent="al servicio de su decisión." lead="CNV es una consultora nueva. Lo que traemos es la trayectoria profesional de cada socio en los sistemas que evalúan programas e inversiones en Chile." split />
+    <ul class="ejes stagger" role="list">
+      {DIFERENCIAL.map((d, i) => (
+        <li style={`--c:${COLORS[i]}`}>
+          <span class="mono">{String(i + 1).padStart(2, '0')}</span>
+          <h3>{d.titulo}</h3>
+          <p>{d.texto}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .ejes { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+  .ejes li { display: grid; gap: 0.6rem; align-content: start; padding-top: 1.2rem; border-top: 2px solid var(--c); }
+  .ejes .mono { font-size: 0.78rem; color: var(--accent); }
+  .ejes h3 { font-size: 1.4rem; font-weight: 500; }
+  .ejes p { color: var(--text-muted); font-size: 0.97rem; }
+  @media (max-width: 960px) { .ejes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .ejes { grid-template-columns: 1fr; } }
+</style>

@@ -1,5 +1,5 @@
-// Interacciones de las secciones: pestañas accesibles, necesidades por pilar,
-// mapa radial de servicios, índice vivo del pilar, filtro de servicios y
+// Interacciones de las secciones: pestañas accesibles, necesidades por área,
+// mapa radial de soluciones, índice vivo del área, filtro del catálogo y
 // formulario de contacto. initUI() corre al cargar y en "cnv:page".
 
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -37,20 +37,19 @@ function initTabs(list: HTMLElement, onChange?: (tab: HTMLElement) => void) {
 function initUI() {
 document.querySelectorAll<HTMLElement>('[data-tabs] [role="tablist"]').forEach((l) => initTabs(l));
 
-// ---------- ¿En qué podemos contribuir? (necesidad → pilar) ----------
+// ---------- ¿Qué necesita resolver? (necesidad → ruta sugerida) ----------
 document.querySelectorAll<HTMLElement>('[data-needs]').forEach((root) => {
   const btns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-need]'));
-  const strata = Array.from(root.querySelectorAll<HTMLElement>('[data-stratum]'));
+  const rutas = Array.from(root.querySelectorAll<HTMLElement>('[data-ruta]'));
   btns.forEach((b) =>
     b.addEventListener('click', () => {
       btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      strata.forEach((s) => s.classList.toggle('on', s.dataset.stratum === b.dataset.need));
+      rutas.forEach((r) => (r.hidden = r.dataset.ruta !== b.dataset.need));
     })
   );
 });
 
-
-// ---------- Mapa radial de servicios ----------
+// ---------- Mapa radial de soluciones ----------
 // La ficha aparece solo mientras el cursor (o el foco) está sobre un segmento de la rueda.
 document.querySelectorAll<HTMLElement>('[data-smap]').forEach((root) => {
   const svg = root.querySelector<SVGSVGElement>('svg')!;
@@ -119,10 +118,10 @@ document.querySelectorAll<HTMLElement>('[data-smap]').forEach((root) => {
     if (active === a && !card.hidden) return;
     active = a;
     expand(a);
-    q('[data-c-code]').textContent = `${a.dataset.code} · Pilar ${a.dataset.pilar}`;
+    q('[data-c-code]').textContent = `${a.dataset.code} · Área ${a.dataset.area}`;
     q('[data-c-name]').textContent = a.dataset.name!;
     q('[data-c-desc]').textContent = a.dataset.desc!;
-    q('[data-c-pilar]').textContent = a.dataset.pilar!;
+    q('[data-c-area]').textContent = a.dataset.area!;
     link.href = a.getAttribute('href')!;
     card.hidden = false;
     card.style.animation = 'none';
@@ -152,7 +151,7 @@ document.querySelectorAll<HTMLElement>('[data-smap]').forEach((root) => {
     });
     a.addEventListener('pointerleave', () => clearTimeout(pending));
     a.addEventListener('focus', () => { if (!touch) show(a); });
-    // En pantallas táctiles, el primer toque muestra la ficha y el segundo abre el pilar
+    // En pantallas táctiles, el primer toque muestra la ficha y el segundo abre el área
     a.addEventListener('click', (e) => {
       if (touch && active !== a) {
         e.preventDefault();
@@ -187,11 +186,11 @@ document.querySelectorAll<HTMLElement>('[data-smap]').forEach((root) => {
       a.classList.toggle('match', ok);
       if (ok) n++;
     });
-    if (count) count.textContent = term ? `${n} ${n === 1 ? 'servicio' : 'servicios'}` : '';
+    if (count) count.textContent = term ? `${n} ${n === 1 ? 'solución' : 'soluciones'}` : '';
   });
 });
 
-// ---------- Índice vivo de la página de pilar ----------
+// ---------- Índice vivo de la página de área ----------
 document.querySelectorAll<HTMLElement>('[data-spy]').forEach((nav) => {
   const links = Array.from(nav.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'));
   const items = links.map((a) => document.getElementById(a.hash.slice(1))).filter(Boolean) as HTMLElement[];
@@ -219,31 +218,34 @@ document.querySelectorAll<HTMLElement>('[data-spy]').forEach((nav) => {
   }
 });
 
-// ---------- Filtro de servicios ----------
+// ---------- Filtro del catálogo de soluciones ----------
 document.querySelectorAll<HTMLElement>('[data-filter]').forEach((box) => {
   const section = box.closest('section')!;
   const items = Array.from(section.querySelectorAll<HTMLElement>('[data-item]'));
+  const groups = Array.from(section.querySelectorAll<HTMLElement>('[data-group]'));
   const chips = Array.from(box.querySelectorAll<HTMLButtonElement>('[data-f]'));
   const q = box.querySelector<HTMLInputElement>('[data-q]')!;
   const label = section.querySelector<HTMLElement>('[data-count-label]');
   const empty = section.querySelector<HTMLElement>('[data-empty]');
-  let pilar = 'todos';
+  let area = 'todos';
   const norm = (t: string) => t.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   const apply = () => {
     const term = norm(q.value.trim());
     let n = 0;
     items.forEach((it) => {
-      const text = norm(it.querySelector<HTMLElement>('[data-search]')?.dataset.search ?? it.textContent ?? '');
-      const ok = (pilar === 'todos' || it.dataset.pilar === pilar) && (!term || text.includes(term));
+      const text = norm(it.dataset.search ?? it.textContent ?? '');
+      const ok = (area === 'todos' || it.dataset.area === area) && (!term || text.includes(term));
       it.hidden = !ok;
       if (ok) n++;
     });
-    if (label) label.textContent = `${n} ${n === 1 ? 'servicio' : 'servicios'}`;
+    // Un grupo sin soluciones visibles se oculta completo
+    groups.forEach((g) => (g.hidden = !g.querySelector('[data-item]:not([hidden])')));
+    if (label) label.textContent = `${n} ${n === 1 ? 'solución' : 'soluciones'}`;
     if (empty) empty.hidden = n > 0;
   };
   chips.forEach((c) =>
     c.addEventListener('click', () => {
-      pilar = c.dataset.f!;
+      area = c.dataset.f!;
       chips.forEach((x) => x.setAttribute('aria-pressed', String(x === c)));
       apply();
     })

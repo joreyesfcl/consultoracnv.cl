@@ -8,15 +8,16 @@ import CtaBand from '../../components/CtaBand.astro';
 import Icon from '../../components/Icon.astro';
 import PlainSummary from '../../components/PlainSummary.astro';
 import { SECTORES } from '../../data/sectores';
-import { PILARES } from '../../data/servicios';
+import { AREAS } from '../../data/servicios';
 
 export function getStaticPaths() {
   return SECTORES.map((s) => ({ params: { slug: s.slug } }));
 }
 const s = SECTORES.find((x) => x.slug === Astro.params.slug)!;
-const servicios = s.servicios.map((c) => {
-  const p = PILARES.find((p) => p.servicios.some((x) => x.codigo === c))!;
-  return { p, sv: p.servicios.find((x) => x.codigo === c)! };
+const COLORS = ['var(--p01)', 'var(--p02)', 'var(--p03)', 'var(--p04)', 'var(--p05)'];
+const contribuciones = s.contribuciones.map((c) => {
+  const i = AREAS.findIndex((x) => x.slug === c.area);
+  return { ...c, a: AREAS[i], color: COLORS[i] };
 });
 // Titular de cada sector (texto + acento en cursiva)
 const TITULOS: Record<string, [string, string]> = {
@@ -55,24 +56,22 @@ const perfilesTitulo = s.perfiles.length === 2 ? 'Dos perfiles' : s.perfiles.len
   <section class="section alt" aria-labelledby="frecuentes">
     <div class="container two">
       <div>
-        <SectionHead id="frecuentes" eyebrow="Cómo podemos contribuir" title="Soluciones pertinentes" accent="para este sector." lead="Una selección del catálogo. Todas las soluciones están disponibles para este sector." />
-        <a href="/servicios/" class="link">Ver todas las soluciones <Icon name="arrow-right" /></a>
+        <SectionHead id="frecuentes" eyebrow="Cómo podemos contribuir" title="Soluciones pertinentes" accent="para este sector." lead="Las áreas que más suelen servir en este sector. Todas las soluciones están disponibles." />
+        <a href="/soluciones/" class="link">Ver todas las soluciones <Icon name="arrow-right" /></a>
       </div>
-      <ol class="svcs" role="list">
-        {servicios.map(({ p, sv }) => (
-          <li>
-            <a href={`/servicios/${p.slug}/#s-${sv.codigo.replace('.', '-')}`}>
-              <span class="mono">{sv.codigo}</span>
-              <span class="t"><strong>{sv.nombre}</strong><span>{sv.descripcion}</span></span>
-              <Icon name="arrow-right" />
-            </a>
+      <ul class="contrib" role="list">
+        {contribuciones.map((c) => (
+          <li style={`--c:${c.color}`}>
+            <span class="mono">{c.a.numero} · {c.a.nombre}</span>
+            <p>{c.texto}</p>
+            <a href={`/soluciones/${c.a.slug}/`} class="link">Ver el área<span class="sr-only"> {c.a.nombre}</span> <Icon name="arrow-right" /></a>
           </li>
         ))}
-      </ol>
+      </ul>
     </div>
   </section>
 
-  <Scenarios tipos={s.escenarios} title={s.escenarios.length > 1 ? 'Situaciones tipo' : 'Una situación tipo,'} accent={s.escenarios.length > 1 ? 'en este sector.' : 'antes y después.'} />
+  <Scenarios tipos={s.escenarios} title="Una situación frecuente," accent="paso a paso." />
 
   <CtaBand />
 </Base>
@@ -88,12 +87,10 @@ const perfilesTitulo = s.perfiles.length === 2 ? 'Dos perfiles' : s.perfiles.len
   .perfiles h3 { font-size: 1.4rem; }
   .perfiles p { color: var(--text-muted); font-size: 0.95rem; }
   .two { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(2rem, 4vw, 4rem); align-items: start; }
-  .svcs { list-style: none; padding: 0; border-top: 1px solid var(--line); }
-  .svcs a { display: grid; grid-template-columns: 64px minmax(0, 1fr) 24px; gap: 12px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--line); color: var(--text); text-decoration: none; }
-  .svcs a:hover strong { color: var(--accent); }
-  .svcs .mono { font-size: 0.85rem; color: var(--accent); }
-  .svcs .t { display: grid; gap: 0.2rem; }
-  .svcs .t span { font-size: 0.9rem; color: var(--text-muted); }
-  .svcs :global(svg) { color: var(--accent); width: 18px; }
+  .contrib { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .contrib li { display: grid; gap: 0.5rem; align-content: start; padding: 1.3rem; border-radius: 18px; background: var(--surface); border: 1px solid var(--line); border-top: 5px solid var(--c); }
+  .contrib .mono { font-size: 0.78rem; color: var(--accent); }
+  .contrib p { font-size: 1rem; }
+  @media (max-width: 640px) { .contrib { grid-template-columns: 1fr; } }
   @media (max-width: 900px) { .two { grid-template-columns: 1fr; } }
 </style>

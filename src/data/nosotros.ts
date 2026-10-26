@@ -29,6 +29,13 @@ export const DIFERENCIADORES = [
   },
 ];
 
+// Tres formatos de trabajo; cada uno agrupa modalidades de MODALIDADES (por su título).
+export const FORMATOS = [
+  { titulo: 'Diagnóstico puntual', texto: 'Un producto acotado y con fecha: un diagnóstico, una evaluación o una estrategia de financiamiento.', incluye: ['Por producto'] },
+  { titulo: 'Desarrollo integral', texto: 'El recorrido completo, del problema a la decisión, encadenando soluciones de distintas áreas.', incluye: ['Asesoría integral', 'Presentación de resultados'] },
+  { titulo: 'Acompañamiento a equipos', texto: 'Su equipo ejecuta y aprende haciendo; nosotros acompañamos, capacitamos y revisamos.', incluye: ['Apoyo a equipos', 'Instancias de capacitación', 'Contraparte técnica'] },
+];
+
 export const MODALIDADES = [
   { icono: 'file-check', titulo: 'Por producto', texto: 'Un entregable acotado: un diagnóstico, una evaluación, una estrategia de financiamiento.' },
   { icono: 'route', titulo: 'Asesoría integral', texto: 'El ciclo completo, encadenando servicios en una secuencia adaptada al contexto.' },
@@ -36,11 +43,4 @@ export const MODALIDADES = [
   { icono: 'users', titulo: 'Apoyo a equipos', texto: 'Su equipo participa de la ejecución y aprende haciendo, con acompañamiento en cada etapa.' },
   { icono: 'graduation-cap', titulo: 'Instancias de capacitación', texto: 'Jornadas sin currículo cerrado, construidas sobre los casos que su equipo tiene en mano.' },
   { icono: 'presentation', titulo: 'Presentación de resultados', texto: 'Apoyo para exponer ante directorios, aportantes, concejos, reguladores y comunidades.' },
-];
-
-export const PROCESO = [
-  { titulo: 'Conversación', texto: 'Usted nos cuenta el desafío en sus propios términos. Sin compromiso.' },
-  { titulo: 'Propuesta', texto: 'Traducimos el desafío a servicios concretos: alcance, productos, modalidad y plazos.' },
-  { titulo: 'Ejecución con su equipo', texto: 'Trabajamos junto a su equipo y le transferimos capacidades durante el encargo.' },
-  { titulo: 'Resultados que se sostienen', texto: 'Entregamos productos defendibles y lo acompañamos a presentarlos ante quien corresponda.' },
 ];
