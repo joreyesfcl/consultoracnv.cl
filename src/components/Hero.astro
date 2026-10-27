@@ -100,7 +100,7 @@ const particulas = Array.from({ length: 48 }, () => {
   }
   .index { position: relative; z-index: 3; align-self: center; list-style: none; padding: 0; display: grid; gap: 0; border-left: 1px solid var(--line); font-family: var(--font-mono); font-size: 0.7rem; }
   .index a { position: relative; display: flex; align-items: center; min-height: 44px; min-width: 44px; padding-left: 0.8rem; margin-left: -1px; color: var(--text-muted); text-decoration: none; border-left: 2px solid transparent; }
-  .index a.on, .index a:hover { color: var(--accent); border-left-color: var(--accent); }
+  .index a.on, .index a:hover { color: var(--accent-text); border-left-color: var(--accent); }
   .tip { position: absolute; left: 3rem; top: 50%; transform: translate(-6px, -50%); white-space: nowrap; padding: 0.2rem 0.5rem; border-radius: 6px; background: var(--heading); color: var(--bg); opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s var(--ease); }
   .index a:hover .tip, .index a:focus-visible .tip { opacity: 1; transform: translate(0, -50%); pointer-events: auto; }
   /* Puente invisible: el rótulo sigue visible mientras el cursor va del número al rótulo */

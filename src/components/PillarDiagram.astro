@@ -146,13 +146,14 @@ const areas = AREAS.map((p, i) => {
     color: var(--ink);
     box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
     --accent: var(--cobalt);
+    --accent-text: var(--cobalt-text);
     animation: swap-in 0.2s var(--ease) both;
   }
   .card.dock { position: relative; top: auto; left: auto; width: min(100%, 520px); margin-top: 12px; }
-  .card .code { font-size: 0.75rem; color: var(--cobalt); }
+  .card .code { font-size: 0.75rem; color: var(--cobalt-text); }
   .c-name { font-family: var(--font-display); font-size: 1.2rem; line-height: 1.2; font-weight: 600; color: var(--navy); }
-  .c-desc { font-size: 0.88rem; color: var(--slate); }
-  .c-go { justify-self: start; margin-top: 4px; font-size: 0.75rem; font-weight: 500; color: var(--cobalt); text-decoration: none; }
+  .c-desc { font-size: 0.88rem; color: var(--slate-text); }
+  .c-go { justify-self: start; margin-top: 4px; font-size: 0.75rem; font-weight: 500; color: var(--cobalt-text); text-decoration: none; }
   .c-go:hover, .c-go:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
   .cap { margin-top: 0.8rem; font-size: 0.72rem; color: var(--soft-blue); }
   .coarse { display: none; }

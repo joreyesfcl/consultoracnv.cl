@@ -9,11 +9,15 @@
   /* Marca */
   --navy: #071C38;
   --cobalt: #165DFF;
+  /* Cobalto para texto pequeño: 7:1 o más sobre snow, ice y blanco (WCAG AAA 1.4.6) */
+  --cobalt-text: #0B45C4;
   --cyan: #3FD7FF;
   --snow: #F8FBFF;
   --ice: #EAF6FF;
   --soft-blue: #B9CEE8;
   --slate: #536A86;
+  /* Gris pizarra para texto secundario: 7:1 o más sobre snow, ice y blanco (WCAG AAA 1.4.6) */
+  --slate-text: #3F5470;
   --ink: #0C1B2A;
   --white: #ffffff;
 
@@ -36,9 +40,11 @@
   --surface: var(--white);
   --surface-2: var(--ice);
   --text: var(--ink);
-  --text-muted: var(--slate);
+  --text-muted: var(--slate-text);
   --heading: var(--navy);
   --accent: var(--cobalt);
+  /* Acento para texto (enlaces, rótulos, números): AAA en ambos temas */
+  --accent-text: var(--cobalt-text);
   --accent-contrast: var(--white);
   --accent-soft: rgba(22, 93, 255, 0.08);
   --line: var(--soft-blue);
@@ -86,6 +92,7 @@
   --text-muted: var(--soft-blue);
   --heading: var(--snow);
   --accent: var(--cyan);
+  --accent-text: var(--cyan);
   --accent-contrast: var(--navy);
   --accent-soft: rgba(63, 215, 255, 0.1);
   --line: rgba(185, 206, 232, 0.2);
@@ -156,10 +163,10 @@ p { text-wrap: pretty; }
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent-text);
 }
 .mono { font-family: var(--font-mono); }
-.code { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent); letter-spacing: 0.02em; }
+.code { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent-text); letter-spacing: 0.02em; }
 /* Numeral serif liviano (01, 02…) */
 .numeral {
   font-family: var(--font-display);
@@ -221,6 +228,7 @@ p { text-wrap: pretty; }
   --text-muted: var(--soft-blue);
   --heading: var(--snow);
   --accent: var(--cyan);
+  --accent-text: var(--cyan);
   --accent-contrast: var(--navy);
   --accent-soft: rgba(63, 215, 255, 0.1);
   --line: rgba(185, 206, 232, 0.18);
@@ -266,12 +274,12 @@ p { text-wrap: pretty; }
   --btn-fg: var(--text);
   border-color: var(--line);
 }
-.btn-ghost:hover { border-color: var(--accent); color: var(--accent); box-shadow: none; }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent-text); box-shadow: none; }
 .btn-accent { --btn-bg: var(--cyan) !important; --btn-fg: var(--navy) !important; }
 
 /* ---------- Enlaces de texto ---------- */
 .link {
-  color: var(--accent);
+  color: var(--accent-text);
   font-weight: 600;
   text-decoration: none;
   display: inline-flex;
@@ -287,7 +295,7 @@ p { text-wrap: pretty; }
 .crumbs ol { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; padding: 0; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); }
 .crumbs li + li::before { content: '/'; margin-right: 0.5rem; opacity: 0.6; }
 .crumbs a { color: inherit; text-decoration: none; display: inline-block; min-width: 44px; padding-block: 14px; margin-block: -14px; } /* objetivo de 44 px sin mover el diseño */
-.crumbs a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.crumbs a:hover { color: var(--accent-text); text-decoration: underline; text-underline-offset: 3px; }
 .crumbs [aria-current] { color: var(--text); }
 
 /* Chips */
@@ -404,18 +412,18 @@ p { text-wrap: pretty; }
 .doc .toc .eyebrow { color: var(--text-muted); margin-bottom: 0.6rem; }
 .doc .toc ol { list-style: none; padding: 0; display: grid; gap: 0; }
 .doc .toc a { display: flex; align-items: center; min-height: 44px; gap: 10px; padding: 4px 0; font-size: 0.88rem; color: var(--text-muted); text-decoration: none; }
-.doc .toc a:hover { color: var(--accent); }
+.doc .toc a:hover { color: var(--accent-text); }
 .doc .toc .mono { font-size: 0.72rem; }
 .doc .prose { grid-column: 5 / span 8; }
 .doc .sec { display: grid; gap: 10px; padding: 22px 0; border-top: 1px solid var(--line); scroll-margin-top: calc(var(--header-h) + 1rem); }
 .doc .sec h2 { display: flex; gap: 12px; align-items: baseline; font-size: 1.6rem; font-weight: 500; letter-spacing: -0.01em; }
-.doc .sec h2 .mono { font-size: 0.78rem; color: var(--accent); }
+.doc .sec h2 .mono { font-size: 0.78rem; color: var(--accent-text); }
 .doc .sec p { max-width: 720px; line-height: 1.7; }
 .doc .sec strong { user-select: all; }
 @media (max-width: 900px) { .doc .toc { display: none; } .doc .prose { grid-column: 1 / -1; } }
 .doc .sec ul { display: grid; gap: 0.5rem; max-width: 720px; padding-left: 1.2rem; line-height: 1.6; }
 .doc .sec ul ul { margin-top: 0.5rem; }
-.doc .sec a { color: var(--accent); text-underline-offset: 3px; }
+.doc .sec a { color: var(--accent-text); text-underline-offset: 3px; }
 .doc .sec abbr[title] { text-decoration: none; }
 /* Objetivos táctiles de 44 px en los chips que son enlaces (WCAG 2.5.5) */
 a.chip { min-height: 44px; }
