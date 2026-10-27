@@ -3,7 +3,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://consultoracnv.cl',
+  site: 'https://www.consultoracnv.cl',
   trailingSlash: 'always',
   // Direcciones antiguas que se trasladaron (generan páginas de redirección)
   redirects: {

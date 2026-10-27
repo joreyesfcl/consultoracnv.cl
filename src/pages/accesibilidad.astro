@@ -4,7 +4,7 @@ import PageHero from '../components/PageHero.astro';
 import { SITE } from '../data/site';
 
 // Actualice estas fechas cada vez que se revise el sitio.
-const evaluada = '24 de octubre de 2026';
+const evaluada = '27 de octubre de 2026';
 const plazo = '5 días hábiles';
 
 const secciones = [
@@ -36,17 +36,18 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
         <section id="a2" class="sec">
           <h2><span class="mono">02</span>Nivel alcanzado</h2>
           <p>Este sitio cumple el nivel AA de las Pautas de Accesibilidad para el Contenido Web (<abbr title="Web Content Accessibility Guidelines">WCAG</abbr>) 2.2 del W3C. También sigue las recomendaciones de la guía «Accesibilidad Web en Chile» del Servicio Nacional de la Discapacidad (<abbr title="Servicio Nacional de la Discapacidad">SENADIS</abbr>), de 2022.</p>
-          <p>Además cumple varios criterios del nivel AAA: enlaces con texto que se entiende por sí solo, enlaces y botones de 44 píxeles, un glosario y resúmenes en lenguaje sencillo.</p>
+          <p>Además cumple varios criterios del nivel AAA: contraste reforzado de al menos 7:1 en los textos, en tema claro y oscuro; enlaces con texto que se entiende por sí solo; enlaces y botones de 44 píxeles; un glosario y resúmenes en lenguaje sencillo.</p>
         </section>
         <section id="a3" class="sec">
           <h2><span class="mono">03</span>Cómo lo evaluamos</h2>
           <p>La última evaluación es del {evaluada}. Revisamos todas las páginas en tema claro y oscuro, en escritorio y en celular, y con la opción de reducir movimiento.</p>
           <ul>
             <li>Pruebas automáticas con axe-core sobre los criterios A y AA.</li>
-            <li>Medición del contraste de cada texto y de los bordes de los controles.</li>
+            <li>Medición del contraste de cada texto (niveles AA y AAA) y de los bordes de los controles.</li>
             <li>Recorrido completo con teclado, con revisión del foco visible.</li>
             <li>Zoom al 200 % y al 400 %, pantallas de 320 píxeles y espaciado de texto aumentado.</li>
             <li>Revisión de la estructura, de los nombres de enlaces y botones, y del lenguaje.</li>
+            <li>Prueba automática con axe-core y con teclado cada vez que se publica un cambio. Si encuentra un error de nivel A o AA, el cambio no se publica.</li>
           </ul>
         </section>
         <section id="a4" class="sec">
@@ -55,7 +56,7 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
             <li>Enlace «Saltar al contenido» al inicio de cada página.</li>
             <li>Tema claro u oscuro, con el botón de la cabecera.</li>
             <li>Botón «Pausar animación» en la portada. El sitio también respeta la opción de reducir movimiento del sistema.</li>
-            <li>El texto se puede ampliar hasta un 400 % con el zoom del navegador sin perder contenido.</li>
+            <li>El texto se puede ampliar hasta un 400 % sin perder contenido. En el computador, use Ctrl y + (Cmd y + en Mac); para volver al tamaño normal, Ctrl y 0. En el celular, separe dos dedos sobre la pantalla.</li>
             <li>Todo se puede usar con teclado.</li>
             <li><a href="/mapa-del-sitio/">Mapa del sitio</a> y <a href="/glosario/">glosario</a> de términos técnicos.</li>
           </ul>
@@ -65,7 +66,6 @@ const n = (i: number) => String(i + 1).padStart(2, '0');
           <ul>
             <li>La agenda de reuniones (Google Calendar) y LinkedIn son servicios externos. Su accesibilidad depende de esas empresas.</li>
             <li>El formulario de contacto se envía a través de Formspree. El formulario y sus mensajes están en este sitio y fueron evaluados.</li>
-            <li>En el tema claro, algunos textos pequeños tienen un contraste de entre 4,5:1 y 7:1. Cumplen el nivel AA, pero no el AAA. El tema oscuro sí llega al nivel AAA.</li>
             <li>Los segmentos de la rueda de soluciones y la casilla de aceptación del formulario miden menos de 44 píxeles. Cumplen el mínimo de 24 píxeles del nivel AA, y cada solución de la rueda también tiene su enlace en el <a href="/soluciones/">catálogo de soluciones</a>.</li>
             <li>Todavía no hemos hecho pruebas con personas que usan lectores de pantalla. Están planificadas.</li>
           </ul>

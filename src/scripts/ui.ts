@@ -39,14 +39,23 @@ document.querySelectorAll<HTMLElement>('[data-tabs] [role="tablist"]').forEach((
 
 // ---------- ¿Qué necesita resolver? (necesidad → ruta sugerida) ----------
 document.querySelectorAll<HTMLElement>('[data-needs]').forEach((root) => {
-  const btns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-need]'));
-  const rutas = Array.from(root.querySelectorAll<HTMLElement>('[data-ruta]'));
-  btns.forEach((b) =>
-    b.addEventListener('click', () => {
-      btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      rutas.forEach((r) => (r.hidden = r.dataset.ruta !== b.dataset.need));
-    })
-  );
+  // La ruta visible la decide el CSS (:has); aquí se anuncia y se arma el enlace a contacto.
+  const anuncio = root.querySelector<HTMLElement>('[data-anuncio]');
+  const update = () => {
+    const sec = root.querySelector<HTMLInputElement>('input[name="sector"]:checked');
+    const nec = root.querySelector<HTMLInputElement>('input[name="necesidad"]:checked');
+    if (!nec) {
+      if (anuncio && sec) anuncio.textContent = `${sec.dataset.sectorNombre}. Ahora elija su desafío.`;
+      return;
+    }
+    const q = new URLSearchParams();
+    if (sec) q.set('sector', sec.value);
+    q.set('necesidad', nec.value);
+    root.querySelectorAll<HTMLAnchorElement>('[data-contacto]').forEach((a) => (a.href = `/contacto/?${q}`));
+    if (anuncio) anuncio.textContent = `Ruta sugerida: ${nec.dataset.areaNombre}.`;
+  };
+  root.addEventListener('change', update);
+  update();
 });
 
 // ---------- Mapa radial de soluciones ----------

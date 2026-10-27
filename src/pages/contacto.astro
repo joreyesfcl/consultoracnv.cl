@@ -2,12 +2,20 @@
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import { SITE } from '../data/site';
+import { NECESIDADES } from '../data/inicio';
+import { SECTORES } from '../data/sectores';
+import { area } from '../data/servicios';
 
 const tipos = [
   'Gobierno regional', 'Municipio o corporación municipal', 'Servicio público', 'Asociación de municipios',
   'Asociación de Gobiernos Regionales', 'Empresa', 'Área de sostenibilidad o responsabilidad social empresarial (RSE)', 'Fundación corporativa',
   'Fundación, corporación u organización no gubernamental (ONG)', 'Organismo multilateral', 'Otro',
 ];
+// Precarga desde el orientador de la portada (/contacto/?sector=…&necesidad=…)
+const precarga = {
+  sectores: Object.fromEntries(SECTORES.map((x) => [x.slug, { publico: 'Trabajamos en el sector público.', empresas: 'Somos una empresa.', 'organizaciones-sociales': 'Somos una organización social.' }[x.slug] ?? ''])),
+  necesidades: NECESIDADES.map((n) => ({ texto: n.texto, area: area(n.area).nombre })),
+};
 const breadcrumb = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
@@ -54,6 +62,7 @@ const breadcrumb = {
             <label for="mensaje"><span>¿Cuál es su desafío? <span class="req">(obligatorio)</span></span>
               <textarea id="mensaje" name="mensaje" rows="7" required placeholder="Describa brevemente la situación, su organización y los plazos, si los hay."></textarea>
             </label>
+            <p class="nota-precarga" data-precarga-nota hidden>Completamos el mensaje con lo que eligió en «¿Qué necesita resolver?». Puede editarlo.</p>
             <p class="field-error" id="err-mensaje" hidden></p>
           </div>
           <label class="hp" aria-hidden="true">No completar<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" /></label>
@@ -72,7 +81,22 @@ const breadcrumb = {
   </section>
 </Base>
 
+<script is:inline define:vars={{ precarga }}>
+  (function () {
+    var q = new URLSearchParams(location.search);
+    var n = precarga.necesidades[q.get('necesidad')];
+    var m = document.getElementById('mensaje');
+    if (!n || !m || m.value) return;
+    var frase = precarga.sectores[q.get('sector')] || '';
+    m.value = (frase ? frase + ' ' : '') + 'Nos interesa conversar sobre: «' + n.texto + '» (área sugerida: ' + n.area + ').';
+    if (q.get('sector') === 'empresas') { var t = document.getElementById('tipo'); if (t && !t.value) t.value = 'Empresa'; }
+    var nota = document.querySelector('[data-precarga-nota]');
+    if (nota) nota.hidden = false;
+  })();
+</script>
+
 <style>
+  .nota-precarga { font-size: 0.88rem; color: var(--text-muted); margin-top: 0.4rem; }
   .contact { padding-top: clamp(1.5rem, 3vw, 2.5rem); }
   .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; row-gap: 2.5rem; align-items: start; }
   .side { grid-column: span 5; display: grid; gap: 1.4rem; justify-items: start; }
@@ -84,7 +108,7 @@ const breadcrumb = {
   .info a { display: inline-flex; align-items: center; gap: 0.3em; min-height: 44px; text-decoration: none; overflow-wrap: anywhere; }
   .info dd { display: flex; align-items: center; }
   .info dt { align-self: center; padding-top: 0; }
-  .info a:hover { color: var(--accent); text-decoration: underline; }
+  .info a:hover { color: var(--accent-text); text-decoration: underline; }
 
   .form-card { grid-column: 7 / span 6; padding: clamp(1.5rem, 4vw, 2.3rem); border-radius: 28px; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow-lg); scroll-margin-top: calc(var(--header-h) + 1rem); }
   .h { font-size: 1.9rem; font-weight: 400; margin-bottom: 1rem; }
@@ -120,7 +144,7 @@ const breadcrumb = {
   .check input { margin-top: 0; width: 24px; height: 24px; accent-color: var(--cobalt); flex-shrink: 0; }
   form .btn { justify-self: start; }
   .status { font-size: 0.95rem; }
-  .status.ok { color: var(--accent); font-weight: 600; }
+  .status.ok { color: var(--accent-text); font-weight: 600; }
   .status.err { color: #C0392B; }
   :global(:root[data-theme='dark']) .status.err, :global(:root[data-theme='dark']) [aria-invalid='true'] { color: #FF8A80; border-color: #FF8A80 !important; }
   @media (max-width: 900px) { .side, .form-card { grid-column: 1 / -1; } }
