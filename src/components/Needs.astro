@@ -1,86 +1,150 @@
 ---
-// ¿Qué necesita resolver? (lienzo, artboard 26): al elegir una necesidad se muestra la ruta
-// sugerida: el área, dos soluciones de ejemplo y un entregable posible. Es un orientador, no un
-// diagnóstico ni una cotización. Lógica en src/scripts/ui.ts ([data-needs]); sin JS se ve la primera ruta.
+// ¿Qué necesita resolver? Orientador de 3 pasos (minuta, etapa 3): 1) tipo de organización,
+// 2) desafío, 3) ruta sugerida con una o dos áreas, dos soluciones, un entregable posible y,
+// si corresponde, cómo contribuimos en su sector. No es un diagnóstico ni una cotización.
+// Funciona sin JavaScript (radios nativos + CSS :has); el JS de src/scripts/ui.ts ([data-needs])
+// anuncia la ruta y agrega lo elegido al enlace de contacto (/contacto/?sector=…&necesidad=…).
 import Icon from './Icon.astro';
 import { NECESIDADES } from '../data/inicio';
+import { SECTORES } from '../data/sectores';
 import { area, servicio } from '../data/servicios';
 
-const rutas = NECESIDADES.map((n) => ({ ...n, a: area(n.area), svcs: n.servicios.map((c) => servicio(c).s) }));
+const rutas = NECESIDADES.map((n, i) => {
+  const svcs = n.servicios.map((c) => servicio(c));
+  // Áreas de la ruta: la principal y la de cada solución, sin repetir
+  const slugs = [...new Set([n.area, ...svcs.map((x) => x.area.slug)])];
+  const areas = slugs.map((s) => area(s));
+  // Por sector: la contribución en la primera área de la ruta que el sector tenga
+  const porSector = SECTORES.map((s) => ({
+    slug: s.slug,
+    nombre: s.nombre,
+    c: s.contribuciones.find((c) => slugs.includes(c.area)),
+  }));
+  return { ...n, i, areas, svcs: svcs.map((x) => x.s), porSector };
+});
+
+// Reglas sin JS: el radio elegido muestra su ruta y la línea de su sector
+const css = [
+  ...rutas.map((r) => `[data-needs]:has(#nec-${r.i}:checked) [data-ruta="${r.i}"]{display:grid}`),
+  ...SECTORES.map((s) => `[data-needs]:has(#sec-${s.slug}:checked) [data-sector-line="${s.slug}"]{display:block}`),
+  '[data-needs]:has([name="necesidad"]:checked) [data-vacio]{display:none}',
+].join('');
 ---
 <section class="section needs on-ice" id="contribuir" aria-labelledby="needs-title" data-needs>
+  <style is:inline set:html={css}></style>
   <div class="container grid">
     <div class="left">
       <header class="section-head reveal">
         <p class="eyebrow">¿Qué necesita resolver?</p>
         <h2 id="needs-title">Cuéntenos el problema; <em>la ruta la armamos juntos.</em></h2>
+        <p class="lead">En dos pasos le mostramos por dónde suele empezar un trabajo como el suyo.</p>
       </header>
-      <ul class="list" role="list">
-        {rutas.map((n, i) => (
-          <li>
-            <button type="button" class="need" aria-pressed={i === 0 ? 'true' : 'false'} aria-controls={`ruta-${i}`} data-need={i}>
-              <span class="mono num">{String(i + 1).padStart(2, '0')}</span>
-              <span class="texto">«{n.texto}»</span>
-            </button>
-          </li>
-        ))}
-      </ul>
+
+      <fieldset class="paso">
+        <legend><span class="mono">Paso 1 de 3</span> Su organización</legend>
+        <div class="opts sectores">
+          {SECTORES.map((s) => (
+            <label class="opt chip-opt">
+              <input type="radio" name="sector" id={`sec-${s.slug}`} value={s.slug} data-sector-nombre={s.nombre} />
+              <span><Icon name={s.icono} size={18} /> {s.nombre}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <fieldset class="paso">
+        <legend><span class="mono">Paso 2 de 3</span> Su desafío</legend>
+        <div class="opts">
+          {rutas.map((r) => (
+            <label class="opt need">
+              <input type="radio" name="necesidad" id={`nec-${r.i}`} value={r.i} data-area-nombre={r.areas.map((a) => a.nombre).join(" y ")} />
+              <span class="mono num" aria-hidden="true">{String(r.i + 1).padStart(2, '0')}</span>
+              <span class="texto">«{r.texto}»</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
     </div>
-    <div class="panel on-dark" aria-live="polite">
-      {rutas.map((n, i) => (
-        <div class="ruta" id={`ruta-${i}`} data-ruta={i} hidden={i !== 0}>
-          <p class="eyebrow">Suele resolverse con</p>
-          <h3><span class="mono">{n.a.numero}</span> {n.a.nombre}</h3>
+
+    <div class="panel on-dark">
+      <p class="eyebrow"><span class="mono">Paso 3 de 3</span> Ruta sugerida</p>
+      <p class="sr-only" aria-live="polite" data-anuncio></p>
+      <p class="vacio" data-vacio>Elija su organización y su desafío para ver una ruta sugerida.</p>
+      {rutas.map((r) => (
+        <div class="ruta" data-ruta={r.i}>
+          <h3>
+            {r.areas.map((a, k) => (
+              <span class="area">{k > 0 && <span class="y"> y </span>}<span class="mono">{a.numero}</span> {a.nombre}</span>
+            ))}
+          </h3>
           <ul role="list" class="svcs">
-            {n.svcs.map((s) => <li><span class="mono">{s.codigo}</span><span>{s.corto}</span></li>)}
+            {r.svcs.map((s) => <li><span class="mono">{s.codigo}</span><span>{s.corto}</span></li>)}
           </ul>
-          <p class="deliv">Entregable posible: <strong>{n.entregable}</strong></p>
+          <p class="deliv">Entregable posible: <strong>{r.entregable}</strong></p>
+          {r.porSector.map((ps) => (
+            <p class="sector-line" data-sector-line={ps.slug}>
+              {ps.c ? <>En {ps.nombre.toLowerCase().startsWith('sector') ? 'el ' + ps.nombre.toLowerCase() : ps.nombre.toLowerCase()}: {ps.c.texto} </> : null}
+              <a href={`/sectores/${ps.slug}/`} class="link">Ver {ps.nombre} <Icon name="arrow-right" /></a>
+            </p>
+          ))}
           <div class="actions">
-            <a href={`/soluciones/${n.a.slug}/`} class="btn">Ver el área<span class="sr-only"> {n.a.nombre}</span> <Icon name="arrow-right" /></a>
-            <a href="/contacto/" class="btn btn-ghost">Conversemos</a>
+            <a href={`/soluciones/${r.areas[0].slug}/`} class="btn">Ver el área<span class="sr-only"> {r.areas[0].nombre}</span> <Icon name="arrow-right" /></a>
+            <a href="/contacto/" class="btn btn-ghost" data-contacto={r.i}>Conversemos<span class="sr-only"> sobre «{r.texto}»</span></a>
           </div>
         </div>
       ))}
+      <p class="nota">Orientación general: no es un diagnóstico ni una cotización.</p>
     </div>
   </div>
 </section>
 
 <style>
   .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; row-gap: 2rem; }
-  .left { grid-column: span 6; }
-  .panel { grid-column: 8 / span 5; align-self: center; padding: clamp(1.5rem, 3vw, 2.2rem); border-radius: var(--radius-lg); background: var(--navy); }
-  .list { list-style: none; padding: 0; display: grid; gap: 10px; }
-  .need {
-    width: 100%;
-    display: grid;
-    grid-template-columns: 36px minmax(0, 1fr);
-    align-items: center;
-    gap: 12px;
-    min-height: 60px;
-    padding: 10px 18px;
-    border: 1px solid var(--field-border);
-    border-radius: 14px;
-    background: var(--surface);
-    text-align: left;
-    font-size: 1.08rem;
-    line-height: 1.4;
-    color: var(--text);
+  .left { grid-column: span 6; display: grid; gap: 1.6rem; align-content: start; }
+  .panel { grid-column: 8 / span 5; align-self: start; position: sticky; top: calc(var(--header-h) + 24px); display: grid; gap: 1rem; padding: clamp(1.5rem, 3vw, 2.2rem); border-radius: var(--radius-lg); background: var(--navy); }
+  .lead { color: var(--text-muted); margin-top: 0.6rem; }
+  .paso { border: 0; padding: 0; margin: 0; min-width: 0; }
+  legend { display: flex; align-items: baseline; gap: 0.6rem; padding: 0; margin-bottom: 0.7rem; font-weight: 600; color: var(--heading); }
+  legend .mono, .panel > .eyebrow .mono { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+  .panel > .eyebrow .mono { color: var(--soft-blue); margin-right: 0.4rem; }
+  .opts { display: grid; gap: 10px; }
+  .sectores { display: flex; flex-wrap: wrap; gap: 8px; }
+  .opt { position: relative; cursor: pointer; }
+  .opt input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+  .chip-opt span {
+    display: inline-flex; align-items: center; gap: 0.45rem; min-height: 44px; padding: 0.4rem 1rem;
+    border: 1px solid var(--field-border); border-radius: 999px; background: var(--surface); color: var(--text);
     transition: background-color 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s;
   }
-  .need:hover { border-color: var(--accent); }
-  .need[aria-pressed='true'] { background: var(--cobalt); border-color: var(--cobalt); color: var(--white); }
-  :global(:root[data-theme='dark']) .need[aria-pressed='true'] { background: var(--cyan); border-color: var(--cyan); color: var(--navy); }
+  .need {
+    display: grid; grid-template-columns: 36px minmax(0, 1fr); align-items: center; gap: 12px;
+    min-height: 60px; padding: 10px 18px; border: 1px solid var(--field-border); border-radius: 14px;
+    background: var(--surface); font-size: 1.08rem; line-height: 1.4; color: var(--text);
+    transition: background-color 0.25s var(--ease), color 0.25s var(--ease), border-color 0.25s;
+  }
+  .chip-opt:hover span, .need:hover { border-color: var(--accent); }
+  .chip-opt:has(input:checked) span, .need:has(input:checked) { background: var(--cobalt); border-color: var(--cobalt); color: var(--white); }
+  :global(:root[data-theme='dark']) .chip-opt:has(input:checked) span,
+  :global(:root[data-theme='dark']) .need:has(input:checked) { background: var(--cyan); border-color: var(--cyan); color: var(--navy); }
+  .chip-opt:has(input:focus-visible) span, .need:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 3px; }
   .num { font-size: 0.75rem; color: var(--text-muted); }
-  .need[aria-pressed='true'] .num { color: inherit; }
-  .ruta { display: grid; gap: 1rem; }
-  .ruta:not([hidden]) { animation: swap-in 0.4s var(--ease) both; }
+  .need:has(input:checked) .num { color: inherit; }
+
+  .vacio { color: var(--soft-blue); font-size: 1.05rem; padding: 1rem 0; }
+  .ruta, .sector-line { display: none; }
+  .ruta { gap: 1rem; animation: swap-in 0.4s var(--ease) both; }
   .ruta h3 { font-size: var(--step-2); font-weight: 400; line-height: 1.15; }
+  .ruta h3 .area { display: inline; }
   .ruta h3 .mono { font-size: 0.9rem; color: var(--cyan); margin-right: 0.3rem; }
+  .ruta h3 .y { color: var(--soft-blue); }
   .svcs { list-style: none; padding: 0; border-top: 1px solid var(--line); }
   .svcs li { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 10px; padding: 0.7rem 0; border-bottom: 1px solid var(--line); font-size: 0.97rem; }
   .svcs .mono { font-size: 0.78rem; color: var(--soft-blue); padding-top: 2px; }
-  .deliv { color: var(--soft-blue); font-size: 0.95rem; }
+  .deliv, .sector-line { color: var(--soft-blue); font-size: 0.95rem; }
   .deliv strong { color: var(--snow); font-weight: 600; }
+  .sector-line .link { margin-top: 0.2rem; }
   .actions { display: flex; flex-wrap: wrap; gap: 10px; }
-  @media (max-width: 960px) { .left, .panel { grid-column: 1 / -1; } }
+  .nota { font-size: 0.82rem; color: var(--soft-blue); border-top: 1px solid var(--line); padding-top: 0.8rem; }
+  @media (max-width: 960px) { .left, .panel { grid-column: 1 / -1; } .panel { position: static; } }
+  @media (prefers-reduced-motion: reduce) { .ruta { animation: none; } }
 </style>
