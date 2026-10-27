@@ -38,7 +38,7 @@ const schema = {
   },
 };
 ---
-<Base title={`${p.nombre}`} description={`Área ${p.numero}: ${p.bajada}`} jsonLd={schema}>
+<Base title={`${p.nombre} · Soluciones`} description={p.resumen} jsonLd={schema}>
   <PageHero
     tone="color"
     color={BANDA[i]}

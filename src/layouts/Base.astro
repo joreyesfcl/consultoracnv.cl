@@ -14,6 +14,8 @@ import { SITE } from '../data/site';
 
 interface Props {
   title?: string;
+  /** Título completo para buscadores; reemplaza «título · Consultora CNV» */
+  seoTitle?: string;
   description?: string;
   image?: string;
   noindex?: boolean;
@@ -24,8 +26,8 @@ interface Props {
   overlay?: boolean;
 }
 
-const { title, description = SITE.descripcion, image = '/og-image.png', noindex = false, jsonLd, tone = 'light', overlay = false } = Astro.props;
-const fullTitle = title ? `${title} · ${SITE.nombre}` : `${SITE.nombre} · ${SITE.lema}`;
+const { title, seoTitle, description = SITE.descripcion, image = '/og-image.png', noindex = false, jsonLd, tone = 'light', overlay = false } = Astro.props;
+const fullTitle = seoTitle ?? (title ? `${title} · ${SITE.nombre}` : `${SITE.nombre} · ${SITE.lema}`);
 const canonical = new URL(Astro.url.pathname, SITE.url).href;
 const ogImage = new URL(image, SITE.url).href;
 const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
@@ -55,6 +57,7 @@ const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1731" />
     <meta property="og:image:height" content="909" />
+    <meta property="og:image:alt" content={`Logo de ${SITE.nombre} sobre un mapa de Chile`} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
