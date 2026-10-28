@@ -41,7 +41,7 @@ export const GET: APIRoute = () => {
   lines.push('', '## Preguntas frecuentes', '');
   for (const f of FAQ) lines.push(`- ${f.pregunta} ${f.respuesta}`);
   lines.push('', '## Páginas principales', '');
-  [['Inicio', '/'], ['Soluciones', '/soluciones/'], ['Cómo trabajamos', '/como-trabajamos/'], ['Sectores', '/sectores/'], ['Equipo', '/equipo/'], ['Contacto', '/contacto/'], ['Glosario', '/glosario/'], ['Mapa del sitio', '/mapa-del-sitio/'], ['Accesibilidad', '/accesibilidad/']].forEach(([n, p]) =>
+  [['Inicio', '/'], ['Soluciones', '/soluciones/'], ['Cómo trabajamos', '/como-trabajamos/'], ['Sectores', '/sectores/'], ['Equipo', '/equipo/'], ['Contacto', '/contacto/'], ['Glosario', '/glosario/'], ['Mapa del sitio', '/mapa-del-sitio/'], ['Accesibilidad', '/accesibilidad/'], ['Programa de integridad', '/integridad/']].forEach(([n, p]) =>
     lines.push(`- [${n}](${u(p)})`)
   );
   return new Response(lines.join('\n') + '\n', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });

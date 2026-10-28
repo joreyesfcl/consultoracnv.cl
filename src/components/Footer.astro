@@ -50,9 +50,10 @@ const corto = ['Diagnóstico y evidencia', 'Diseño de programas', 'Evaluación 
         <li><a href="/mapa-del-sitio/">Mapa del sitio</a></li>
         <li><a href="/glosario/">Glosario</a></li>
         <li><a href="/privacidad/">Política de privacidad</a></li>
+        <li><a href="/integridad/">Integridad</a></li>
       </ul>
     </nav>
-    <p class="mono coords">33°27′S · 70°40′O</p>
+    <Image src={logo} alt="" height={28} class="logo-bottom" />
   </div>
 </footer>
 
@@ -90,7 +91,7 @@ const corto = ['Diagnóstico y evidencia', 'Diseño de programas', 'Evaluación 
     color: var(--soft-blue);
   }
   .footer-bottom a { color: var(--soft-blue); }
-  .coords { letter-spacing: 0.08em; }
+  .footer-bottom :global(.logo-bottom) { height: 26px; width: auto; }
   @media (max-width: 860px) { .footer-grid { grid-template-columns: 1fr 1fr; } .footer-brand { grid-column: 1 / -1; } }
   @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } }
 </style>

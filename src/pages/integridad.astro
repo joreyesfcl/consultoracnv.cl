@@ -1,0 +1,86 @@
+---
+// Integridad: contexto del Programa de integridad de CNV, fin de difusión y enlace al documento
+// vigente (public/documentos/). Al cambiar el programa, reemplace el PDF y actualice estas fechas.
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Icon from '../components/Icon.astro';
+
+const aprobado = '27 de octubre de 2026';
+const pdf = '/documentos/cnv-programa-de-integridad.pdf';
+const correo = 'integridad@consultoracnv.cl';
+
+const secciones = [
+  ['i1', 'Por qué lo publicamos'],
+  ['i2', 'Contexto'],
+  ['i3', 'Marco normativo'],
+  ['i4', 'Qué contiene'],
+  ['i5', 'Consultas y denuncias'],
+];
+const n = (i: number) => String(i + 1).padStart(2, '0');
+---
+<Base title="Programa de integridad" description="Programa de integridad de Consultora CNV: contexto, marco normativo, contenido y canal de denuncias. Se publica para su difusión y conocimiento.">
+  <PageHero eyebrow="Integridad" title="Programa de integridad" lead={`Aprobado por la unanimidad de las socias y el socio el ${aprobado}.`} crumbs={[{ label: 'Integridad' }]} />
+  <section class="section doc-wrap">
+    <div class="container doc">
+      <nav class="toc" aria-label="En esta página">
+        <p class="eyebrow">En esta página</p>
+        <ol role="list">
+          {secciones.map(([id, t], i) => <li><a href={`#${id}`}><span class="mono">{n(i)}</span>{t}</a></li>)}
+        </ol>
+      </nav>
+      <div class="prose">
+        <section id="i1" class="sec">
+          <h2><span class="mono">01</span>Por qué lo publicamos</h2>
+          <p>Publicamos el Programa de integridad de Consultora CNV <strong>con el fin de difundirlo y darlo a conocer</strong> a nuestras contrapartes públicas y privadas, a las personas que trabajan con nosotros y a cualquier persona interesada, como lo establece el propio programa.</p>
+          <p>Esta página resume su contexto y contenido. El texto que rige es el documento completo.</p>
+          <p class="descarga">
+            <a href={pdf} class="btn" download="CNV-Programa-de-integridad.pdf"><Icon name="file-check" /> Descargar el Programa de integridad <span class="peso">(PDF, 7 páginas, 571 KB)</span></a>
+          </p>
+        </section>
+
+        <section id="i2" class="sec">
+          <h2><span class="mono">02</span>Contexto</h2>
+          <p>Consultora CNV trabaja para gobiernos regionales, municipios, servicios públicos, organismos internacionales, empresas y organizaciones sin fines de lucro, y participa en procesos de compra regidos por la Ley N° 19.886. Sus socias y su socio se desempeñaron durante más de una década en la Administración del Estado.</p>
+          <p>Por eso el programa tiene dos tipos de reglas. Las generales buscan prevenir la corrupción y la falta a la ética en todos los procesos de la firma: las ofertas, la ejecución de los servicios, la contratación de personas y proveedores, la administración financiera y la relación con contrapartes. Las específicas tratan la relación con funcionarias y funcionarios públicos, los conflictos de interés que pueden surgir de cargos y contratos públicos anteriores o vigentes, y la integridad de las ofertas.</p>
+          <p>El programa obliga a las socias y al socio, a quienes presten servicios a la firma bajo cualquier modalidad y a las y los profesionales que la firma proponga en sus ofertas o incorpore a sus contratos.</p>
+        </section>
+
+        <section id="i3" class="sec">
+          <h2><span class="mono">03</span>Marco normativo</h2>
+          <p>El programa se aplica conforme a:</p>
+          <ul>
+            <li>la Ley N° 19.886, de compras públicas, y su reglamento (Decreto Supremo N° 661, de 2024, del Ministerio de Hacienda);</li>
+            <li>la Ley N° 20.393, sobre responsabilidad penal de las personas jurídicas, modificada por la Ley N° 21.595, de Delitos Económicos;</li>
+            <li>la Ley N° 20.730, que regula el lobby;</li>
+            <li>las normas del Código Penal sobre cohecho;</li>
+            <li>las normas sobre probidad y abstención de las Leyes N° 18.575 y N° 19.880;</li>
+            <li>la normativa de defensa de la libre competencia;</li>
+            <li>en los contratos con organismos de las Naciones Unidas, su Código de Conducta para Proveedores.</li>
+          </ul>
+        </section>
+
+        <section id="i4" class="sec">
+          <h2><span class="mono">04</span>Qué contiene</h2>
+          <ul>
+            <li><strong>Código de Ética y Conducta</strong>, con reglas sobre contratación de personas, selección de proveedores, regalos y hospitalidad, relación con funcionarias y funcionarios públicos, conflictos de interés, bases de licitación y ofertas, libre competencia, contabilidad, confidencialidad, trato respetuoso, transparencia y sanciones.</li>
+            <li><strong>Responsables del programa</strong>: una persona encargada de integridad y una suplente, designadas por las socias y el socio.</li>
+            <li><strong>Protocolo de denuncia</strong>, con canales, plazos, resguardo de la confidencialidad y prohibición de represalias.</li>
+            <li><strong>Difusión, revisión y vigencia</strong>: el programa se revisa al menos una vez al año y cada vez que un cambio normativo, contractual o de la actividad de la firma lo haga necesario.</li>
+          </ul>
+        </section>
+
+        <section id="i5" class="sec">
+          <h2><span class="mono">05</span>Consultas y denuncias</h2>
+          <p>Cualquier persona, interna o externa a la firma, puede hacer consultas o denunciar conductas contrarias al programa escribiendo a <a href={`mailto:${correo}`}>{correo}</a>. Ese correo es de acceso exclusivo de la persona encargada de integridad y de su suplente.</p>
+          <p>Se prohíbe toda represalia contra quien denuncie de buena fe. El documento describe los demás canales, incluida la denuncia anónima, y cómo se investiga cada caso.</p>
+        </section>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .descarga { margin-top: 0.4rem; }
+  .descarga .btn { white-space: normal; text-align: left; color: var(--btn-fg); text-decoration: none; }
+  .peso { font-weight: 400; opacity: 0.85; }
+</style>
