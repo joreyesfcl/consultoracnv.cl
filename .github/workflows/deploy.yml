@@ -1,9 +1,12 @@
 # Publica el sitio en GitHub Pages cada vez que se actualiza la rama main.
+# En los pull requests solo compila y corre la prueba de accesibilidad, sin publicar.
 # Requisito (una vez): GitHub → Settings → Pages → Source: "GitHub Actions".
 name: Publicar sitio
 
 on:
   push:
+    branches: [main]
+  pull_request:
     branches: [main]
   workflow_dispatch:
 
@@ -13,8 +16,9 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  # Las publicaciones van en fila; la revisión de un PR se reinicia si llega un commit nuevo.
+  group: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.ref) || 'pages' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -35,6 +39,7 @@ jobs:
           path: dist
 
   deploy:
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     environment:

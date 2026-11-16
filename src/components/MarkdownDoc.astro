@@ -1,0 +1,36 @@
+---
+// Documento legal escrito en Markdown, con el mismo formato de /privacidad/:
+// índice lateral «En esta página» y secciones numeradas «01, 02…».
+// Cada «## N. Título» del Markdown se vuelve una sección con id «pN».
+// El texto previo al primer «##» se muestra como introducción.
+interface Props { html: string }
+const { html } = Astro.props;
+
+const partes = html.split(/(?=<h2[\s>])/);
+const intro = partes[0].startsWith('<h2') ? '' : partes.shift()!.trim();
+const secciones = partes.map((parte, i) => {
+  const m = parte.match(/^<h2[^>]*>([\s\S]*?)<\/h2>([\s\S]*)$/)!;
+  const t = m[1].trim().match(/^(\d+)\.\s*([\s\S]*)$/);
+  const n = t ? Number(t[1]) : i + 1;
+  return { id: `p${n}`, num: String(n).padStart(2, '0'), titulo: t ? t[2] : m[1].trim(), cuerpo: m[2].trim() };
+});
+---
+<section class="section doc-wrap">
+  <div class="container doc">
+    <nav class="toc" aria-label="En esta página">
+      <p class="eyebrow">En esta página</p>
+      <ol role="list">
+        {secciones.map((s) => <li><a href={`#${s.id}`}><span class="mono">{s.num}</span><Fragment set:html={s.titulo} /></a></li>)}
+      </ol>
+    </nav>
+    <div class="prose">
+      {intro && <div class="sec" set:html={intro} />}
+      {secciones.map((s) => (
+        <section id={s.id} class="sec">
+          <h2><span class="mono">{s.num}</span><Fragment set:html={s.titulo} /></h2>
+          <Fragment set:html={s.cuerpo} />
+        </section>
+      ))}
+    </div>
+  </div>
+</section>

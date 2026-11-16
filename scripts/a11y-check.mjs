@@ -33,10 +33,10 @@ const server = http.createServer((req, res) => {
 await new Promise((r) => server.listen(0, r));
 const base = `http://localhost:${server.address().port}`;
 
-// Páginas: las del sitemap, más la 404
+// Páginas: las del sitemap, más la 404 y las páginas ocultas que no están en el sitemap
 const sitemap = fs.readFileSync(path.join(root, 'sitemap-0.xml'), 'utf8');
 const routes = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname);
-routes.push('/no-existe/');
+routes.push('/no-existe/', '/privacidad/agente-actividades/');
 
 const errors = [];
 const browser = await chromium.launch();

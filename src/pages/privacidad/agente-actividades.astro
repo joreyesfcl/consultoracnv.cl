@@ -1,0 +1,22 @@
+---
+// Política de privacidad de la aplicación «CNV Agente Actividades» (URL dedicada para Meta).
+// El texto está en src/data/legal/privacidad-agente-actividades.md.
+// Página oculta: noindex, fuera del sitemap (astro.config.mjs), del mapa del sitio, del menú, del pie y del llms.txt.
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import MarkdownDoc from '../../components/MarkdownDoc.astro';
+import * as doc from '../../data/legal/privacidad-agente-actividades.md';
+
+const { titulo, aplicacion, descripcion, actualizada } = doc.frontmatter;
+const html = await doc.compiledContent();
+---
+<Base title={`Política de privacidad · ${aplicacion.replace(/[«»]/g, '')}`} description={descripcion} noindex>
+  <PageHero
+    eyebrow="Legal"
+    title={titulo}
+    accent={aplicacion}
+    lead={`Última actualización: ${actualizada}.`}
+    crumbs={[{ label: 'Privacidad', href: '/privacidad/' }, { label: 'Agente Actividades' }]}
+  />
+  <MarkdownDoc html={html} />
+</Base>
